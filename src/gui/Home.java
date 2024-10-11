@@ -40,6 +40,8 @@ import net.sf.jasperreports.engine.JasperPrintManager;
 import net.sf.jasperreports.engine.data.JRTableModelDataSource;
 import net.sf.jasperreports.view.JasperViewer;
 import raven.toast.Notifications;
+import java.sql.Connection;
+import java.sql.DriverManager;
 
 public class Home extends javax.swing.JFrame {
 
@@ -179,7 +181,6 @@ public class Home extends javax.swing.JFrame {
         jTable9.setModel(modelTrainerPerformance);
 
         jButton18.setEnabled(false);
-        jButton19.setEnabled(false);
 
         String search = "";
         String trainer_id = jTextField4.getText();
@@ -749,7 +750,6 @@ public class Home extends javax.swing.JFrame {
         jLabel49 = new javax.swing.JLabel();
         jButton17 = new javax.swing.JButton();
         jButton18 = new javax.swing.JButton();
-        jButton19 = new javax.swing.JButton();
         jButton20 = new javax.swing.JButton();
         jPanel19 = new javax.swing.JPanel();
         jPanel20 = new javax.swing.JPanel();
@@ -2084,14 +2084,15 @@ public class Home extends javax.swing.JFrame {
             }
         });
 
-        jButton19.setText("Print Performance Report");
-        jButton19.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
-        jButton19.setForeground(new java.awt.Color(46, 59, 78));
-
-        jButton20.setText("Print Trainer Report [Overall]");
+        jButton20.setText("Print Trainer Report");
         jButton20.setBackground(new java.awt.Color(255, 111, 0));
         jButton20.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
         jButton20.setForeground(new java.awt.Color(255, 255, 255));
+        jButton20.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton20ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel15Layout = new javax.swing.GroupLayout(jPanel15);
         jPanel15.setLayout(jPanel15Layout);
@@ -2100,22 +2101,21 @@ public class Home extends javax.swing.JFrame {
             .addGroup(jPanel15Layout.createSequentialGroup()
                 .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel15Layout.createSequentialGroup()
-                        .addContainerGap()
                         .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane9, javax.swing.GroupLayout.DEFAULT_SIZE, 926, Short.MAX_VALUE)
                             .addGroup(jPanel15Layout.createSequentialGroup()
+                                .addContainerGap()
                                 .addComponent(jLabel49)
-                                .addGap(0, 0, Short.MAX_VALUE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 788, Short.MAX_VALUE))
+                            .addGroup(jPanel15Layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addComponent(jButton17)
+                                .addGap(18, 18, 18)
+                                .addComponent(jButton18)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(jButton20, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel15Layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton17)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton18)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jButton19, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton20, javax.swing.GroupLayout.DEFAULT_SIZE, 331, Short.MAX_VALUE))
+                        .addContainerGap()
+                        .addComponent(jScrollPane9)))
                 .addContainerGap())
         );
         jPanel15Layout.setVerticalGroup(
@@ -2129,10 +2129,8 @@ public class Home extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jLabel49)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jButton19, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
-                    .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addGap(9, 9, 9))
+                .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(9, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel13Layout = new javax.swing.GroupLayout(jPanel13);
@@ -2565,7 +2563,7 @@ public class Home extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButton30, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton31, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE)))
+                        .addComponent(jButton31, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -3535,7 +3533,6 @@ public class Home extends javax.swing.JFrame {
             if (jTable8.getSelectedRowCount() == 1) {
                 loadTrainerPerformance();
                 jButton18.setEnabled(true);
-                jButton19.setEnabled(true);
 
             }
         }
@@ -3594,6 +3591,40 @@ public class Home extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton45ActionPerformed
 
+    private void jButton20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton20ActionPerformed
+        try {
+            InputStream mainReport = this.getClass().getResourceAsStream("/reports/FlexGymTrainerPerformance.jasper");
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/flexgym_db", "root", "KOvi@6112");
+            InputStream subReport = this.getClass().getResourceAsStream("/reports/FlexGymTrainerPerformanceSubReport.jasper");
+            if (subReport == null) {
+                System.out.println("Subreport file not found!");
+            } else {
+                System.out.println("Subreport file loaded successfully!");
+            }
+            String employee = SignIn.getEmployeeName();
+            SimpleDateFormat todayFormat = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat monthBegin = new SimpleDateFormat("yyyy-MM-01");
+            Date date = new Date();
+            String today = todayFormat.format(date);
+            String monthFirst = monthBegin.format(date);
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("SUBREPORT_CONNECTION", connection);
+            params.put("SUBREPORT_LOCATION", subReport);
+            params.put("Parameter1", employee);
+            params.put("Parameter2", today);
+            params.put("Parameter3", monthFirst);
+
+            JRTableModelDataSource dataSource = new JRTableModelDataSource(jTable8.getModel());
+
+            JasperPrint report = JasperFillManager.fillReport(mainReport, params, dataSource);
+            JasperPrintManager.printReport(report, false);
+            JasperViewer.viewReport(report,false);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }//GEN-LAST:event_jButton20ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -3624,7 +3655,6 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JButton jButton16;
     private javax.swing.JButton jButton17;
     private javax.swing.JButton jButton18;
-    private javax.swing.JButton jButton19;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton20;
     private javax.swing.JButton jButton21;
