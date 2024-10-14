@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import java.util.logging.FileHandler;
 import java.util.logging.SimpleFormatter;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
+import java.awt.Color;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
@@ -35,38 +36,39 @@ import raven.toast.Notifications;
  * @author kovid
  */
 public class SplashScreen extends javax.swing.JFrame {
-
+    
     private static SplashScreen splash;
-
+    
     private static String loginPath;
     public static Logger exceptionRecords = Logger.getLogger("exceptionRecords.txt");
     public static Logger loginRecords = Logger.getLogger("loginRecords.txt");
-
+    
     public SplashScreen() {
-        Notifications.getInstance().setJFrame(this);
         initComponents();
         init();
         splashProgress();
     }
-
+    
     private void init() {
-
+        setBackground(new Color(0, 0, 0, 0));
         this.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/resources/logo.png")));
-
+        jPanel1.setOpaque(false);
+        jPanel2.setOpaque(false);
+        splashimage.setOpaque(false);
         LogoSettting logo = new LogoSettting();
         logo.setLogo(jLabel1);
-
+        
         try {
-
+            
             String userHome = System.getProperty("user.home");
             Path logDir = Paths.get(userHome, "FlexGymLogs");
             // Create the directory if it doesn't exist
             if (!Files.exists(logDir)) {
                 Files.createDirectories(logDir);
             }
-
+            
             Path exceptionPath = logDir.resolve("flexGym.log");
-
+            
             FileHandler excepionHandler = new FileHandler(exceptionPath.toString(), true);
             excepionHandler.setFormatter(new SimpleFormatter());
             exceptionRecords.addHandler(excepionHandler);
@@ -77,13 +79,13 @@ public class SplashScreen extends javax.swing.JFrame {
             FileHandler loginHandler = new FileHandler(loginPath, true);
             loginHandler.setFormatter(new CustomLoginLogFormat());
             loginRecords.addHandler(loginHandler);
-
+            
         } catch (IOException e) {
             exceptionRecords.log(Level.SEVERE, "Logger Creation went ");
-
+            
         }
     }
-
+    
     public static String readLoginLog(String filePath) {
         String lastLine = null;
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
@@ -96,33 +98,33 @@ public class SplashScreen extends javax.swing.JFrame {
         }
         return lastLine;
     }
-
+    
     private void splashProgress() {
         Thread t = new Thread(new Runnable() {
             boolean openLogin = true;
             boolean logChecks = true;
-
+            
             @Override
             public void run() {
                 Random random = new Random();
                 int progress = 0;
-
+                
                 while (progress < 100) {
                     progress += random.nextInt(5) + 1;
                     if (progress > 100) {
                         progress = 100;
-
+                        
                     }
-
+                    
                     splashProgressBar.setValue(progress);
                     if (progress >= 20 && progress < 40) {
                         progressText.setText("Creating Database Connection...");
                         if (progress > 25) {
                             if (openLogin) {
-
+                                
                                 try {
                                     MySQL.createConnection();
-
+                                    
                                 } catch (Exception e) {
                                     JOptionPane.showMessageDialog(splash, "An error occured when Connecting to the database, Please try again later", "Database Connection Failed.", JOptionPane.ERROR_MESSAGE);
                                     exceptionRecords.log(Level.SEVERE, "Database Connection Failed");
@@ -130,7 +132,7 @@ public class SplashScreen extends javax.swing.JFrame {
                                     break;
                                 }
                             }
-
+                            
                         }
                     } else if (progress >= 40 && progress < 55) {
                         progressText.setText("Creating Loggers...");
@@ -149,7 +151,7 @@ public class SplashScreen extends javax.swing.JFrame {
                                     try {
                                         Date dateTime = new Date();
                                         String notifyDate = FormatDate.getDate(dateTime, "yyyy-MM-dd HH:mm:ss");
-
+                                        
                                         MySQL.executeIUD("INSERT INTO `error_notifications` (`notification`,`date`) "
                                                 + "VALUES ('Unsafe logout from the system. last recorded log is as follows" + lastLine + "','" + notifyDate + "') ");
                                     } catch (Exception e) {
@@ -181,7 +183,7 @@ public class SplashScreen extends javax.swing.JFrame {
                 }
 
             }
-
+            
         });
         t.start();
     }
@@ -196,93 +198,79 @@ public class SplashScreen extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        splashProgressBar = new javax.swing.JProgressBar();
         jPanel2 = new javax.swing.JPanel();
         splashimage = new javax.swing.JLabel();
+        splashProgressBar = new javax.swing.JProgressBar();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         progressText = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(102, 204, 255));
         setUndecorated(true);
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-
-        splashProgressBar.setBackground(new java.awt.Color(46, 59, 78));
-        splashProgressBar.setForeground(new java.awt.Color(255, 160, 64));
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
 
         splashimage.setBackground(new java.awt.Color(255, 255, 255));
         splashimage.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/splashimg.png"))); // NOI18N
 
+        splashProgressBar.setBackground(new java.awt.Color(46, 59, 78));
+        splashProgressBar.setForeground(new java.awt.Color(255, 160, 64));
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addGap(0, 38, Short.MAX_VALUE)
-                .addComponent(splashimage))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(0, 77, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(splashimage)
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(splashProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 369, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(66, 66, 66))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addComponent(splashimage)
-                .addGap(0, 24, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
+                .addComponent(splashProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
+
+        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(277, 0, -1, -1));
 
         jLabel3.setFont(new java.awt.Font("Poppins", 0, 13)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(46, 59, 78));
         jLabel3.setText("Where Fitness Begins");
+        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(39, 229, -1, 13));
 
         jLabel4.setFont(new java.awt.Font("Poppins", 1, 48)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(46, 59, 78));
         jLabel4.setText("Flex Gym");
+        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(39, 242, -1, 52));
 
         progressText.setFont(new java.awt.Font("Poppins", 0, 12)); // NOI18N
         progressText.setForeground(new java.awt.Color(255, 111, 0));
         progressText.setText("Loading...");
+        jPanel1.add(progressText, new org.netbeans.lib.awtextra.AbsoluteConstraints(39, 430, -1, -1));
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(39, 22, 195, 195));
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(splashProgressBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(39, 39, 39)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel4)
-                    .addComponent(progressText))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(22, 22, 22)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 13, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, 0)
-                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(progressText)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(splashProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
+        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/roundBG.png"))); // NOI18N
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 760, 480));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 794, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -312,6 +300,7 @@ public class SplashScreen extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
