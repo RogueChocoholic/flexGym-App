@@ -2638,7 +2638,7 @@
                                   <Component id="jLabel66" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace type="separate" max="-2" attributes="0"/>
                                   <Component id="jTextField8" min="-2" pref="241" max="-2" attributes="0"/>
-                                  <EmptySpace min="0" pref="120" max="32767" attributes="0"/>
+                                  <EmptySpace min="0" pref="162" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
@@ -2694,7 +2694,7 @@
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel65">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Supplied Brands"/>
+                    <Property name="text" type="java.lang.String" value="Company"/>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Poppins" size="14" style="0"/>
                     </Property>

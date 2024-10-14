@@ -2104,14 +2104,13 @@ public class Home extends javax.swing.JFrame {
                         .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel15Layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(jLabel49)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 788, Short.MAX_VALUE))
+                                .addComponent(jLabel49))
                             .addGroup(jPanel15Layout.createSequentialGroup()
                                 .addGap(18, 18, 18)
                                 .addComponent(jButton17)
                                 .addGap(18, 18, 18)
-                                .addComponent(jButton18)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                .addComponent(jButton18)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButton20, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel15Layout.createSequentialGroup()
                         .addContainerGap()
@@ -2165,7 +2164,7 @@ public class Home extends javax.swing.JFrame {
 
         jTextField6.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
 
-        jLabel65.setText("Supplied Brands");
+        jLabel65.setText("Company");
         jLabel65.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
 
         jComboBox10.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
@@ -2217,7 +2216,7 @@ public class Home extends javax.swing.JFrame {
                         .addComponent(jLabel66)
                         .addGap(18, 18, 18)
                         .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 120, Short.MAX_VALUE)))
+                        .addGap(0, 162, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel20Layout.setVerticalGroup(
