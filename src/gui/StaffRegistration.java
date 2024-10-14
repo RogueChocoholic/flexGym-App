@@ -22,6 +22,7 @@ import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import model.LogoSettting;
+import model.ModifyTables;
 import model.MySQL;
 import raven.toast.Notifications;
 
@@ -65,10 +66,8 @@ public class StaffRegistration extends javax.swing.JFrame {
         jTextField6.putClientProperty(FlatClientProperties.STYLE, "arc:999");
         jToggleButton1.putClientProperty(FlatClientProperties.STYLE, "arc:999");
 
-        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
-        renderer.setHorizontalAlignment(SwingConstants.CENTER);
-//        renderer.setBackground(Color.orange);
-        jTable2.setDefaultRenderer(Object.class, renderer);
+        ModifyTables modifyTables = new ModifyTables();
+        modifyTables.modifyTables(jTable2, jScrollPane2, false);
     }
 
     private String generateStaffId() {
