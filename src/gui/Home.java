@@ -2522,6 +2522,11 @@ public class Home extends javax.swing.JFrame {
         jButton40.setBackground(new java.awt.Color(255, 111, 0));
         jButton40.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
         jButton40.setForeground(new java.awt.Color(240, 240, 240));
+        jButton40.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton40ActionPerformed(evt);
+            }
+        });
 
         jButton41.setText("Print Supplier Report");
         jButton41.setBackground(new java.awt.Color(255, 111, 0));
@@ -3895,6 +3900,13 @@ public class Home extends javax.swing.JFrame {
         }
 
     }//GEN-LAST:event_jButton20ActionPerformed
+
+    private void jButton40ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton40ActionPerformed
+AddSupplier adsupplier = new AddSupplier();
+adsupplier.getHome(this);
+adsupplier.setVisible(true);
+
+    }//GEN-LAST:event_jButton40ActionPerformed
 
     /**
      * @param args the command line arguments
