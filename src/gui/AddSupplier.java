@@ -7,9 +7,15 @@ package gui;
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import java.awt.Toolkit;
+import java.util.logging.Level;
 import javax.swing.JFrame;
 import model.ModifyTables;
 import raven.toast.Notifications;
+import java.sql.ResultSet;
+import java.util.Vector;
+import javax.swing.table.DefaultTableModel;
+import model.MySQL;
+import model.Validation;
 
 /**
  *
@@ -18,8 +24,8 @@ import raven.toast.Notifications;
 public class AddSupplier extends javax.swing.JFrame {
 
     private Home home;
-    
-    public void getHome(Home home){
+
+    public void getHome(Home home) {
         this.home = home;
     }
 
@@ -29,14 +35,44 @@ public class AddSupplier extends javax.swing.JFrame {
         init();
     }
 
-    private void init(){
+    private void init() {
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
-          this.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/resources/logo.png")));
-          jFormattedTextField1.putClientProperty(FlatClientProperties.STYLE, "arc:999");
-          
-          ModifyTables modifyTable = new ModifyTables();
-          modifyTable.modifyTables(jPanel1, jTable1, jScrollPane1, false);
+        this.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/resources/logo.png")));
+        jFormattedTextField1.putClientProperty(FlatClientProperties.STYLE, "arc:999");
+
+        ModifyTables modifyTable = new ModifyTables();
+        modifyTable.modifyTables(jPanel1, jTable1, jScrollPane1, false);
+
+        loadSuppliers();
     }
+
+    private void loadSuppliers() {
+        String search = jFormattedTextField1.getText();
+
+        try {
+            ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `supplier` INNER JOIN `company` ON"
+                    + " `company`.`com_id` = `supplier`.`companiy_com_id` WHERE `mobile` LIKE '%" + search + "%' ");
+            DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+            model.setRowCount(0);
+            while (resultSet.next()) {
+                Vector<String> vector = new Vector<>();
+                vector.add(resultSet.getString("mobile"));
+                vector.add(resultSet.getString("first_name"));
+                vector.add(resultSet.getString("last_name"));
+                vector.add(resultSet.getString("email"));
+                vector.add(resultSet.getString("name"));
+
+                model.addRow(vector);
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            SplashScreen.loginRecords.log(Level.SEVERE, "Couldn't load suppliers ad company dialog");
+
+            Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Couldn't load company list. Please check your connection");
+        }
+    }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -123,11 +159,17 @@ public class AddSupplier extends javax.swing.JFrame {
         jButton3.setFont(new java.awt.Font("Poppins SemiBold", 0, 14)); // NOI18N
         jButton3.setForeground(new java.awt.Color(249, 249, 249));
         jButton3.setText("Add Supplier");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         jButton4.setBackground(new java.awt.Color(255, 160, 64));
         jButton4.setFont(new java.awt.Font("Poppins SemiBold", 0, 14)); // NOI18N
         jButton4.setForeground(new java.awt.Color(249, 249, 249));
         jButton4.setText("Update Supplier");
+        jButton4.setEnabled(false);
 
         jButton5.setBackground(new java.awt.Color(249, 249, 249));
         jButton5.setFont(new java.awt.Font("Poppins SemiBold", 0, 14)); // NOI18N
@@ -244,6 +286,11 @@ public class AddSupplier extends javax.swing.JFrame {
 
         jFormattedTextField1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jFormattedTextField1.setFont(new java.awt.Font("Poppins SemiBold", 0, 18)); // NOI18N
+        jFormattedTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jFormattedTextField1KeyReleased(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -379,13 +426,47 @@ public class AddSupplier extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-     CompanyList companies = new CompanyList(this, false);
-     companies.setVisible(true);
+        CompanyList companies = new CompanyList(this, false);
+        companies.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    
+    private void jFormattedTextField1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jFormattedTextField1KeyReleased
+        loadSuppliers();
+    }//GEN-LAST:event_jFormattedTextField1KeyReleased
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        String fname = jTextField1.getText();
+        String lname = jTextField2.getText();
+        String mobile = jTextField3.getText();
+        String email = jTextField4.getText();
+        String comany = jTextField5.getText();
+
+   
+        boolean mobileValidation = validateMobile(mobile);
+        boolean emailValidation = validateEmail(email);
+        System.out.println(emailValidation);
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+
+    private static boolean validateMobile(String mobile) {
+        if (mobile.isBlank()) {
+            return false;
+        } else if (mobile.matches(Validation.MOBILE.validation())) {
+            return true;
+        }
+        return false;
+    }
+    private static boolean validateEmail(String email) {
+        if (email.isBlank()) {
+            return false;
+        } else if (email.matches(Validation.EMAIL.validation())) {
+            return true;
+        }
+        return false;
+    }
+
     public static void main(String args[]) {
-      
+
         FlatMacLightLaf.setup();
 
         /* Create and display the form */
