@@ -66,30 +66,30 @@ public class CompanyList extends javax.swing.JDialog {
     }
 
     private void loadSuppliers() {
-        if (insertStatus) {
+//        if (insertStatus) {
 
-            String search = jTextField1.getText();
+        String search = jTextField1.getText();
 
-            try {
-                ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `supplier` INNER JOIN `company` ON "
-                        + " `company`.`com_id` = `supplier`.`companiy_com_id` WHERE `name` LIKE '%" + search + "%' ");
-                DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
-                model.setRowCount(0);
-                while (resultSet.next()) {
-                    Vector<String> vector = new Vector<>();
-                    vector.add(resultSet.getString("name"));
-                    vector.add(resultSet.getString("first_name") + " " + resultSet.getString("last_name"));
-                    vector.add(resultSet.getString("mobile"));
-                    model.addRow(vector);
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                SplashScreen.loginRecords.log(Level.SEVERE, "Couldn't load suppliers ad company dialog");
-
-                Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Couldn't load company list. Please check your connection");
-                dialog.dispose();
+        try {
+            ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `supplier` INNER JOIN `company` ON "
+                    + " `company`.`com_id` = `supplier`.`companiy_com_id` WHERE `name` LIKE '%" + search + "%' ");
+            DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
+            model.setRowCount(0);
+            while (resultSet.next()) {
+                Vector<String> vector = new Vector<>();
+                vector.add(resultSet.getString("name"));
+                vector.add(resultSet.getString("first_name") + " " + resultSet.getString("last_name"));
+                vector.add(resultSet.getString("mobile"));
+                model.addRow(vector);
             }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            SplashScreen.loginRecords.log(Level.SEVERE, "Couldn't load suppliers ad company dialog");
+
+            Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Couldn't load company list. Please check your connection");
+            dialog.dispose();
+//            }
         }
     }
 
