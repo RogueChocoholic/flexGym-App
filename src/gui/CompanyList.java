@@ -12,23 +12,23 @@ import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Vector;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import model.MySQL;
 
-/**
- *
- * @author kovid
- */
 public class CompanyList extends javax.swing.JDialog {
 
     boolean insertStatus = true;
     HashMap<String, String> companyMap = new HashMap<>();
     private static CompanyList dialog;
 
+    AddSupplier addSupplierFrame;
+
     public CompanyList(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         init();
+        addSupplierFrame = (AddSupplier) parent;
         loadCompanies();
         loadSuppliers();
     }
@@ -438,6 +438,18 @@ public class CompanyList extends javax.swing.JDialog {
                     jButton2.setEnabled(true);
                 }
             }
+        }
+
+        if (evt.getClickCount() == 2) {
+
+            if (jTable4.getSelectedRowCount() == 1) {
+                int row = jTable4.getSelectedRow();
+                String company = String.valueOf(jTable4.getValueAt(row, 1));
+                String company_id = String.valueOf(jTable4.getValueAt(row, 0));
+                
+            }
+
+            addSupplierFrame.getCompanyField().setText("kovi");
         }
     }//GEN-LAST:event_jTable4MouseClicked
 

@@ -12,7 +12,9 @@ import javax.swing.JFrame;
 import model.ModifyTables;
 import raven.toast.Notifications;
 import java.sql.ResultSet;
+import java.util.HashMap;
 import java.util.Vector;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import model.MySQL;
 import model.Validation;
@@ -23,6 +25,7 @@ import model.Validation;
  */
 public class AddSupplier extends javax.swing.JFrame {
 
+    HashMap<String, String> companyMap = new HashMap<>();
     private Home home;
 
     public void getHome(Home home) {
@@ -33,6 +36,14 @@ public class AddSupplier extends javax.swing.JFrame {
         initComponents();
         Notifications.getInstance().setJFrame(this);
         init();
+    }
+
+    public HashMap<String, String> getCompanyMap() {
+        return companyMap;
+    }
+
+    public JTextField getCompanyField() {
+        return jTextField5;
     }
 
     private void init() {
@@ -138,7 +149,8 @@ public class AddSupplier extends javax.swing.JFrame {
 
         jTextField4.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
 
-        jTextField5.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
+        jTextField5.setFont(new java.awt.Font("Poppins SemiBold", 0, 14)); // NOI18N
+        jTextField5.setEnabled(false);
 
         jButton1.setBackground(new java.awt.Color(255, 160, 64));
         jButton1.setFont(new java.awt.Font("Poppins SemiBold", 0, 14)); // NOI18N
@@ -441,12 +453,23 @@ public class AddSupplier extends javax.swing.JFrame {
         String email = jTextField4.getText();
         String comany = jTextField5.getText();
 
-   
         boolean mobileValidation = validateMobile(mobile);
         boolean emailValidation = validateEmail(email);
-        System.out.println(emailValidation);
-    }//GEN-LAST:event_jButton3ActionPerformed
 
+        if (fname.isBlank()) {
+            Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, 3000l, "Please Enter Your First Name");
+        } else if (lname.isBlank()) {
+            Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, 3000l, "Please Enter Your Last Name");
+        } else if (!mobileValidation) {
+            Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, 3000l, "Please Enter a Valid Mobile Number");
+        } else if (!emailValidation) {
+            Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, 3000l, "Please Enter a Valid Email Address");
+        } else if (comany.isEmpty()) {
+            Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, 3000l, "Please Select a Company");
+
+        }
+
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     private static boolean validateMobile(String mobile) {
         if (mobile.isBlank()) {
@@ -456,6 +479,7 @@ public class AddSupplier extends javax.swing.JFrame {
         }
         return false;
     }
+
     private static boolean validateEmail(String email) {
         if (email.isBlank()) {
             return false;
