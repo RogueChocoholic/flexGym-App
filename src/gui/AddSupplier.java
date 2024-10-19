@@ -38,10 +38,6 @@ public class AddSupplier extends javax.swing.JFrame {
         init();
     }
 
-    public HashMap<String, String> getCompanyMap() {
-        return companyMap;
-    }
-
     public JTextField getCompanyField() {
         return jTextField5;
     }
@@ -55,6 +51,7 @@ public class AddSupplier extends javax.swing.JFrame {
         modifyTable.modifyTables(jPanel1, jTable1, jScrollPane1, false);
 
         loadSuppliers();
+        loadCompanies();
     }
 
     private void loadSuppliers() {
@@ -79,8 +76,22 @@ public class AddSupplier extends javax.swing.JFrame {
         } catch (Exception e) {
             e.printStackTrace();
             SplashScreen.loginRecords.log(Level.SEVERE, "Couldn't load suppliers ad company dialog");
-
             Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Couldn't load company list. Please check your connection");
+        }
+    }
+
+    private void loadCompanies() {
+        try {
+            ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `company`");
+
+            while (resultSet.next()) {
+                companyMap.put(resultSet.getString("name"), resultSet.getString("com_id"));
+            }
+            System.out.println("company map loaded");
+        } catch (Exception e) {
+            e.printStackTrace();
+            SplashScreen.loginRecords.log(Level.SEVERE, "Couldn't load companymap on add supplier gui");
+            Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Check Your Connection");
         }
     }
 
@@ -149,8 +160,9 @@ public class AddSupplier extends javax.swing.JFrame {
 
         jTextField4.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
 
-        jTextField5.setFont(new java.awt.Font("Poppins SemiBold", 0, 14)); // NOI18N
-        jTextField5.setEnabled(false);
+        jTextField5.setEditable(false);
+        jTextField5.setFont(new java.awt.Font("Poppins SemiBold", 1, 14)); // NOI18N
+        jTextField5.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
         jButton1.setBackground(new java.awt.Color(255, 160, 64));
         jButton1.setFont(new java.awt.Font("Poppins SemiBold", 0, 14)); // NOI18N
@@ -433,12 +445,11 @@ public class AddSupplier extends javax.swing.JFrame {
             this.setUndecorated(true);
             this.setVisible(true);
             setExtendedState(JFrame.MAXIMIZED_BOTH);
-
         }
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        CompanyList companies = new CompanyList(this, false);
+        CompanyList companies = new CompanyList(this, true);
         companies.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 

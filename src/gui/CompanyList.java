@@ -17,13 +17,13 @@ import javax.swing.table.DefaultTableModel;
 import model.MySQL;
 
 public class CompanyList extends javax.swing.JDialog {
-
+    
     boolean insertStatus = true;
     HashMap<String, String> companyMap = new HashMap<>();
     private static CompanyList dialog;
-
+    
     AddSupplier addSupplierFrame;
-
+    
     public CompanyList(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
@@ -32,17 +32,17 @@ public class CompanyList extends javax.swing.JDialog {
         loadCompanies();
         loadSuppliers();
     }
-
+    
     private void init() {
         ModifyTables modifyTables = new ModifyTables();
         modifyTables.modifyTables(jPanel6, jTable4, jScrollPane4, false);
         modifyTables.modifyTables(jPanel5, jTable2, jScrollPane2, false);
     }
-
+    
     private void loadCompanies() {
         if (insertStatus) {
             String search = jTextField1.getText();
-
+            
             try {
                 ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `company` WHERE `name` LIKE '%" + search + "%' ");
                 DefaultTableModel model = (DefaultTableModel) jTable4.getModel();
@@ -53,23 +53,23 @@ public class CompanyList extends javax.swing.JDialog {
                     vector.add(resultSet.getString("name"));
                     model.addRow(vector);
                 }
-
+                
             } catch (Exception e) {
                 e.printStackTrace();
                 SplashScreen.loginRecords.log(Level.SEVERE, "Couldn't load companies ad company dialog");
-
+                
                 Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Couldn't load company list. Please check your connection");
                 dialog.dispose();
             }
-
+            
         }
     }
-
+    
     private void loadSuppliers() {
 //        if (insertStatus) {
 
         String search = jTextField1.getText();
-
+        
         try {
             ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `supplier` INNER JOIN `company` ON "
                     + " `company`.`com_id` = `supplier`.`companiy_com_id` WHERE `name` LIKE '%" + search + "%' ");
@@ -82,17 +82,17 @@ public class CompanyList extends javax.swing.JDialog {
                 vector.add(resultSet.getString("mobile"));
                 model.addRow(vector);
             }
-
+            
         } catch (Exception e) {
             e.printStackTrace();
             SplashScreen.loginRecords.log(Level.SEVERE, "Couldn't load suppliers ad company dialog");
-
+            
             Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Couldn't load company list. Please check your connection");
             dialog.dispose();
 //            }
         }
     }
-
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -360,18 +360,18 @@ public class CompanyList extends javax.swing.JDialog {
                 Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, 3000l, "A Company Already Exists with this name");
             } else if (company.isBlank()) {
                 Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, 3000l, "Company Name should not be empty");
-
+                
             } else {
-
+                
                 int option = JOptionPane.showConfirmDialog(this, "Add new company to the system?", "Confirm new company", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-
+                
                 if (option == JOptionPane.YES_OPTION) {
                     MySQL.executeIUD("INSERT INTO `company` (`name`) VALUES ('" + company + "')");
                     Notifications.getInstance().show(Notifications.Type.SUCCESS, Notifications.Location.TOP_CENTER, 3000l, "Company added Successfully");
                     loadCompanies();
                     loadSuppliers();
                 }
-
+                
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -387,7 +387,7 @@ public class CompanyList extends javax.swing.JDialog {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         String company = jTextField1.getText();
-
+        
         if (jTable4.getSelectedRowCount() == 1) {
             int row = jTable4.getSelectedRow();
             if (row != -1) {
@@ -397,20 +397,20 @@ public class CompanyList extends javax.swing.JDialog {
                         Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, 3000l, "Please change the name to update");
                     } else if (company.isBlank()) {
                         Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, 3000l, "Company Name should not be empty");
-
+                        
                     } else {
-
+                        
                         int option = JOptionPane.showConfirmDialog(this, "Update company name"
                                 + " from " + String.valueOf(jTable4.getValueAt(row, 1)) + " to " + company + ""
                                 + "?", "Confirm new company", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-
+                        
                         if (option == JOptionPane.YES_OPTION) {
                             String id = String.valueOf(jTable4.getValueAt(row, 0));
-
+                            
                             MySQL.executeIUD("UPDATE `company` SET `company`.`name` = '" + company + "'  WHERE `com_id` = '" + id + "' ");
                             Notifications.getInstance().show(Notifications.Type.SUCCESS, Notifications.Location.TOP_CENTER, 3000l, "Company Update Successfully");
                             reset();
-
+                            
                         }
                     }
                 } catch (Exception e) {
@@ -418,7 +418,7 @@ public class CompanyList extends javax.swing.JDialog {
                     SplashScreen.loginRecords.log(Level.SEVERE, "Couldn't insert new company : add company dialog");
                     Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Couldn't add new company. Please check your connection");
                 }
-
+                
             }
         }
 
@@ -426,7 +426,7 @@ public class CompanyList extends javax.swing.JDialog {
 
     private void jTable4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable4MouseClicked
         if (evt.getClickCount() == 1) {
-
+            
             if (jTable4.getSelectedRowCount() == 1) {
                 int row = jTable4.getSelectedRow();
                 if (row != -1) {
@@ -439,17 +439,18 @@ public class CompanyList extends javax.swing.JDialog {
                 }
             }
         }
-
+        
         if (evt.getClickCount() == 2) {
-
+            
             if (jTable4.getSelectedRowCount() == 1) {
                 int row = jTable4.getSelectedRow();
                 String company = String.valueOf(jTable4.getValueAt(row, 1));
                 String company_id = String.valueOf(jTable4.getValueAt(row, 0));
-                
-            addSupplierFrame.getCompanyField().setText(company);
+                addSupplierFrame.getCompanyField().setText(company);
+               
+                this.dispose();
             }
-
+            
         }
     }//GEN-LAST:event_jTable4MouseClicked
 
@@ -461,7 +462,7 @@ public class CompanyList extends javax.swing.JDialog {
         loadCompanies();
         loadSuppliers();
     }//GEN-LAST:event_jTextField1CaretUpdate
-
+    
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         FlatMacLightLaf.setup();
