@@ -447,9 +447,9 @@ public class CompanyList extends javax.swing.JDialog {
                 String company = String.valueOf(jTable4.getValueAt(row, 1));
                 String company_id = String.valueOf(jTable4.getValueAt(row, 0));
                 
+            addSupplierFrame.getCompanyField().setText(company);
             }
 
-            addSupplierFrame.getCompanyField().setText("kovi");
         }
     }//GEN-LAST:event_jTable4MouseClicked
 
