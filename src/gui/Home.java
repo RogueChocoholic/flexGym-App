@@ -6,7 +6,6 @@ package gui;
 
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
-import java.awt.Color;
 import java.util.List;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
