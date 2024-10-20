@@ -290,10 +290,11 @@
             </Component>
             <Component class="javax.swing.JTextField" name="jTextField5">
               <Properties>
+                <Property name="editable" type="boolean" value="false"/>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Poppins SemiBold" size="14" style="0"/>
+                  <Font name="Poppins SemiBold" size="14" style="1"/>
                 </Property>
-                <Property name="enabled" type="boolean" value="false"/>
+                <Property name="horizontalAlignment" type="int" value="0"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JButton" name="jButton1">
