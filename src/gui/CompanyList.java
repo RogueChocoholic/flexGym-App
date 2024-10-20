@@ -53,7 +53,6 @@ public class CompanyList extends javax.swing.JDialog {
                     vector.add(resultSet.getString("name"));
                     model.addRow(vector);
                 }
-                
             } catch (Exception e) {
                 e.printStackTrace();
                 SplashScreen.loginRecords.log(Level.SEVERE, "Couldn't load companies ad company dialog");

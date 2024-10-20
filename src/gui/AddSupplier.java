@@ -83,7 +83,7 @@ public class AddSupplier extends javax.swing.JFrame {
     private void loadCompanies() {
         try {
             ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `company`");
-
+            companyMap.clear();
             while (resultSet.next()) {
                 companyMap.put(resultSet.getString("name"), resultSet.getString("com_id"));
             }
@@ -477,7 +477,20 @@ public class AddSupplier extends javax.swing.JFrame {
             Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, 3000l, "Please Enter a Valid Email Address");
         } else if (comany.isEmpty()) {
             Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, 3000l, "Please Select a Company");
+        } else {
+            try {
+                ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `supplier` WHERE `mobile` = '" + mobile + "' OR `email` = '" + email + "' ");
 
+                if (resultSet.next()) {
+                    Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, 3000l, "Supplier with the same mobile or email aleardy exists");
+                } else {
+                    // do this
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                SplashScreen.loginRecords.log(Level.SEVERE, "Couldn't add new supplier in add new supplier gui ");
+                Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Couldn't complete action. Please check your network connection");
+            }
         }
 
     }//GEN-LAST:event_jButton3ActionPerformed
