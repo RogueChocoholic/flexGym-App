@@ -51,6 +51,7 @@ public class Home extends javax.swing.JFrame {
     HashMap<String, String> specMap = new HashMap<>();
     HashMap<String, String> statusMap = new HashMap<>();
     HashMap<String, Vector> sessionTypeMap = new HashMap<>();
+    HashMap<String, String> companyMap = new HashMap<>();
 //    String search = "";
     private static final List<JButton> buttons = new ArrayList<>();
     private static final List<JTable> tables = new ArrayList<>();
@@ -91,6 +92,8 @@ public class Home extends javax.swing.JFrame {
         loadDashboardSessions();
         loadDashboardMemberEXP();
         loadTrainerDashDetails();
+        loadSuppliers();
+        loadCompanies();
 
     }
 
@@ -264,6 +267,47 @@ public class Home extends javax.swing.JFrame {
         } catch (Exception e) {
             SplashScreen.exceptionRecords.log(Level.SEVERE, "Couldn't connect to db at loadMembers", e);
 
+        }
+    }
+
+    private void loadSuppliers() {
+        try {
+            ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `supplier` INNER JOIN `company` "
+                    + "ON `supplier`.`companiy_com_id` = `company`.`com_id`");
+            DefaultTableModel model = (DefaultTableModel) jTable14.getModel();
+            model.setRowCount(0);
+
+            while (resultSet.next()) {
+                Vector<String> vector = new Vector<>();
+                vector.add(resultSet.getString("mobile"));
+                vector.add(resultSet.getString("first_name"));
+                vector.add(resultSet.getString("last_name"));
+                vector.add(resultSet.getString("email"));
+                vector.add(resultSet.getString("mobile"));
+                
+                model.addRow(vector);
+            }
+            jTable14.setModel(model);
+
+        } catch (Exception e) {
+            SplashScreen.exceptionRecords.log(Level.SEVERE, "Couldn't connect to db at loading suppliers", e);
+
+        }
+    }
+    
+    private void loadCompanies() {
+        try {
+            ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `company`");
+            Vector<String> vector = new Vector<>();
+            vector.add("All Companies");
+            while (resultSet.next()){
+                vector.add(resultSet.getString("name"));
+                companyMap.put("name", "com_id");
+            }
+            DefaultComboBoxModel model = new DefaultComboBoxModel(vector);
+            jComboBox10.setModel(model);
+        } catch (Exception e) {
+            SplashScreen.exceptionRecords.log(Level.SEVERE, "Couldn't connect to db at loading comany combobox in dashboard", e);
         }
     }
 
@@ -637,7 +681,6 @@ public class Home extends javax.swing.JFrame {
 //        jLabel1.putClientProperty(FlatClientProperties.STYLE, "arc:50");
 //        jPanel22.putClientProperty(FlatClientProperties.STYLE, "arc:50");
 
-        
         if (notify) {
             Notifications.getInstance().show(Notifications.Type.SUCCESS, Notifications.Location.TOP_CENTER, 3000l, "Logged in Successfully");
         }
@@ -1134,18 +1177,18 @@ public class Home extends javax.swing.JFrame {
 
         jPanel22.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 1, 1, 1, new java.awt.Color(255, 153, 0)));
 
-        jLabel15.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
-        jLabel15.setForeground(new java.awt.Color(46, 59, 78));
         jLabel15.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/icons8-people-30-black.png"))); // NOI18N
+        jLabel15.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
+        jLabel15.setForeground(new java.awt.Color(46, 59, 78));
 
-        jLabel25.setFont(new java.awt.Font("Poppins", 0, 18)); // NOI18N
         jLabel25.setText("Total Members");
+        jLabel25.setFont(new java.awt.Font("Poppins", 0, 18)); // NOI18N
 
-        jLabel30.setFont(new java.awt.Font("Poppins", 1, 36)); // NOI18N
-        jLabel30.setForeground(new java.awt.Color(255, 153, 0));
         jLabel30.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel30.setText("150");
+        jLabel30.setFont(new java.awt.Font("Poppins", 1, 36)); // NOI18N
+        jLabel30.setForeground(new java.awt.Color(255, 153, 0));
 
         javax.swing.GroupLayout jPanel22Layout = new javax.swing.GroupLayout(jPanel22);
         jPanel22.setLayout(jPanel22Layout);
@@ -1176,18 +1219,18 @@ public class Home extends javax.swing.JFrame {
         jPanel23.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 1, 1, 1, new java.awt.Color(255, 153, 0)));
         jPanel23.setPreferredSize(new java.awt.Dimension(240, 103));
 
-        jLabel16.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
-        jLabel16.setForeground(new java.awt.Color(46, 59, 78));
         jLabel16.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel16.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/icons8-money-30.png"))); // NOI18N
+        jLabel16.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
+        jLabel16.setForeground(new java.awt.Color(46, 59, 78));
 
-        jLabel42.setFont(new java.awt.Font("Poppins", 0, 18)); // NOI18N
         jLabel42.setText("Income this month");
+        jLabel42.setFont(new java.awt.Font("Poppins", 0, 18)); // NOI18N
 
-        jLabel43.setFont(new java.awt.Font("Poppins", 1, 36)); // NOI18N
-        jLabel43.setForeground(new java.awt.Color(255, 153, 0));
         jLabel43.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel43.setText("150");
+        jLabel43.setFont(new java.awt.Font("Poppins", 1, 36)); // NOI18N
+        jLabel43.setForeground(new java.awt.Color(255, 153, 0));
 
         javax.swing.GroupLayout jPanel23Layout = new javax.swing.GroupLayout(jPanel23);
         jPanel23.setLayout(jPanel23Layout);
@@ -1223,18 +1266,18 @@ public class Home extends javax.swing.JFrame {
         jPanel24.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 1, 1, 1, new java.awt.Color(255, 153, 0)));
         jPanel24.setPreferredSize(new java.awt.Dimension(240, 103));
 
-        jLabel17.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
-        jLabel17.setForeground(new java.awt.Color(46, 59, 78));
         jLabel17.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/icons8-sandwich-30.png"))); // NOI18N
+        jLabel17.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
+        jLabel17.setForeground(new java.awt.Color(46, 59, 78));
 
-        jLabel44.setFont(new java.awt.Font("Poppins", 1, 36)); // NOI18N
-        jLabel44.setForeground(new java.awt.Color(255, 153, 0));
         jLabel44.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel44.setText("150");
+        jLabel44.setFont(new java.awt.Font("Poppins", 1, 36)); // NOI18N
+        jLabel44.setForeground(new java.awt.Color(255, 153, 0));
 
-        jLabel68.setFont(new java.awt.Font("Poppins", 0, 18)); // NOI18N
         jLabel68.setText("Snack bar Sales");
+        jLabel68.setFont(new java.awt.Font("Poppins", 0, 18)); // NOI18N
 
         javax.swing.GroupLayout jPanel24Layout = new javax.swing.GroupLayout(jPanel24);
         jPanel24.setLayout(jPanel24Layout);
@@ -1263,18 +1306,18 @@ public class Home extends javax.swing.JFrame {
         jPanel25.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 1, 1, 1, new java.awt.Color(255, 153, 0)));
         jPanel25.setPreferredSize(new java.awt.Dimension(240, 103));
 
-        jLabel21.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
-        jLabel21.setForeground(new java.awt.Color(46, 59, 78));
         jLabel21.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel21.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/icons8-calendar-white.png"))); // NOI18N
+        jLabel21.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
+        jLabel21.setForeground(new java.awt.Color(46, 59, 78));
 
-        jLabel69.setFont(new java.awt.Font("Poppins", 0, 18)); // NOI18N
         jLabel69.setText("Sessions Held");
+        jLabel69.setFont(new java.awt.Font("Poppins", 0, 18)); // NOI18N
 
-        jLabel70.setFont(new java.awt.Font("Poppins", 1, 36)); // NOI18N
-        jLabel70.setForeground(new java.awt.Color(255, 153, 0));
         jLabel70.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel70.setText("150");
+        jLabel70.setFont(new java.awt.Font("Poppins", 1, 36)); // NOI18N
+        jLabel70.setForeground(new java.awt.Color(255, 153, 0));
 
         javax.swing.GroupLayout jPanel25Layout = new javax.swing.GroupLayout(jPanel25);
         jPanel25.setLayout(jPanel25Layout);
@@ -1310,18 +1353,18 @@ public class Home extends javax.swing.JFrame {
         jPanel26.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 1, 1, 1, new java.awt.Color(255, 153, 0)));
         jPanel26.setPreferredSize(new java.awt.Dimension(242, 103));
 
-        jLabel22.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
-        jLabel22.setForeground(new java.awt.Color(46, 59, 78));
         jLabel22.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel22.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/icons8-calendar-black.png"))); // NOI18N
+        jLabel22.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
+        jLabel22.setForeground(new java.awt.Color(46, 59, 78));
 
-        jLabel71.setFont(new java.awt.Font("Poppins", 0, 18)); // NOI18N
         jLabel71.setText("Sessions Scheduled");
+        jLabel71.setFont(new java.awt.Font("Poppins", 0, 18)); // NOI18N
 
-        jLabel72.setFont(new java.awt.Font("Poppins", 1, 36)); // NOI18N
-        jLabel72.setForeground(new java.awt.Color(255, 153, 0));
         jLabel72.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel72.setText("150");
+        jLabel72.setFont(new java.awt.Font("Poppins", 1, 36)); // NOI18N
+        jLabel72.setForeground(new java.awt.Color(255, 153, 0));
 
         javax.swing.GroupLayout jPanel26Layout = new javax.swing.GroupLayout(jPanel26);
         jPanel26.setLayout(jPanel26Layout);
@@ -2448,6 +2491,7 @@ public class Home extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        jTable14.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
         jTable14.getTableHeader().setReorderingAllowed(false);
         jScrollPane14.setViewportView(jTable14);
 
@@ -2511,6 +2555,7 @@ public class Home extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        jTable15.setFont(new java.awt.Font("Poppins", 0, 12)); // NOI18N
         jTable15.getTableHeader().setReorderingAllowed(false);
         jScrollPane15.setViewportView(jTable15);
 
@@ -3901,9 +3946,9 @@ public class Home extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton20ActionPerformed
 
     private void jButton40ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton40ActionPerformed
-AddSupplier adsupplier = new AddSupplier();
-adsupplier.getHome(this);
-adsupplier.setVisible(true);
+        AddSupplier adsupplier = new AddSupplier();
+        adsupplier.getHome(this);
+        adsupplier.setVisible(true);
 
     }//GEN-LAST:event_jButton40ActionPerformed
 
