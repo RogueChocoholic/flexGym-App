@@ -25,6 +25,8 @@ import model.Validation;
  */
 public class AddSupplier extends javax.swing.JFrame {
 
+    public final int addNew = 1;
+    public final int update = 2;
     HashMap<String, String> companyMap = new HashMap<>();
     private Home home;
 
@@ -32,26 +34,37 @@ public class AddSupplier extends javax.swing.JFrame {
         this.home = home;
     }
 
-    public AddSupplier() {
+    public AddSupplier(boolean action) {
         initComponents();
         Notifications.getInstance().setJFrame(this);
-        init();
+        init(action);
     }
 
     public JTextField getCompanyField() {
         return jTextField5;
     }
 
-    private void init() {
+    private void init(boolean frameType) {
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/resources/logo.png")));
         jFormattedTextField1.putClientProperty(FlatClientProperties.STYLE, "arc:999");
+        jPanel3.putClientProperty(FlatClientProperties.STYLE, "arc:50");
 
         ModifyTables modifyTable = new ModifyTables();
         modifyTable.modifyTables(jPanel1, jTable1, jScrollPane1, false);
 
         loadSuppliers();
         loadCompanies();
+
+        if (frameType) {
+
+            jButton4.setVisible(false);
+        } else {
+            jLabel1.setText("Edit Supplier");
+            jButton3.setVisible(false);
+
+        }
+
     }
 
     private void loadSuppliers() {
@@ -132,6 +145,8 @@ public class AddSupplier extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Add Supplier | FlexGym");
         setUndecorated(true);
+
+        jPanel2.setBackground(new java.awt.Color(255, 160, 64));
 
         jLabel1.setFont(new java.awt.Font("Poppins", 1, 30)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(46, 59, 78));
@@ -265,6 +280,8 @@ public class AddSupplier extends javax.swing.JFrame {
                 .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(24, 24, 24))
         );
+
+        jPanel4.setBackground(new java.awt.Color(255, 160, 64));
 
         jLabel7.setFont(new java.awt.Font("Poppins", 0, 18)); // NOI18N
         jLabel7.setText("Mobile");
@@ -520,7 +537,7 @@ public class AddSupplier extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new AddSupplier().setVisible(true);
+                new AddSupplier(true).setVisible(true);
             }
         });
     }
