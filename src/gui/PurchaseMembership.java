@@ -686,7 +686,7 @@ public class PurchaseMembership extends javax.swing.JDialog {
         Vector<String> prices = membershipTypeMap.get(type);
 
         if (jComboBox1.getSelectedIndex() != -1) {
-            int index = jComboBox1.getSelectedIndex() - 1;
+            int index = jComboBox1.getSelectedIndex() ;
             jList1.setSelectedIndex(index);
             jList2.setSelectedIndex(index);
 

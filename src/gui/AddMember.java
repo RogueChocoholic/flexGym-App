@@ -51,6 +51,7 @@ public class AddMember extends javax.swing.JFrame {
         jTextField2.grabFocus();
 
         jTextField1.putClientProperty(FlatClientProperties.STYLE, "arc:999");
+        jPanel2.putClientProperty(FlatClientProperties.STYLE, "arc:40");
 
         String id = generateMemId();
         
