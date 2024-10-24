@@ -7,6 +7,7 @@ package gui;
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.logging.Level;
 import javax.swing.JFrame;
@@ -15,6 +16,7 @@ import raven.toast.Notifications;
 import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Vector;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import model.MySQL;
@@ -25,52 +27,53 @@ import model.Validation;
  * @author kovid
  */
 public class AddSupplier extends javax.swing.JFrame {
-    
+
     public boolean frameType;
     HashMap<String, String> companyMap = new HashMap<>();
     private Home home;
-    
+
     public void getHome(Home home) {
         this.home = home;
     }
-    
+
     public AddSupplier(boolean action) {
         initComponents();
         Notifications.getInstance().setJFrame(this);
         init(action);
     }
-    
+
     public JTextField getCompanyField() {
         return jTextField5;
     }
-    
+
     private void init(boolean frameType) {
         this.frameType = frameType;
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/resources/logo.png")));
         jFormattedTextField1.putClientProperty(FlatClientProperties.STYLE, "arc:999");
         jPanel3.putClientProperty(FlatClientProperties.STYLE, "arc:50");
-        
+
         ModifyTables modifyTable = new ModifyTables();
         modifyTable.modifyTables(jPanel1, jTable1, jScrollPane1, false);
-        
+
         loadSuppliers();
         loadCompanies();
-        
+
         if (frameType) {
-            
+
             jButton4.setVisible(false);
         } else {
             jLabel1.setText("Edit Supplier");
             jButton3.setVisible(false);
-            
+            jFormattedTextField2.setEditable(false);
+
         }
-        
+
     }
-    
+
     private void loadSuppliers() {
         String search = jFormattedTextField1.getText();
-        
+
         try {
             ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `supplier` INNER JOIN `company` ON"
                     + " `company`.`com_id` = `supplier`.`companiy_com_id` WHERE `mobile` LIKE '%" + search + "%' ");
@@ -83,9 +86,9 @@ public class AddSupplier extends javax.swing.JFrame {
                 vector.add(resultSet.getString("last_name"));
                 vector.add(resultSet.getString("email"));
                 vector.add(resultSet.getString("name"));
-                
+
                 model.addRow(vector);
-                
+
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -93,7 +96,7 @@ public class AddSupplier extends javax.swing.JFrame {
             Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Couldn't load company list. Please check your connection");
         }
     }
-    
+
     private void loadCompanies() {
         try {
             ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `company`");
@@ -108,7 +111,7 @@ public class AddSupplier extends javax.swing.JFrame {
             Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Check Your Connection");
         }
     }
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -143,7 +146,7 @@ public class AddSupplier extends javax.swing.JFrame {
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Add Supplier | FlexGym");
         setUndecorated(true);
 
@@ -213,6 +216,11 @@ public class AddSupplier extends javax.swing.JFrame {
         jButton4.setForeground(new java.awt.Color(249, 249, 249));
         jButton4.setText("Update Supplier");
         jButton4.setEnabled(false);
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         jButton5.setBackground(new java.awt.Color(249, 249, 249));
         jButton5.setFont(new java.awt.Font("Poppins SemiBold", 0, 14)); // NOI18N
@@ -224,7 +232,7 @@ public class AddSupplier extends javax.swing.JFrame {
             }
         });
 
-        jFormattedTextField2.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
+        jFormattedTextField2.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
         jFormattedTextField2.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -472,7 +480,7 @@ public class AddSupplier extends javax.swing.JFrame {
             this.dispose();
             this.setUndecorated(false);
             this.setVisible(true);
-            
+
         } else {
             jMenuItem2.setText("Exit Fullscreen");
             //  this.dispose();
@@ -498,10 +506,10 @@ public class AddSupplier extends javax.swing.JFrame {
         String mobile = jFormattedTextField2.getText();
         String email = jTextField4.getText();
         String comany = jTextField5.getText();
-        
+
         boolean mobileValidation = validateMobile(mobile);
         boolean emailValidation = validateEmail(email);
-        
+
         if (fname.isBlank()) {
             Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, 3000l, "Please Enter Your First Name");
         } else if (lname.isBlank()) {
@@ -515,11 +523,18 @@ public class AddSupplier extends javax.swing.JFrame {
         } else {
             try {
                 ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `supplier` WHERE `mobile` = '" + mobile + "' OR `email` = '" + email + "' ");
-                
+
                 if (resultSet.next()) {
                     Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, 3000l, "Supplier with the same mobile or email aleardy exists");
                 } else {
                     // do this
+                    int option = JOptionPane.showConfirmDialog(this, "Add new Supplier?", "Confirm?", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+                    if (option == JOptionPane.YES_OPTION) {
+                        MySQL.executeIUD("INSERT INTO `supplier` VALUES ('0" + mobile + "', '" + fname + "','" + lname + "',"
+                                + "'" + email + "','" + companyMap.get(comany) + "','1','" + SignIn.getEmplyeeID() + "' )");
+                        loadSuppliers();
+                        Notifications.getInstance().show(Notifications.Type.SUCCESS, Notifications.Location.TOP_CENTER, 3000l, "Supplier Added Successfully!");
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -541,7 +556,7 @@ public class AddSupplier extends javax.swing.JFrame {
                 jFormattedTextField2.setText(String.valueOf(jTable1.getValueAt(row, 0)));
                 jButton4.setEnabled(true);
             }
-            
+
         }
     }//GEN-LAST:event_jTable1MouseClicked
 
@@ -553,7 +568,69 @@ public class AddSupplier extends javax.swing.JFrame {
         this.dispose();
         home.setEnabled(true);
     }//GEN-LAST:event_jButton5ActionPerformed
-    
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        String fname = jTextField1.getText();
+        String lname = jTextField2.getText();
+        String mobile = jFormattedTextField2.getText();
+        String email = jTextField4.getText();
+        String comany = jTextField5.getText();
+
+        boolean mobileValidation = validateMobile(mobile);
+        boolean emailValidation = validateEmail(email);
+
+        if (fname.isBlank()) {
+            Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, 3000l, "Please Enter Your First Name");
+        } else if (lname.isBlank()) {
+            Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, 3000l, "Please Enter Your Last Name");
+        } else if (!mobileValidation) {
+            Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, 3000l, "Please Enter a Valid Mobile Number");
+        } else if (!emailValidation) {
+            Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, 3000l, "Please Enter a Valid Email Address");
+        } else if (comany.isEmpty()) {
+            Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, 3000l, "Please Select a Company");
+        } else {
+            try {
+                ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `supplier` WHERE `mobile` != '" + mobile + "' AND `email` = '" + email + "' ");
+
+                if (resultSet.next()) {
+                    Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, 3000l, "Supplier with the same email aleardy exists");
+                } else {
+                    ResultSet resultSet2 = MySQL.executeSearch("SELECT * FROM `supplier` WHERE `mobile` = '" + mobile + "'");
+                    if (resultSet2.next()) {
+                        if (resultSet2.getString("mobile").equals(mobile)
+                                && resultSet2.getString("first_name").equals(fname)
+                                && resultSet2.getString("last_name").equals(lname)
+                                && resultSet2.getString("email").equals(email)
+                                && resultSet2.getString("companiy_com_id").equals(companyMap.get(comany))) {
+                            Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, 3000l, "Change at least one detail to update.");
+                            System.out.println("works");
+                        } else {
+                            int option = JOptionPane.showConfirmDialog(this, "Add new Supplier?", "Confirm?", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+                            if (option == JOptionPane.YES_OPTION) {
+                                MySQL.executeIUD("UPDATE `supplier` SET `first_name` = '" + fname + "', `last_name` = '" + lname + "', "
+                                        + " `email` = '" + email + "', `companiy_com_id` = '" + companyMap.get(comany) + "'"
+                                        + "WHERE `mobile` = '" + mobile + "' ");
+                                loadSuppliers();
+                                Notifications.getInstance().show(Notifications.Type.SUCCESS, Notifications.Location.TOP_CENTER, 3000l, "Supplier Updated Successfully!");
+                            }
+
+                        }
+                    } else {
+                        Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Supplier with the mobile does not exist");
+
+                    }
+                    // do this
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                SplashScreen.loginRecords.log(Level.SEVERE, "Couldn't update supplier in edit supplier gui ");
+                Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Couldn't complete action. Please check your network connection");
+            }
+        }
+
+    }//GEN-LAST:event_jButton4ActionPerformed
+
     private static boolean validateMobile(String mobile) {
         if (mobile.isBlank()) {
             return false;
@@ -562,7 +639,7 @@ public class AddSupplier extends javax.swing.JFrame {
         }
         return false;
     }
-    
+
     private static boolean validateEmail(String email) {
         if (email.isBlank()) {
             return false;
@@ -571,9 +648,9 @@ public class AddSupplier extends javax.swing.JFrame {
         }
         return false;
     }
-    
+
     public static void main(String args[]) {
-        
+
         FlatMacLightLaf.setup();
 
         /* Create and display the form */
