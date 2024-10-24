@@ -7,6 +7,7 @@ package gui;
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import java.awt.Toolkit;
+import java.awt.event.MouseEvent;
 import java.util.logging.Level;
 import javax.swing.JFrame;
 import model.ModifyTables;
@@ -24,52 +25,52 @@ import model.Validation;
  * @author kovid
  */
 public class AddSupplier extends javax.swing.JFrame {
-
-    public final int addNew = 1;
-    public final int update = 2;
+    
+    public boolean frameType;
     HashMap<String, String> companyMap = new HashMap<>();
     private Home home;
-
+    
     public void getHome(Home home) {
         this.home = home;
     }
-
+    
     public AddSupplier(boolean action) {
         initComponents();
         Notifications.getInstance().setJFrame(this);
         init(action);
     }
-
+    
     public JTextField getCompanyField() {
         return jTextField5;
     }
-
+    
     private void init(boolean frameType) {
+        this.frameType = frameType;
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/resources/logo.png")));
         jFormattedTextField1.putClientProperty(FlatClientProperties.STYLE, "arc:999");
         jPanel3.putClientProperty(FlatClientProperties.STYLE, "arc:50");
-
+        
         ModifyTables modifyTable = new ModifyTables();
         modifyTable.modifyTables(jPanel1, jTable1, jScrollPane1, false);
-
+        
         loadSuppliers();
         loadCompanies();
-
+        
         if (frameType) {
-
+            
             jButton4.setVisible(false);
         } else {
             jLabel1.setText("Edit Supplier");
             jButton3.setVisible(false);
-
+            
         }
-
+        
     }
-
+    
     private void loadSuppliers() {
         String search = jFormattedTextField1.getText();
-
+        
         try {
             ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `supplier` INNER JOIN `company` ON"
                     + " `company`.`com_id` = `supplier`.`companiy_com_id` WHERE `mobile` LIKE '%" + search + "%' ");
@@ -82,9 +83,9 @@ public class AddSupplier extends javax.swing.JFrame {
                 vector.add(resultSet.getString("last_name"));
                 vector.add(resultSet.getString("email"));
                 vector.add(resultSet.getString("name"));
-
+                
                 model.addRow(vector);
-
+                
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -92,7 +93,7 @@ public class AddSupplier extends javax.swing.JFrame {
             Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Couldn't load company list. Please check your connection");
         }
     }
-
+    
     private void loadCompanies() {
         try {
             ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `company`");
@@ -107,7 +108,7 @@ public class AddSupplier extends javax.swing.JFrame {
             Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Check Your Connection");
         }
     }
-
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -122,7 +123,6 @@ public class AddSupplier extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
         jTextField2 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
         jTextField4 = new javax.swing.JTextField();
         jTextField5 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
@@ -130,6 +130,7 @@ public class AddSupplier extends javax.swing.JFrame {
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
+        jFormattedTextField2 = new javax.swing.JFormattedTextField();
         jPanel4 = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
@@ -171,8 +172,6 @@ public class AddSupplier extends javax.swing.JFrame {
 
         jTextField2.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
 
-        jTextField3.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
-
         jTextField4.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
 
         jTextField5.setEditable(false);
@@ -193,6 +192,11 @@ public class AddSupplier extends javax.swing.JFrame {
         jButton2.setFont(new java.awt.Font("Poppins SemiBold", 0, 14)); // NOI18N
         jButton2.setForeground(new java.awt.Color(255, 111, 0));
         jButton2.setText("Clear All");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jButton3.setBackground(new java.awt.Color(255, 111, 0));
         jButton3.setFont(new java.awt.Font("Poppins SemiBold", 0, 14)); // NOI18N
@@ -214,6 +218,14 @@ public class AddSupplier extends javax.swing.JFrame {
         jButton5.setFont(new java.awt.Font("Poppins SemiBold", 0, 14)); // NOI18N
         jButton5.setForeground(new java.awt.Color(255, 111, 0));
         jButton5.setText("Cancel");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+
+        jFormattedTextField2.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
+        jFormattedTextField2.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -236,9 +248,9 @@ public class AddSupplier extends javax.swing.JFrame {
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jTextField2)
-                            .addComponent(jTextField3)
                             .addComponent(jTextField4)
-                            .addComponent(jTextField5)))
+                            .addComponent(jTextField5)
+                            .addComponent(jFormattedTextField2)))
                     .addComponent(jButton2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jButton3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jButton4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -256,11 +268,11 @@ public class AddSupplier extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addGap(20, 20, 20)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                    .addComponent(jFormattedTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(22, 22, 22)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -272,7 +284,7 @@ public class AddSupplier extends javax.swing.JFrame {
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 278, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 272, Short.MAX_VALUE)
                 .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -306,6 +318,11 @@ public class AddSupplier extends javax.swing.JFrame {
             }
         });
         jTable1.getTableHeader().setReorderingAllowed(false);
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable1MouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(jTable1);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -325,6 +342,7 @@ public class AddSupplier extends javax.swing.JFrame {
                 .addGap(30, 30, 30))
         );
 
+        jFormattedTextField1.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
         jFormattedTextField1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jFormattedTextField1.setFont(new java.awt.Font("Poppins SemiBold", 0, 18)); // NOI18N
         jFormattedTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -454,7 +472,7 @@ public class AddSupplier extends javax.swing.JFrame {
             this.dispose();
             this.setUndecorated(false);
             this.setVisible(true);
-
+            
         } else {
             jMenuItem2.setText("Exit Fullscreen");
             //  this.dispose();
@@ -477,13 +495,13 @@ public class AddSupplier extends javax.swing.JFrame {
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         String fname = jTextField1.getText();
         String lname = jTextField2.getText();
-        String mobile = jTextField3.getText();
+        String mobile = jFormattedTextField2.getText();
         String email = jTextField4.getText();
         String comany = jTextField5.getText();
-
+        
         boolean mobileValidation = validateMobile(mobile);
         boolean emailValidation = validateEmail(email);
-
+        
         if (fname.isBlank()) {
             Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, 3000l, "Please Enter Your First Name");
         } else if (lname.isBlank()) {
@@ -497,7 +515,7 @@ public class AddSupplier extends javax.swing.JFrame {
         } else {
             try {
                 ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `supplier` WHERE `mobile` = '" + mobile + "' OR `email` = '" + email + "' ");
-
+                
                 if (resultSet.next()) {
                     Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, 3000l, "Supplier with the same mobile or email aleardy exists");
                 } else {
@@ -512,6 +530,30 @@ public class AddSupplier extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jButton3ActionPerformed
 
+    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+        if (evt.getClickCount() == 1 && evt.getButton() == MouseEvent.BUTTON1 && !frameType) {
+            if (jTable1.getSelectedRowCount() == 1 && jTable1.getSelectedRow() != -1) {
+                int row = jTable1.getSelectedRow();
+                jTextField1.setText(String.valueOf(jTable1.getValueAt(row, 1)));
+                jTextField2.setText(String.valueOf(jTable1.getValueAt(row, 2)));
+                jTextField4.setText(String.valueOf(jTable1.getValueAt(row, 3)));
+                jTextField5.setText(String.valueOf(jTable1.getValueAt(row, 4)));
+                jFormattedTextField2.setText(String.valueOf(jTable1.getValueAt(row, 0)));
+                jButton4.setEnabled(true);
+            }
+            
+        }
+    }//GEN-LAST:event_jTable1MouseClicked
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        reset();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        this.dispose();
+        home.setEnabled(true);
+    }//GEN-LAST:event_jButton5ActionPerformed
+    
     private static boolean validateMobile(String mobile) {
         if (mobile.isBlank()) {
             return false;
@@ -520,7 +562,7 @@ public class AddSupplier extends javax.swing.JFrame {
         }
         return false;
     }
-
+    
     private static boolean validateEmail(String email) {
         if (email.isBlank()) {
             return false;
@@ -529,9 +571,9 @@ public class AddSupplier extends javax.swing.JFrame {
         }
         return false;
     }
-
+    
     public static void main(String args[]) {
-
+        
         FlatMacLightLaf.setup();
 
         /* Create and display the form */
@@ -549,6 +591,7 @@ public class AddSupplier extends javax.swing.JFrame {
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JFormattedTextField jFormattedTextField1;
+    private javax.swing.JFormattedTextField jFormattedTextField2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -569,8 +612,17 @@ public class AddSupplier extends javax.swing.JFrame {
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField4;
     private javax.swing.JTextField jTextField5;
     // End of variables declaration//GEN-END:variables
+
+    private void reset() {
+        jTextField1.setText("");
+        jTextField2.setText("");
+        jTextField4.setText("");
+        jTextField5.setText("");
+        jFormattedTextField2.setText("");
+        jTable1.clearSelection();
+        jButton4.setEnabled(false);
+    }
 }
