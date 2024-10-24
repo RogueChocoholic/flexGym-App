@@ -3129,6 +3129,9 @@
                       <Font name="Poppins" size="14" style="0"/>
                     </Property>
                   </Properties>
+                  <Events>
+                    <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="jTextField8KeyReleased"/>
+                  </Events>
                 </Component>
                 <Container class="javax.swing.JScrollPane" name="jScrollPane14">
                   <AuxValues>
@@ -3506,6 +3509,7 @@
                 </Component>
                 <Component class="javax.swing.JTextField" name="jTextField5">
                   <Properties>
+                    <Property name="editable" type="boolean" value="false"/>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Poppins" size="14" style="0"/>
                     </Property>
@@ -3594,6 +3598,7 @@
                 </Component>
                 <Component class="javax.swing.JTextField" name="jTextField7">
                   <Properties>
+                    <Property name="editable" type="boolean" value="false"/>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Poppins" size="14" style="0"/>
                     </Property>

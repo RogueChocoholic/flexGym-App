@@ -2494,6 +2494,11 @@ public class Home extends javax.swing.JFrame {
         jLabel66.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
 
         jTextField8.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
+        jTextField8.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jTextField8KeyReleased(evt);
+            }
+        });
 
         jTable14.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -2688,6 +2693,7 @@ public class Home extends javax.swing.JFrame {
         jLabel51.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
         jLabel51.setForeground(new java.awt.Color(46, 59, 78));
 
+        jTextField5.setEditable(false);
         jTextField5.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
         jTextField5.setForeground(new java.awt.Color(46, 59, 78));
         jTextField5.addActionListener(new java.awt.event.ActionListener() {
@@ -2716,6 +2722,7 @@ public class Home extends javax.swing.JFrame {
         jLabel54.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
         jLabel54.setForeground(new java.awt.Color(46, 59, 78));
 
+        jTextField7.setEditable(false);
         jTextField7.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
         jTextField7.setEnabled(false);
         jTextField7.setForeground(new java.awt.Color(46, 59, 78));
@@ -3988,8 +3995,12 @@ public class Home extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton43ActionPerformed
 
     private void jComboBox10ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox10ItemStateChanged
-loadSuppliers();
+        loadSuppliers();
     }//GEN-LAST:event_jComboBox10ItemStateChanged
+
+    private void jTextField8KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField8KeyReleased
+        loadSuppliers();
+    }//GEN-LAST:event_jTextField8KeyReleased
 
     /**
      * @param args the command line arguments
