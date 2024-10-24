@@ -54,7 +54,7 @@ public class AddMember extends javax.swing.JFrame {
         jPanel2.putClientProperty(FlatClientProperties.STYLE, "arc:40");
 
         String id = generateMemId();
-        
+
         ModifyTables modifyTables = new ModifyTables();
         modifyTables.modifyTables(jTable1, jScrollPane1, false);
         modifyTables.modifyTables(jTable2, jScrollPane2, false);
@@ -999,7 +999,7 @@ public class AddMember extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-home.setEnabled(true);
+        home.setEnabled(true);
     }//GEN-LAST:event_formWindowClosing
 
     /**

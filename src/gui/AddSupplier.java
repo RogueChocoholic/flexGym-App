@@ -149,6 +149,11 @@ public class AddSupplier extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Add Supplier | FlexGym");
         setUndecorated(true);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         jPanel2.setBackground(new java.awt.Color(255, 160, 64));
 
@@ -630,6 +635,10 @@ public class AddSupplier extends javax.swing.JFrame {
         }
 
     }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        home.setEnabled(true);
+    }//GEN-LAST:event_formWindowClosing
 
     private static boolean validateMobile(String mobile) {
         if (mobile.isBlank()) {
