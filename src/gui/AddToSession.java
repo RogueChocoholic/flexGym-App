@@ -26,6 +26,7 @@ public class AddToSession extends javax.swing.JDialog {
     String invoiceID;
 
     private Home home;
+    private boolean purchase = true;
 
     public void getHome(Home home) {
         this.home = home;
@@ -635,117 +636,121 @@ public class AddToSession extends javax.swing.JDialog {
     }//GEN-LAST:event_jTextField2KeyReleased
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        if (purchase) {
+            purchase = false;
+            int row = jTable1.getSelectedRow();
 
-        int row = jTable1.getSelectedRow();
+            if (row != -1) {
 
-        if (row != -1) {
+                String sessionID = jLabel3.getText();
+                String sessType = jLabel5.getText();
+                String category = jLabel7.getText();
+                String trainer = jLabel10.getText();
+                String sessDate = jLabel12.getText();
+                String sessTime = jLabel16.getText();
 
-            String sessionID = jLabel3.getText();
-            String sessType = jLabel5.getText();
-            String category = jLabel7.getText();
-            String trainer = jLabel10.getText();
-            String sessDate = jLabel12.getText();
-            String sessTime = jLabel16.getText();
+                String member_id = String.valueOf(jTable1.getValueAt(row, 0));
+                String member_name = jLabel15.getText();
+                String member_mobile = jLabel24.getText();
 
-            String member_id = String.valueOf(jTable1.getValueAt(row, 0));
-            String member_name = jLabel15.getText();
-            String member_mobile = jLabel24.getText();
+                Date date = new Date();
 
-            Date date = new Date();
+                String thisDay = formatDate("yyyy-MM-dd", date);
 
-            String thisDay = formatDate("yyyy-MM-dd", date);
+                if (member_id.equals("")) {
+                    JOptionPane.showMessageDialog(this, "Please Select a member to purchase membership", "No member Selected", JOptionPane.ERROR_MESSAGE);
+                } else {
 
-            if (member_id.equals("")) {
-                JOptionPane.showMessageDialog(this, "Please Select a member to purchase membership", "No member Selected", JOptionPane.ERROR_MESSAGE);
-            } else {
+                    try {
+                        ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `member` WHERE `mem_id` = '" + member_id + "' ");
 
-                try {
-                    ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `member` WHERE `mem_id` = '" + member_id + "' ");
+                        InputStream s = this.getClass().getResourceAsStream("/reports/flexGymRegisterSessionInvoice.jasper");
 
-                    InputStream s = this.getClass().getResourceAsStream("/reports/flexGymRegisterSessionInvoice.jasper");
+                        if (resultSet.next()) {
+                            ResultSet resultSet4 = MySQL.executeSearch("SELECT * FROM `session-members` WHERE"
+                                    + " `session_schedule_session_id` = '" + sessionID + "' AND `member_mem_id` = '" + member_id + "' ");
 
-                    if (resultSet.next()) {
-                        ResultSet resultSet4 = MySQL.executeSearch("SELECT * FROM `session-members` WHERE"
-                                + " `session_schedule_session_id` = '" + sessionID + "' AND `member_mem_id` = '" + member_id + "' ");
-
-                        if (resultSet4.next()) {
-                            JOptionPane.showMessageDialog(this, "Member is Already registered to the session", "Alert", JOptionPane.WARNING_MESSAGE);
-                        } else {
-                            ResultSet resultSet2 = MySQL.executeSearch("SELECT * FROM `invoice` WHERE `invoice_id` = '" + invoiceID + "' ");
-
-                            if (resultSet2.next()) {
-                                JOptionPane.showMessageDialog(this, "Invoice Already Exists", "Alert", JOptionPane.WARNING_MESSAGE);
+                            if (resultSet4.next()) {
+                                JOptionPane.showMessageDialog(this, "Member is Already registered to the session", "Alert", JOptionPane.WARNING_MESSAGE);
                             } else {
+                                ResultSet resultSet2 = MySQL.executeSearch("SELECT * FROM `invoice` WHERE `invoice_id` = '" + invoiceID + "' ");
 
-                                MySQL.executeIUD("INSERT INTO `invoice` VALUES ('" + invoiceID + "','" + thisDay + "',"
-                                        + "'" + String.valueOf(payment) + "','" + String.valueOf(discount) + "', '" + paymentMethodMap.get(paymentMethod) + "',"
-                                        + "'" + member_id + "','" + SignIn.getEmplyeeID() + "')  ");
+                                if (resultSet2.next()) {
+                                    JOptionPane.showMessageDialog(this, "Invoice Already Exists", "Alert", JOptionPane.WARNING_MESSAGE);
+                                } else {
+                                    jButton1.setText("Please Wait...");
+                                    MySQL.executeIUD("INSERT INTO `invoice` VALUES ('" + invoiceID + "','" + thisDay + "',"
+                                            + "'" + String.valueOf(payment) + "','" + String.valueOf(discount) + "', '" + paymentMethodMap.get(paymentMethod) + "',"
+                                            + "'" + member_id + "','" + SignIn.getEmplyeeID() + "')  ");
 
-                                MySQL.executeIUD("INSERT INTO `invoice_item` (`invoice_invoice_id`,`qty`,`session_schedule_session_id`) "
-                                        + "VALUES ('" + invoiceID + "','1' ,'" + sessionID + "')  ");
+                                    MySQL.executeIUD("INSERT INTO `invoice_item` (`invoice_invoice_id`,`qty`,`session_schedule_session_id`) "
+                                            + "VALUES ('" + invoiceID + "','1' ,'" + sessionID + "')  ");
 
-                                MySQL.executeIUD(" INSERT INTO `session-members` (`session_schedule_session_id`,`member_mem_id`)"
-                                        + " VALUES ('" + sessionID + "','" + member_id + "' )");
-                                HashMap<String, Object> params = new HashMap<>();
-                                params.put("Parameter1", invoiceID);
-                                params.put("Parameter2", member_name);
-                                params.put("Parameter3", SignIn.getEmployeeName());
-                                params.put("Parameter4", thisDay);
-                                params.put("Parameter5", String.valueOf(total));
-                                params.put("Parameter6", String.valueOf(discount));
-                                params.put("Parameter7", paymentMethod);
-                                params.put("Parameter8", String.valueOf(payment));
-                                params.put("Parameter9", String.valueOf(balance));
-                                params.put("Parameter10", sessionID);
-                                params.put("Parameter11", sessType);
-                                params.put("Parameter12", category);
-                                params.put("Parameter13", trainer);
-                                params.put("Parameter14", sessDate);
-                                params.put("Parameter15", sessTime);
-                                params.put("Parameter16", String.valueOf(total));
+                                    MySQL.executeIUD(" INSERT INTO `session-members` (`session_schedule_session_id`,`member_mem_id`)"
+                                            + " VALUES ('" + sessionID + "','" + member_id + "' )");
+                                    HashMap<String, Object> params = new HashMap<>();
+                                    params.put("Parameter1", invoiceID);
+                                    params.put("Parameter2", member_name);
+                                    params.put("Parameter3", SignIn.getEmployeeName());
+                                    params.put("Parameter4", thisDay);
+                                    params.put("Parameter5", String.valueOf(total));
+                                    params.put("Parameter6", String.valueOf(discount));
+                                    params.put("Parameter7", paymentMethod);
+                                    params.put("Parameter8", String.valueOf(payment));
+                                    params.put("Parameter9", String.valueOf(balance));
+                                    params.put("Parameter10", sessionID);
+                                    params.put("Parameter11", sessType);
+                                    params.put("Parameter12", category);
+                                    params.put("Parameter13", trainer);
+                                    params.put("Parameter14", sessDate);
+                                    params.put("Parameter15", sessTime);
+                                    params.put("Parameter16", String.valueOf(total));
 
 //                    JRTableModelDataSource dataSource = new JRTableModelDataSource(jTable1.getModel());
-                                JREmptyDataSource dataSource = new JREmptyDataSource();
+                                    JREmptyDataSource dataSource = new JREmptyDataSource();
 
-                                JasperPrint japerPrint = JasperFillManager.fillReport(s, params, dataSource);
-                                try {
+                                    JasperPrint japerPrint = JasperFillManager.fillReport(s, params, dataSource);
+                                    try {
 
-                                    JasperPrintManager.printReport(japerPrint, false);
+                                        JasperPrintManager.printReport(japerPrint, false);
 
-                                } catch (JRException e) {
-                                    e.printStackTrace();
-                                    SplashScreen.exceptionRecords.log(Level.FINE, "JasperReport print cancelled.", e);
-                                }
-                                try {
-                                    if (jCheckBox1.isSelected()) {
-                                        System.out.println("works");
-                                        JasperViewer.viewReport(japerPrint, false);
-
+                                    } catch (JRException e) {
+                                        e.printStackTrace();
+                                        SplashScreen.exceptionRecords.log(Level.FINE, "JasperReport print cancelled.", e);
                                     }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                    SplashScreen.exceptionRecords.log(Level.SEVERE, "JasperReport didn't work in add members to session", e);
+                                    try {
+                                        if (jCheckBox1.isSelected()) {
+                                            System.out.println("works");
+                                            JasperViewer.viewReport(japerPrint, false);
+
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                        SplashScreen.exceptionRecords.log(Level.SEVERE, "JasperReport didn't work in add members to session", e);
+                                    }
+
+                                    reset();
+                                    loadMembers();
+                                    this.dispose();
+                                    home.refreshHome();
                                 }
 
-                                reset();
-                                loadMembers();
-                                this.dispose();
-                                home.refreshHome();
                             }
 
+                        } else {
+                            JOptionPane.showMessageDialog(this, "Member Does not exist", "Alert", JOptionPane.WARNING_MESSAGE);
+
                         }
-
-                    } else {
-                        JOptionPane.showMessageDialog(this, "Member Does not exist", "Alert", JOptionPane.WARNING_MESSAGE);
-
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        SplashScreen.exceptionRecords.log(Level.SEVERE, "Invoice didn't work", e);
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    SplashScreen.exceptionRecords.log(Level.SEVERE, "Invoice didn't work", e);
+
                 }
 
             }
-
+            purchase = true;
+            jButton1.setText("Purchase Session");
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 

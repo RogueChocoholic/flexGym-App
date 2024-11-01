@@ -29,11 +29,12 @@ import raven.toast.Notifications;
 //import raven.toast.Notifications;
 
 public class PurchaseMembership extends javax.swing.JDialog {
-
+    
     HashMap<String, Vector> membershipTypeMap = new HashMap<>();
     HashMap<String, String> paymentMethodMap = new HashMap<>();
     String invoice_id;
-
+    boolean purchase = true;
+    
     public PurchaseMembership(java.awt.Frame parent, boolean modal, String member_id) {
         super(parent, modal);
         initComponents();
@@ -46,28 +47,28 @@ public class PurchaseMembership extends javax.swing.JDialog {
         invoice_id = generateInvoiceID();
 //        Notifications.getInstance().setJFrame(this);
     }
-
+    
     private void init() {
         DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
         renderer.setHorizontalAlignment(SwingConstants.CENTER);
         jTable1.setDefaultRenderer(Object.class, renderer);
         jLabel14.setText(SignIn.getEmplyeeID());
-
+        
     }
-
+    
     private String generateInvoiceID() {
         Date date = new Date();
         Random random = new Random();
         int random3Digit = 100 + random.nextInt(900);
-
+        
         String empSuffix = "IVM";
-
+        
         String memberID = empSuffix + formatDate("yy", date) + formatDate("MM", date) + formatDate("dd", date) + formatDate("mm", date) + formatDate("HH", date) + formatDate("ss", date) + String.valueOf(random3Digit);
-
+        
         try {
-
+            
             ResultSet checkMemID = MySQL.executeSearch("SELECT * FROM `invoice` WHERE `invoice_id` = '" + memberID + "' ");
-
+            
             if (checkMemID.next()) {
                 memberID = generateInvoiceID();
             }
@@ -76,12 +77,12 @@ public class PurchaseMembership extends javax.swing.JDialog {
         }
         return memberID;
     }
-
+    
     private String formatDate(String format, Date date) {
         SimpleDateFormat dateFormat = new SimpleDateFormat(format);
         return dateFormat.format(date);
     }
-
+    
     private void loadMemberships() {
         try {
             ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `memebrship_types`");
@@ -93,17 +94,17 @@ public class PurchaseMembership extends javax.swing.JDialog {
                 membershipTypes.add(resultSet.getString("price"));
                 membershipTypeMap.put(resultSet.getString("type_name"), membershipTypes);
             }
-
+            
             DefaultComboBoxModel model = new DefaultComboBoxModel(vector);
             jComboBox1.setModel(model);
-
+            
         } catch (Exception e) {
             e.printStackTrace();
             SplashScreen.exceptionRecords.log(Level.WARNING, "Unable to load cities", e);
-
+            
         }
     }
-
+    
     private void loadPayMethod() {
         try {
             ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `payment_method`");
@@ -117,24 +118,24 @@ public class PurchaseMembership extends javax.swing.JDialog {
         } catch (Exception e) {
             e.printStackTrace();
             SplashScreen.exceptionRecords.log(Level.SEVERE, "loading pay method didn't work", e);
-
+            
         }
     }
-
+    
     private void loadMembers() {
         String search;
         String memID = jTextField1.getText();
-
+        
         search = " WHERE `mobile` LIKE  '%" + jTextField2.getText() + "%' ";
-
+        
         search += " AND `mem_id` LIKE '%" + memID + "%' ";
-
+        
         try {
             ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `member` INNER JOIN `gender` ON"
                     + " `gender`.`gender_id` = `member`.`gender_gender_id` " + search);
             DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
             model.setRowCount(0);
-
+            
             while (resultSet.next()) {
                 Vector<String> vector = new Vector<>();
                 vector.add(resultSet.getString("mem_id"));
@@ -142,55 +143,55 @@ public class PurchaseMembership extends javax.swing.JDialog {
                 vector.add(resultSet.getString("lname"));
                 vector.add(resultSet.getString("mobile"));
                 vector.add(resultSet.getString("email"));
-
+                
                 model.addRow(vector);
             }
-
+            
             jTable1.setModel(model);
-
+            
         } catch (Exception e) {
             SplashScreen.exceptionRecords.log(Level.SEVERE, "Couldn't connect to db at loadMembers", e);
-
+            
         }
     }
-
+    
     private double total = 0;
     private double discount = 0;
     private double payment = 0;
     private double balance = 0;
     private String paymentMethod = "Cash";
-
+    
     private void calculate() {
         if (discountField.getText().isEmpty()) {
-
+            
         } else {
             discount = Double.parseDouble(discountField.getText());
         }
-
+        
         if (paymentField.getText().isEmpty()) {
             payment = 0;
         } else {
             payment = Double.parseDouble(paymentField.getText());
         }
-
+        
         total = Double.parseDouble(totalField.getText());
-
+        
         paymentMethod = String.valueOf(jComboBox2.getSelectedItem());
-
+        
         total -= discount;
-
+        
         if (paymentMethod.equals("Cash")) {
             //cash
             paymentField.setEditable(true);
             balance = payment - total;
-
+            
             if (balance < 0) {
                 jButton1.setEnabled(false);
             } else {
                 jButton1.setEnabled(true);
-
+                
             }
-
+            
         } else {
             //card
             payment = total;
@@ -199,10 +200,10 @@ public class PurchaseMembership extends javax.swing.JDialog {
             paymentField.setEditable(false);
             jButton1.setEnabled(true);
         }
-
+        
         balanceField.setText(String.valueOf(balance));
     }
-
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -649,7 +650,7 @@ public class PurchaseMembership extends javax.swing.JDialog {
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
         int row = jTable1.getSelectedRow();
-
+        
         jTextField1.setText(String.valueOf(jTable1.getValueAt(row, 0)));
         loadMembers();
     }//GEN-LAST:event_jTable1MouseClicked
@@ -679,19 +680,19 @@ public class PurchaseMembership extends javax.swing.JDialog {
         } else if (type.equals("Single Session Trial")) {
             exp = today.plusDays(1);
         }
-
+        
         datePicker1.setDate(today);
         datePicker2.setDate(exp);
-
+        
         Vector<String> prices = membershipTypeMap.get(type);
-
+        
         if (jComboBox1.getSelectedIndex() != -1) {
-            int index = jComboBox1.getSelectedIndex() ;
+            int index = jComboBox1.getSelectedIndex();
             jList1.setSelectedIndex(index);
             jList2.setSelectedIndex(index);
-
+            
         }
-
+        
         totalField.setText(prices.get(1));
         calculate();
     }//GEN-LAST:event_jComboBox1ItemStateChanged
@@ -710,116 +711,122 @@ public class PurchaseMembership extends javax.swing.JDialog {
     }//GEN-LAST:event_paymentFieldKeyReleased
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        String member_id = jTextField1.getText();
-        String employee = jLabel14.getText();
-        String membership = String.valueOf(jComboBox1.getSelectedItem());
-
-        Date date = new Date();
-        LocalDate today = LocalDate.now();
-        LocalDate start_date_picked = datePicker1.getDate();
-        String start_date = String.valueOf(start_date_picked);
-
-        LocalDate end_date_picked = datePicker2.getDate();
-        String end_date = String.valueOf(end_date_picked);
-
-        String thisDay = formatDate("yyyy-MM-dd", date);
-
-        Vector<String> membershipPriceType = membershipTypeMap.get(String.valueOf(jComboBox1.getSelectedItem()));
-        String membershipType = membershipPriceType.get(0);
-
-        if (member_id.equals("")) {
-            JOptionPane.showMessageDialog(this, "Please Select a member to purchase membership", "No member Selected", JOptionPane.ERROR_MESSAGE);
-        } else {
-
-            try {
-                ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `member` WHERE `mem_id` = '" + member_id + "' ");
-
-                InputStream s = this.getClass().getResourceAsStream("/reports/FlexGym_membership_invoice.jasper");
-
-                if (resultSet.next()) {
-                    ResultSet resultSet2 = MySQL.executeSearch("SELECT * FROM `invoice` WHERE `invoice_id` = '" + invoice_id + "' ");
-
-                    if (resultSet2.next()) {
-                        JOptionPane.showMessageDialog(this, "Invoice Already Exists", "Alert", JOptionPane.WARNING_MESSAGE);
-                    } else {
-
-                        MySQL.executeIUD("INSERT INTO `invoice` VALUES ('" + invoice_id + "','" + thisDay + "',"
-                                + "'" + String.valueOf(payment) + "','" + String.valueOf(discount) + "', '" + paymentMethodMap.get(paymentMethod) + "',"
-                                + "'" + member_id + "','" + SignIn.getEmplyeeID() + "')  ");
-
-                        MySQL.executeIUD("INSERT INTO `invoice_item` (`invoice_invoice_id`,`qty`,`memebrship_types_type_id`) "
-                                + "VALUES ('" + invoice_id + "','1' ,'" + membershipType + "')  ");
-
-                        ResultSet resultSet3 = MySQL.executeSearch("SELECT * FROM `membership_records` WHERE "
-                                + " `member_mem_id` = '" + member_id + "' ");
-                        if (resultSet3.next()) {
-                            LocalDate expDate = LocalDate.parse(resultSet3.getString("expire_date"));
-                            if (expDate.isAfter(today) || expDate.isEqual(today)) {
-                                String changeDate = String.valueOf(jComboBox1.getSelectedItem());
-                                LocalDate oldEndtDate = LocalDate.parse(resultSet3.getString("expire_date"));
-                                if (changeDate.equals("Day Pass")) {
-                                    oldEndtDate = oldEndtDate.plusDays(1);
-                                } else if (changeDate.equals("Weekly Pass")) {
-                                    oldEndtDate = oldEndtDate.plusWeeks(1);
-                                } else if (changeDate.equals("Monthly Pass")) {
-                                    oldEndtDate = oldEndtDate.plusMonths(1);
-                                } else if (changeDate.equals("Quarterly Pass")) {
-                                    oldEndtDate = oldEndtDate.plusMonths(3);
-                                } else if (changeDate.equals("Annual Pass")) {
-                                    oldEndtDate = oldEndtDate.plusYears(1);
-                                } else if (changeDate.equals("Single Session Trial")) {
-                                    oldEndtDate = oldEndtDate.plusDays(1);
-                                }
-
-                                end_date = String.valueOf(oldEndtDate);
-
-                            }
-
-                            MySQL.executeIUD("UPDATE `membership_records` SET `start_date` = '" + start_date + "' , "
-                                    + "`expire_date` = '" + end_date + "' WHERE `memebrship_types_type_id` = '" + membershipType + "'");
+        System.out.println(purchase);
+        if (purchase) {
+            purchase = false;
+            jButton1.setText("Please Wait..");
+            String member_id = jTextField1.getText();
+            String employee = jLabel14.getText();
+            String membership = String.valueOf(jComboBox1.getSelectedItem());
+            
+            Date date = new Date();
+            LocalDate today = LocalDate.now();
+            LocalDate start_date_picked = datePicker1.getDate();
+            String start_date = String.valueOf(start_date_picked);
+            
+            LocalDate end_date_picked = datePicker2.getDate();
+            String end_date = String.valueOf(end_date_picked);
+            
+            String thisDay = formatDate("yyyy-MM-dd", date);
+            
+            Vector<String> membershipPriceType = membershipTypeMap.get(String.valueOf(jComboBox1.getSelectedItem()));
+            String membershipType = membershipPriceType.get(0);
+            
+            if (member_id.equals("")) {
+                JOptionPane.showMessageDialog(this, "Please Select a member to purchase membership", "No member Selected", JOptionPane.ERROR_MESSAGE);
+            } else {
+                
+                try {
+                    ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `member` WHERE `mem_id` = '" + member_id + "' ");
+                    
+                    InputStream s = this.getClass().getResourceAsStream("/reports/FlexGym_membership_invoice.jasper");
+                    
+                    if (resultSet.next()) {
+                        ResultSet resultSet2 = MySQL.executeSearch("SELECT * FROM `invoice` WHERE `invoice_id` = '" + invoice_id + "' ");
+                        
+                        if (resultSet2.next()) {
+                            JOptionPane.showMessageDialog(this, "Invoice Already Exists", "Alert", JOptionPane.WARNING_MESSAGE);
                         } else {
-                            MySQL.executeIUD(" INSERT INTO `membership_records` (`member_mem_id`,`memebrship_types_type_id`,`start_date`,`expire_date`)"
-                                    + " VALUES ('" + member_id + "','" + membershipType + "',"
-                                    + " '" + start_date + "', '" + end_date + "' )");
-                        }
-
-                        HashMap<String, Object> params = new HashMap<>();
-                        params.put("Parameter1", invoice_id);
-                        params.put("Parameter2", resultSet.getString("fname") + " " + resultSet.getString("lname"));
-                        params.put("Parameter3", SignIn.getEmployeeName());
-                        params.put("Parameter4", thisDay);
-                        params.put("Parameter5", String.valueOf(total));
-                        params.put("Parameter6", String.valueOf(discount));
-                        params.put("Parameter7", paymentMethod);
-                        params.put("Parameter8", String.valueOf(payment));
-                        params.put("Parameter9", String.valueOf(balance));
-                        params.put("Parameter10", String.valueOf(jComboBox1.getSelectedItem()));
-                        params.put("Parameter11", start_date);
-                        params.put("Parameter12", end_date);
-                        params.put("Parameter13", String.valueOf(total));
+                            
+                            MySQL.executeIUD("INSERT INTO `invoice` VALUES ('" + invoice_id + "','" + thisDay + "',"
+                                    + "'" + String.valueOf(payment) + "','" + String.valueOf(discount) + "', '" + paymentMethodMap.get(paymentMethod) + "',"
+                                    + "'" + member_id + "','" + SignIn.getEmplyeeID() + "')  ");
+                            
+                            MySQL.executeIUD("INSERT INTO `invoice_item` (`invoice_invoice_id`,`qty`,`memebrship_types_type_id`) "
+                                    + "VALUES ('" + invoice_id + "','1' ,'" + membershipType + "')  ");
+                            
+                            ResultSet resultSet3 = MySQL.executeSearch("SELECT * FROM `membership_records` WHERE "
+                                    + " `member_mem_id` = '" + member_id + "' ");
+                            if (resultSet3.next()) {
+                                LocalDate expDate = LocalDate.parse(resultSet3.getString("expire_date"));
+                                if (expDate.isAfter(today) || expDate.isEqual(today)) {
+                                    String changeDate = String.valueOf(jComboBox1.getSelectedItem());
+                                    LocalDate oldEndtDate = LocalDate.parse(resultSet3.getString("expire_date"));
+                                    if (changeDate.equals("Day Pass")) {
+                                        oldEndtDate = oldEndtDate.plusDays(1);
+                                    } else if (changeDate.equals("Weekly Pass")) {
+                                        oldEndtDate = oldEndtDate.plusWeeks(1);
+                                    } else if (changeDate.equals("Monthly Pass")) {
+                                        oldEndtDate = oldEndtDate.plusMonths(1);
+                                    } else if (changeDate.equals("Quarterly Pass")) {
+                                        oldEndtDate = oldEndtDate.plusMonths(3);
+                                    } else if (changeDate.equals("Annual Pass")) {
+                                        oldEndtDate = oldEndtDate.plusYears(1);
+                                    } else if (changeDate.equals("Single Session Trial")) {
+                                        oldEndtDate = oldEndtDate.plusDays(1);
+                                    }
+                                    
+                                    end_date = String.valueOf(oldEndtDate);
+                                    
+                                }
+                                
+                                MySQL.executeIUD("UPDATE `membership_records` SET `start_date` = '" + start_date + "' , "
+                                        + "`expire_date` = '" + end_date + "' WHERE `memebrship_types_type_id` = '" + membershipType + "'");
+                            } else {
+                                MySQL.executeIUD(" INSERT INTO `membership_records` (`member_mem_id`,`memebrship_types_type_id`,`start_date`,`expire_date`)"
+                                        + " VALUES ('" + member_id + "','" + membershipType + "',"
+                                        + " '" + start_date + "', '" + end_date + "' )");
+                            }
+                            
+                            HashMap<String, Object> params = new HashMap<>();
+                            params.put("Parameter1", invoice_id);
+                            params.put("Parameter2", resultSet.getString("fname") + " " + resultSet.getString("lname"));
+                            params.put("Parameter3", SignIn.getEmployeeName());
+                            params.put("Parameter4", thisDay);
+                            params.put("Parameter5", String.valueOf(total));
+                            params.put("Parameter6", String.valueOf(discount));
+                            params.put("Parameter7", paymentMethod);
+                            params.put("Parameter8", String.valueOf(payment));
+                            params.put("Parameter9", String.valueOf(balance));
+                            params.put("Parameter10", String.valueOf(jComboBox1.getSelectedItem()));
+                            params.put("Parameter11", start_date);
+                            params.put("Parameter12", end_date);
+                            params.put("Parameter13", String.valueOf(total));
 
 //                    JRTableModelDataSource dataSource = new JRTableModelDataSource(jTable1.getModel());
-                        JREmptyDataSource dataSource = new JREmptyDataSource();
-
-                        JasperPrint japerPrint = JasperFillManager.fillReport(s, params, dataSource);
-
-                        if (jCheckBox1.isSelected()) {
-                            JasperViewer.viewReport(japerPrint, false);
+                            JREmptyDataSource dataSource = new JREmptyDataSource();
+                            
+                            JasperPrint japerPrint = JasperFillManager.fillReport(s, params, dataSource);
+                            
+                            if (jCheckBox1.isSelected()) {
+                                JasperViewer.viewReport(japerPrint, false);
+                            }
+                            JasperPrintManager.printReport(japerPrint, false);
+                            reset();
+                            loadMembers();
+                            
                         }
-                        JasperPrintManager.printReport(japerPrint, false);
-                        reset();
-                        loadMembers();
                         
                     }
-
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    SplashScreen.exceptionRecords.log(Level.SEVERE, "Invoice didn't work", e);
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-                SplashScreen.exceptionRecords.log(Level.SEVERE, "Invoice didn't work", e);
             }
-
+            purchase = true;
+            jButton1.setText("Purchase Membership");
         }
-
+        
 
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -865,7 +872,7 @@ public class PurchaseMembership extends javax.swing.JDialog {
         invoice_id = generateInvoiceID();
         System.out.println("refreshed");
     }//GEN-LAST:event_jMenuItem1ActionPerformed
-
+    
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         FlatMacLightLaf.setup();
@@ -935,13 +942,13 @@ public class PurchaseMembership extends javax.swing.JDialog {
         jTable1.clearSelection();
         datePicker1.clear();
         datePicker2.clear();
-
+        
         totalField.setText("");
         balanceField.setText("");
         paymentField.setText("");
         discountField.setText("");
         jComboBox2.setSelectedIndex(0);
-
+        
         loadMembers();
     }
 }

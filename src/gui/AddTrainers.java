@@ -17,6 +17,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import model.FrameStorage;
 import model.MySQL;
 import raven.toast.Notifications;
 
@@ -25,16 +26,16 @@ import raven.toast.Notifications;
  * @author kovid
  */
 public class AddTrainers extends javax.swing.JFrame {
-    
+
     HashMap<String, String> genderMap = new HashMap<>();
     HashMap<String, String> specMap = new HashMap<>();
-    
+
     private Home home;
-    
+
     public void getHome(Home home) {
         this.home = home;
     }
-    
+
     public AddTrainers(String addOrEdit, String trainer) {
         Notifications.getInstance().setJFrame(this);
         initComponents();
@@ -42,13 +43,13 @@ public class AddTrainers extends javax.swing.JFrame {
         loadSpecs();
         loadMembers();
         loadGenderMap();
-        
+
         if (addOrEdit.equals("Add")) {
             jButton2.setVisible(false);
         } else if (addOrEdit.equals("Edit")) {
             jButton1.setVisible(false);
             jLabel1.setText("Edit Trainers");
-            
+
             int rows = jTable1.getRowCount();
             System.out.println(rows);
             for (int i = 0; i < rows; i++) {
@@ -58,27 +59,27 @@ public class AddTrainers extends javax.swing.JFrame {
                     selectRow();
                 }
             }
-            
+
         }
-        
+
     }
-    
+
     private void init() {
         this.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/resources/logo.png")));
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        
+
         jTextField2.grabFocus();
-        
+
         jTextField1.putClientProperty(FlatClientProperties.STYLE, "arc:999");
-        
+
         String id = generateMemId();
-        
+
         DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
         renderer.setHorizontalAlignment(SwingConstants.CENTER);
         jTable1.setDefaultRenderer(Object.class, renderer);
-        
+
     }
-    
+
     private void loadSpecs() {
         try {
             ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `trainer_specializations`");
@@ -93,7 +94,7 @@ public class AddTrainers extends javax.swing.JFrame {
             e.printStackTrace();
         }
     }
-    
+
     private void loadMembers() {
         try {
             ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `trainers` INNER JOIN `gender` ON"
@@ -101,7 +102,7 @@ public class AddTrainers extends javax.swing.JFrame {
                     + "`trainer_specializations`.`spec_id` = `trainers`.`trainer_specializations_spec_id` ");
             DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
             model.setRowCount(0);
-            
+
             while (resultSet.next()) {
                 Vector<String> vector = new Vector<>();
                 vector.add(resultSet.getString("trainer_id"));
@@ -114,22 +115,22 @@ public class AddTrainers extends javax.swing.JFrame {
                 vector.add(resultSet.getString("spec_name"));
                 vector.add(resultSet.getString("gender_name"));
                 vector.add(resultSet.getString("joined_date"));
-                
+
                 model.addRow(vector);
             }
-            
+
             jTable1.setModel(model);
-            
+
         } catch (Exception e) {
             SplashScreen.exceptionRecords.log(Level.SEVERE, "Couldn't connect to db at loadMembers", e);
-            
+
         }
     }
-    
+
     private void loadGenderMap() {
         try {
             ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `gender`");
-            
+
             while (resultSet.next()) {
                 genderMap.put(resultSet.getString("gender_name"), resultSet.getString("gender_id"));
             }
@@ -137,35 +138,35 @@ public class AddTrainers extends javax.swing.JFrame {
             SplashScreen.exceptionRecords.log(Level.SEVERE, "Couldn't connect to db at loadGenderMap", e);
         }
     }
-    
+
     private String generateMemId() {
         Date date = new Date();
         Random random = new Random();
         int random3Digit = 100 + random.nextInt(900);
-        
+
         String empSuffix = "TRN";
-        
+
         String memberID = empSuffix + formatDate("yy", date) + formatDate("MM", date) + formatDate("dd", date) + formatDate("mm", date) + formatDate("HH", date) + formatDate("ss", date) + String.valueOf(random3Digit);
-        
+
         try {
-            
-            ResultSet checkMemID = MySQL.executeSearch("SELECT * FROM `member` WHERE `mem_id` = '" + memberID + "' ");
-            
+
+            ResultSet checkMemID = MySQL.executeSearch("SELECT * FROM `trainers` WHERE `trainer_id` = '" + memberID + "' ");
+
             if (checkMemID.next()) {
                 memberID = generateMemId();
             }
         } catch (Exception e) {
-            SplashScreen.exceptionRecords.log(Level.WARNING, "Unable to create member id", e);
+            SplashScreen.exceptionRecords.log(Level.WARNING, "Unable to create trainer id", e);
         }
         jTextField1.setText(memberID);
         return memberID;
     }
-    
+
     private String formatDate(String format, Date date) {
         SimpleDateFormat dateFormat = new SimpleDateFormat(format);
         return dateFormat.format(date);
     }
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -548,7 +549,12 @@ public class AddTrainers extends javax.swing.JFrame {
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         this.dispose();
-        home.setEnabled(true);
+        if (jLabel1.getText().equals("Edit Trainers")) {
+            FrameStorage.editTrainers = null;
+        } else {
+            FrameStorage.addTrainers = null;
+
+        }
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
@@ -557,7 +563,7 @@ public class AddTrainers extends javax.swing.JFrame {
             this.dispose();
             this.setUndecorated(false);
             this.setVisible(true);
-            
+
         } else {
             jMenuItem2.setText("Exit Fullscreen");
             //  this.dispose();
@@ -565,70 +571,70 @@ public class AddTrainers extends javax.swing.JFrame {
             this.setUndecorated(true);
             this.setVisible(true);
             setExtendedState(JFrame.MAXIMIZED_BOTH);
-            
+
         }
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        
+
         reset();
 
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         int row = jTable1.getSelectedRow();
-        
+
         String fname = jTextField2.getText();
         String lname = jTextField3.getText();
         String mobile = jTextField4.getText();
         String exp = jTextField6.getText();
         String rate = jTextField7.getText();
         String spec = String.valueOf(jComboBox1.getSelectedItem());
-        
+
         String gender = "";
         if (jCheckBox1.isSelected()) {
             gender = jCheckBox1.getText();
         } else if (jCheckBox2.isSelected()) {
             gender = jCheckBox2.getText();
         }
-        
+
         String memberID = jTextField1.getText();
-        
+
         if (fname.isEmpty()) {
             Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Please Enter the First Name");
-            
+
         } else if (lname.isEmpty()) {
             Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Please Enter the Last Name");
-            
+
         } else if (mobile.isEmpty()) {
             Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Please Enter a Mobile Number");
-            
+
         } else if (!mobile.matches("^(?:0|94|\\+94|0094)?(?:(11|21|23|24|25|26|27|31|32|33|34|35|36|37|38|41|45|47|51|52|54|55|57|63|65|66|67|81|91)(0|2|3|4|5|7|9)|7(0|1|2|4|5|6|7|8)\\d)\\d{6}$")) {
             Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Invalid Mobile Number");
-            
+
         } else if (rate.isEmpty()) {
             Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Please Enter the Monthly Payment for this trainer");
-            
+
         } else if (gender.equals("")) {
             Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Please Select a Gender");
-            
+
         } else if (memberID.equals("")) {
             generateMemId();
         } else {
             fname = fname.substring(0, 1).toUpperCase() + fname.substring(1).toLowerCase();
             lname = lname.substring(0, 1).toUpperCase() + lname.substring(1).toLowerCase();
             int option = JOptionPane.showConfirmDialog(this, "Confirm Updating user details?", "Update Confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-            
+
             if (option == JOptionPane.YES_OPTION) {
                 try {
-                    
+
                     ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `trainers` WHERE `mobile` = '" + mobile + "' AND `trainer_id` != '" + memberID + "'  ");
                     if (resultSet.next()) {
                         JOptionPane.showMessageDialog(this, "An Account Already Exists with this mobile number.", "Trainer contact number already exists.", JOptionPane.INFORMATION_MESSAGE);
                     } else {
                         double newrate = Double.parseDouble(rate);
                         double oldsrate = Double.parseDouble(String.valueOf(jTable1.getValueAt(row, 6)));
-                        
+
                         if (fname.equals(String.valueOf(jTable1.getValueAt(row, 1)))
                                 && lname.equals(String.valueOf(jTable1.getValueAt(row, 2)))
                                 && mobile.equals(String.valueOf(jTable1.getValueAt(row, 3)))
@@ -638,7 +644,7 @@ public class AddTrainers extends javax.swing.JFrame {
                                 && gender.equals(String.valueOf(jTable1.getValueAt(row, 8)))) {
                             Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, 3000l, "Change Details before updating.");
                         } else {
-                            
+
                             MySQL.executeIUD("UPDATE `trainers` SET `fname` = '" + fname + "', `lname` = '" + lname + "', `mobile` = '" + mobile + "', `experience_years` = '" + exp + "', `weekly_payment` = '" + rate + "',"
                                     + " `gender_gender_id` = '" + genderMap.get(gender) + "',`trainer_specializations_spec_id` = '" + specMap.get(spec) + "'"
                                     + " WHERE `trainer_id` = '" + memberID + "' ");
@@ -646,14 +652,14 @@ public class AddTrainers extends javax.swing.JFrame {
                             loadMembers();
                             reset();
                         }
-                        
+
                     }
                 } catch (Exception e) {
                     SplashScreen.exceptionRecords.log(Level.SEVERE, "Couldn't update Trainer details", e);
                     Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 5000l, "Error! Couldn't update Trainer Account. Please Check Your Network and Try Again");
-                }                
+                }
             }
-            
+
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -668,78 +674,78 @@ public class AddTrainers extends javax.swing.JFrame {
         String exp = jTextField6.getText();
         String rate = jTextField7.getText();
         String spec = String.valueOf(jComboBox1.getSelectedItem());
-        
+
         String gender = "";
         if (jCheckBox1.isSelected()) {
             gender = jCheckBox1.getText();
         } else if (jCheckBox2.isSelected()) {
             gender = jCheckBox2.getText();
         }
-        
+
         Date newDate = new Date();
-        
+
         String memberID = jTextField1.getText();
-        
+
         if (fname.isEmpty()) {
             Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Please Enter the First Name");
-            
+
         } else if (lname.isEmpty()) {
             Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Please Enter the Last Name");
-            
+
         } else if (mobile.isEmpty()) {
             Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Please Enter a Mobile Number");
-            
+
         } else if (!mobile.matches("^(?:0|94|\\+94|0094)?(?:(11|21|23|24|25|26|27|31|32|33|34|35|36|37|38|41|45|47|51|52|54|55|57|63|65|66|67|81|91)(0|2|3|4|5|7|9)|7(0|1|2|4|5|6|7|8)\\d)\\d{6}$")) {
             Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Invalid Mobile Number");
-            
+
         } else if (email.isEmpty()) {
             Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Please Enter the Email");
-            
+
         } else if (!email.matches("^(?=.{1,64}@)[A-Za-z0-9\\+_-]+(\\.[A-Za-z0-9\\+_-]+)*@[^-][A-Za-z0-9\\+-]+(\\.[A-Za-z0-9\\+-]+)*(\\.[A-Za-z]{2,})$")) {
             Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Email Invalid");
         } else if (exp.isEmpty()) {
             Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Please Enter experience years");
-            
+
         } else if (rate.isEmpty()) {
             Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Please Enter the weekly_payment");
-            
+
         } else if (gender.equals("")) {
             Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Please Select a Gender");
-            
+
         } else if (memberID.equals("")) {
             generateMemId();
         } else {
             fname = fname.substring(0, 1).toUpperCase() + fname.substring(1).toLowerCase();
             lname = lname.substring(0, 1).toUpperCase() + lname.substring(1).toLowerCase();
-            
+
             try {
-                
+
                 ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `trainers` WHERE `email` = '" + email + "' OR  `mobile` = '" + mobile + "' ");
                 if (resultSet.next()) {
                     JOptionPane.showMessageDialog(this, "An Account Already Exists with these Details.", "Trainer Exists.", JOptionPane.INFORMATION_MESSAGE);
                 } else {
                     ResultSet checkMemID = MySQL.executeSearch("SELECT * FROM `trainers` WHERE `trainer_id` = '" + memberID + "' ");
-                    
+
                     if (checkMemID.next()) {
                         memberID = generateMemId();
-                        
+
                     }
-                    
+
                     MySQL.executeIUD("INSERT INTO `trainers` VALUES ('" + memberID + "','" + fname + "','" + lname + "','" + email + "'"
                             + ",'" + mobile + "','" + exp + "','" + rate + "','" + specMap.get(spec) + "',"
                             + "'" + genderMap.get(gender) + "','1','" + formatDate("yyyy-MM-dd", newDate) + "') ");
                     Notifications.getInstance().show(Notifications.Type.SUCCESS, Notifications.Location.TOP_CENTER, 3000l, "New Trainer Added");
                     loadMembers();
-                    
+
                     reset();
-                    
+
                 }
             } catch (Exception e) {
                 e.printStackTrace();
                 SplashScreen.exceptionRecords.log(Level.SEVERE, "Couldn't insert trainer details", e);
                 Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 5000l, "Error! Couldn't Create New trainer Account. Please Check Your Network and Try Again");
             }
-            
+
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -817,16 +823,16 @@ public class AddTrainers extends javax.swing.JFrame {
         jTextField7.setText("");
         jComboBox1.setSelectedIndex(0);
         buttonGroup1.clearSelection();
-        
+
         jTextField5.setEditable(true);
         jButton1.setEnabled(true);
         jButton2.setEnabled(false);
-        
+
         String id = generateMemId();
     }
-    
+
     private void selectRow() {
-        
+
         int row = jTable1.getSelectedRow();
         jTextField1.setText(String.valueOf(jTable1.getValueAt(row, 0)));
         jTextField2.setText(String.valueOf(jTable1.getValueAt(row, 1)));
@@ -836,17 +842,17 @@ public class AddTrainers extends javax.swing.JFrame {
         jTextField6.setText(String.valueOf(jTable1.getValueAt(row, 5)));
         jTextField7.setText(String.valueOf(jTable1.getValueAt(row, 6)));
         jComboBox1.setSelectedItem(String.valueOf(jTable1.getValueAt(row, 7)));
-        
+
         if (jTable1.getValueAt(row, 8).equals("Male")) {
             jCheckBox1.setSelected(true);
         } else {
             jCheckBox2.setSelected(true);
-            
+
         }
-        
+
         jTextField5.setEditable(false);
         jButton1.setEnabled(false);
         jButton2.setEnabled(true);
-        
+
     }
 }
