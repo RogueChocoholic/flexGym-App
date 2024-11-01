@@ -44,6 +44,7 @@ import java.sql.DriverManager;
 import java.util.Random;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import model.FrameStorage;
 import model.ModifyTables;
 
 public class Home extends javax.swing.JFrame {
@@ -53,6 +54,9 @@ public class Home extends javax.swing.JFrame {
     HashMap<String, String> statusMap = new HashMap<>();
     HashMap<String, Vector> sessionTypeMap = new HashMap<>();
     HashMap<String, String> companyMap = new HashMap<>();
+    HashMap<String, String> brandMAp = new HashMap<>();
+    HashMap<String, String> categoryMap = new HashMap<>();
+
 //    String search = "";
     private static final List<JButton> buttons = new ArrayList<>();
     private static final List<JTable> tables = new ArrayList<>();
@@ -95,7 +99,32 @@ public class Home extends javax.swing.JFrame {
         loadTrainerDashDetails();
         loadCompanies();
         loadSuppliers();
+        loadInventoryBrandCategory();
+    }
 
+    private void loadInventoryBrandCategory() {
+        try {
+            ResultSet brandlRs = MySQL.executeSearch("SELECT * FROM `brand`");
+            Vector<String> brandVec = new Vector<>();
+            while (brandlRs.next()) {
+                brandVec.add(brandlRs.getString("brand_name"));
+                brandMAp.put(brandlRs.getString("brand_name"), brandlRs.getString("brand_id"));
+            }
+            DefaultComboBoxModel brandModel = new DefaultComboBoxModel(brandVec);
+            jComboBox7.setModel(brandModel);
+
+            ResultSet catlRs = MySQL.executeSearch("SELECT * FROM `category`");
+            Vector<String> catVec = new Vector<>();
+            while (catlRs.next()) {
+                catVec.add(catlRs.getString("cat_name"));
+                categoryMap.put(catlRs.getString("cat_name"), catlRs.getString("cat_id"));
+            }
+            DefaultComboBoxModel catModel = new DefaultComboBoxModel(catVec);
+            jComboBox8.setModel(catModel);
+        } catch (Exception e) {
+            SplashScreen.exceptionRecords.log(Level.SEVERE, "Couldn't connect to db at loadSpecs", e);
+            e.printStackTrace();
+        }
     }
 
     private void loadSpecs() {
@@ -498,7 +527,6 @@ public class Home extends javax.swing.JFrame {
 
         jButton21.setEnabled(false);
         jButton15.setEnabled(false);
-
         String search = "";
 //        
         String sessID = jTextField3.getText();
@@ -1122,6 +1150,7 @@ public class Home extends javax.swing.JFrame {
         jTabbedPane1.setTabPlacement(javax.swing.JTabbedPane.BOTTOM);
         jTabbedPane1.setAutoscrolls(true);
         jTabbedPane1.setBackground(new java.awt.Color(255, 255, 255));
+        jTabbedPane1.setEnabled(false);
         jTabbedPane1.setFont(new java.awt.Font("Poppins", 0, 10)); // NOI18N
         jTabbedPane1.setMinimumSize(new java.awt.Dimension(302, 200));
         jTabbedPane1.setPreferredSize(new java.awt.Dimension(300, 300));
@@ -1732,6 +1761,11 @@ public class Home extends javax.swing.JFrame {
         jButton23.setEnabled(false);
         jButton23.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
         jButton23.setForeground(new java.awt.Color(255, 255, 255));
+        jButton23.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton23ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel11Layout = new javax.swing.GroupLayout(jPanel11);
         jPanel11.setLayout(jPanel11Layout);
@@ -2922,11 +2956,16 @@ public class Home extends javax.swing.JFrame {
         jButton25.setBackground(new java.awt.Color(255, 111, 0));
         jButton25.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
         jButton25.setForeground(new java.awt.Color(255, 255, 255));
+        jButton25.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton25ActionPerformed(evt);
+            }
+        });
 
+        jButton19.setText("Generate PID");
         jButton19.setBackground(new java.awt.Color(255, 160, 64));
         jButton19.setFont(new java.awt.Font("Poppins SemiBold", 0, 12)); // NOI18N
         jButton19.setForeground(new java.awt.Color(249, 249, 249));
-        jButton19.setText("Generate PID");
         jButton19.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton19ActionPerformed(evt);
@@ -3556,12 +3595,23 @@ public class Home extends javax.swing.JFrame {
     private void jTable4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable4MouseClicked
         jButton23.setEnabled(true);
     }//GEN-LAST:event_jTable4MouseClicked
-
     private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton17ActionPerformed
-        AddTrainers at = new AddTrainers("Add", "");
-        at.getHome(this);
-        this.setEnabled(false);
-        at.setVisible(true);
+//        AddTrainers at = new AddTrainers("Add", "");
+
+        if (FrameStorage.addTrainers == null) {
+            int row = jTable8.getSelectedRow();
+            AddTrainers at = new AddTrainers("Add", "");
+            at.getHome(this);
+            at.setVisible(true);
+            FrameStorage.addTrainers = at;
+        } else {
+            if (FrameStorage.addTrainers.isVisible()) {
+                FrameStorage.addTrainers.toFront();
+            } else {
+                FrameStorage.addTrainers.setVisible(true);
+            }
+
+        }
     }//GEN-LAST:event_jButton17ActionPerformed
 
     private void jTextField4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed
@@ -3592,28 +3642,49 @@ public class Home extends javax.swing.JFrame {
         loadTrainers();
     }//GEN-LAST:event_jCheckBox3ItemStateChanged
 
+  
     private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
-        int row = jTable8.getSelectedRow();
-        AddTrainers at;
-        if (row != -1) {
-            String trainer_id = String.valueOf(jTable8.getValueAt(row, 0));
-            at = new AddTrainers("Edit", trainer_id);
+        if (FrameStorage.editTrainers == null) {
+            int row = jTable8.getSelectedRow();
+            AddTrainers at;
+            if (row != -1) {
+                String trainer_id = String.valueOf(jTable8.getValueAt(row, 0));
+                at = new AddTrainers("Edit", trainer_id);
 
+            } else {
+                at = new AddTrainers("Edit", "");
+
+            }
+            at.getHome(this);
+            at.setVisible(true);
+            FrameStorage.editTrainers = at;
         } else {
-            at = new AddTrainers("Edit", "");
+            if (FrameStorage.editTrainers.isVisible()) {
+                FrameStorage.editTrainers.toFront();
+            } else {
+                FrameStorage.editTrainers.setVisible(true);
+            }
 
         }
 
-        at.getHome(this);
-        this.setEnabled(false);
-        at.setVisible(true);
+
     }//GEN-LAST:event_jButton18ActionPerformed
 
     private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
-        CreateNewSession cns = new CreateNewSession();
-        cns.getHome(this);
-        cns.setVisible(true);
-        this.setEnabled(false);
+        if (FrameStorage.createSessionFrame == null) {
+            CreateNewSession cns = new CreateNewSession();
+            cns.getHome(this);
+            cns.setVisible(true);
+            FrameStorage.createSessionFrame = cns;
+        } else {
+            if (FrameStorage.createSessionFrame.isVisible()) {
+                FrameStorage.createSessionFrame.toFront();
+            } else {
+                FrameStorage.createSessionFrame.setVisible(true);
+            }
+
+        }
+
     }//GEN-LAST:event_jButton13ActionPerformed
 
     private void jTable6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable6MouseClicked
@@ -3987,11 +4058,18 @@ public class Home extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton20ActionPerformed
 
     private void jButton40ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton40ActionPerformed
-        AddSupplier adsupplier = new AddSupplier(true);
-        adsupplier.getHome(this);
-        this.setEnabled(false);
-        adsupplier.setVisible(true);
+        if (FrameStorage.addSupplierFrame == null) {
+            AddSupplier adsupplier = new AddSupplier(true);
+            adsupplier.setVisible(true);
+            FrameStorage.addSupplierFrame = adsupplier;
+        } else {
+            if (FrameStorage.addSupplierFrame.isVisible()) {
+                FrameStorage.addSupplierFrame.toFront();
+            } else {
+                FrameStorage.addSupplierFrame.setVisible(true);
+            }
 
+        }
     }//GEN-LAST:event_jButton40ActionPerformed
 
     private void jTextField6KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField6KeyReleased
@@ -3999,10 +4077,20 @@ public class Home extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField6KeyReleased
 
     private void jButton43ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton43ActionPerformed
-        AddSupplier adsupplier = new AddSupplier(false);
-        adsupplier.getHome(this);
-        this.setEnabled(false);
-        adsupplier.setVisible(true);
+//        AddSupplier adsupplier = new AddSupplier(false);
+
+        if (FrameStorage.updateSupplierFrame == null) {
+            AddSupplier adsupplier = new AddSupplier(false);
+            adsupplier.setVisible(true);
+            FrameStorage.updateSupplierFrame = adsupplier;
+        } else {
+            if (FrameStorage.updateSupplierFrame.isVisible()) {
+                FrameStorage.updateSupplierFrame.toFront();
+            } else {
+                FrameStorage.updateSupplierFrame.setVisible(true);
+            }
+
+        }
     }//GEN-LAST:event_jButton43ActionPerformed
 
     private void jComboBox10ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox10ItemStateChanged
@@ -4016,6 +4104,15 @@ public class Home extends javax.swing.JFrame {
     private void jButton19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton19ActionPerformed
         generateProdId();
     }//GEN-LAST:event_jButton19ActionPerformed
+
+    private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton23ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton23ActionPerformed
+
+    private void jButton25ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton25ActionPerformed
+        AddProduct addProductDialog = new AddProduct(this, true);
+        addProductDialog.setVisible(true);
+    }//GEN-LAST:event_jButton25ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -4307,7 +4404,7 @@ public class Home extends javax.swing.JFrame {
 
         try {
 
-            ResultSet checkMemID = MySQL.executeSearch("SELECT * FROM `member` WHERE `mem_id` = '" + pid + "' ");
+            ResultSet checkMemID = MySQL.executeSearch("SELECT * FROM `product` WHERE `pid` = '" + pid + "' ");
 
             if (checkMemID.next()) {
                 pid = generateProdId();
@@ -4324,4 +4421,5 @@ public class Home extends javax.swing.JFrame {
         return dateFormat.format(date);
     }
 
+   
 }

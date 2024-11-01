@@ -23,6 +23,7 @@ import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import model.CreateTrainingSessionBeen;
+import model.FrameStorage;
 import model.MySQL;
 import raven.toast.Notifications;
 
@@ -36,6 +37,7 @@ public class CreateNewSession extends javax.swing.JFrame {
     HashMap<String, String> specMap = new HashMap<>();
     HashMap<String, Vector> sessionTypeMap = new HashMap<>();
     private Home home;
+    private boolean purchase = true;
 
     public void getHome(Home home) {
         this.home = home;
@@ -472,7 +474,8 @@ public class CreateNewSession extends javax.swing.JFrame {
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         this.dispose();
-        home.setEnabled(true);
+        home.refreshHome();
+         FrameStorage.createSessionFrame = null;
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
@@ -570,54 +573,59 @@ public class CreateNewSession extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        if (sessTableMap.isEmpty()) {
-            System.out.println("emptry bro");
-        } else {
-            try {
+        if (purchase) {
+            purchase = false;
+            if (sessTableMap.isEmpty()) {
+                System.out.println("emptry bro");
+            } else {
+                try {
 
-                CreateTrainingSessionBeen session = sessTableMap.get(0);
-                Vector<String> sessionType = sessionTypeMap.get(session.getType());
-                String sessType = sessionType.get(0);
+                    CreateTrainingSessionBeen session = sessTableMap.get(0);
+                    Vector<String> sessionType = sessionTypeMap.get(session.getType());
+                    String sessType = sessionType.get(0);
 
-                ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `session_schedule` WHERE"
-                        + " `trainers_trainer_id` = '" + session.getTrainer_id() + "' AND `date` = '" + session.getDate() + "'  AND (( '" + session.getTime() + "' BETWEEN `start_time` AND `end_time` ) OR ( '" + session.getDuration() + "' BETWEEN `start_time` AND `end_time` )"
-                        + " OR (`start_time` BETWEEN  '" + session.getTime() + "' AND '" + session.getDuration() + "' ) OR ( `end_time` BETWEEN  '" + session.getTime() + "' AND '" + session.getDuration() + "' ) ) ");
+                    ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `session_schedule` WHERE"
+                            + " `trainers_trainer_id` = '" + session.getTrainer_id() + "' AND `date` = '" + session.getDate() + "'  AND (( '" + session.getTime() + "' BETWEEN `start_time` AND `end_time` ) OR ( '" + session.getDuration() + "' BETWEEN `start_time` AND `end_time` )"
+                            + " OR (`start_time` BETWEEN  '" + session.getTime() + "' AND '" + session.getDuration() + "' ) OR ( `end_time` BETWEEN  '" + session.getTime() + "' AND '" + session.getDuration() + "' ) ) ");
 
-                if (resultSet.next()) {
-                    JOptionPane.showMessageDialog(this, "The Trainer has another session scheduled for this time slot. Please choose another trainer or a time slot", "Trainer cannot be scheduled.", JOptionPane.INFORMATION_MESSAGE);
-                } else {
+                    if (resultSet.next()) {
+                        JOptionPane.showMessageDialog(this, "The Trainer has another session scheduled for this time slot. Please choose another trainer or a time slot", "Trainer cannot be scheduled.", JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        jButton3.setText("Please Wait");
 //                    System.out.println(SignIn.getEmplyeeID());
-                    int option = JOptionPane.showConfirmDialog(this, "Confirm creating session?", "Create Session?", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
-                    if (option == JOptionPane.YES_OPTION) {
-                        MySQL.executeIUD("INSERT INTO `session_schedule` VALUES ('" + session.getSess_id() + "','" + session.getTrainer_id() + "',"
-                                + "'" + session.getDate() + "','" + session.getTime() + "','" + session.getDuration() + "','" + session.getFee() + "','" + sessType + "','" + specMap.get(session.getSpec()) + "','1','" + SignIn.getEmplyeeID() + "') ");
+                        int option = JOptionPane.showConfirmDialog(this, "Confirm creating session?", "Create Session?", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
+                        if (option == JOptionPane.YES_OPTION) {
+                            MySQL.executeIUD("INSERT INTO `session_schedule` VALUES ('" + session.getSess_id() + "','" + session.getTrainer_id() + "',"
+                                    + "'" + session.getDate() + "','" + session.getTime() + "','" + session.getDuration() + "','" + session.getFee() + "','" + sessType + "','" + specMap.get(session.getSpec()) + "','1','" + SignIn.getEmplyeeID() + "') ");
 
-                        ResultSet resultSet2 = MySQL.executeSearch("SELECT * FROM `trainer_performance` "
-                                + " WHERE `trainers_trainer_id` = '" + session.getTrainer_id() + "' ");
-
-                        if (resultSet2.next()) {
-                            System.out.println("there is one");
-                            MySQL.executeIUD("UPDATE `trainer_performance` SET `scheduled` = `scheduled`+1"
+                            ResultSet resultSet2 = MySQL.executeSearch("SELECT * FROM `trainer_performance` "
                                     + " WHERE `trainers_trainer_id` = '" + session.getTrainer_id() + "' ");
-                        } else {
-                            System.out.println("there is not one");
-                            MySQL.executeIUD("INSERT INTO `trainer_performance` (`scheduled`,`completed`,`cancelled`,`trainers_trainer_id`)"
-                                    + " VALUES ('1','0','0','" + session.getTrainer_id() + "') ");
+
+                            if (resultSet2.next()) {
+                                System.out.println("there is one");
+                                MySQL.executeIUD("UPDATE `trainer_performance` SET `scheduled` = `scheduled`+1"
+                                        + " WHERE `trainers_trainer_id` = '" + session.getTrainer_id() + "' ");
+                            } else {
+                                System.out.println("there is not one");
+                                MySQL.executeIUD("INSERT INTO `trainer_performance` (`scheduled`,`completed`,`cancelled`,`trainers_trainer_id`)"
+                                        + " VALUES ('1','0','0','" + session.getTrainer_id() + "') ");
+                            }
+
+                            Notifications.getInstance().show(Notifications.Type.SUCCESS, Notifications.Location.TOP_CENTER, 3000l, "Session Created Successfully");
+                            loadTrainers();
+                            this.dispose();
+                            home.refreshHome();
+                            FrameStorage.createSessionFrame = null;
                         }
 
-                        Notifications.getInstance().show(Notifications.Type.SUCCESS, Notifications.Location.TOP_CENTER, 3000l, "Session Created Successfully");
-                        loadTrainers();
-                        this.dispose();
-                        home.setEnabled(true);
-                        home.refreshHome();
                     }
-
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(this, "Couldn't create session. Check your network connection", "Error", JOptionPane.ERROR_MESSAGE);
+                    SplashScreen.exceptionRecords.log(Level.SEVERE, "Couldn't Create Session. Problem with the databse connection", e);
                 }
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, "Couldn't create session. Check your network connection", "Error", JOptionPane.ERROR_MESSAGE);
-                SplashScreen.exceptionRecords.log(Level.SEVERE, "Couldn't Create Session. Problem with the databse connection", e);
             }
-
+            purchase = true;
+            jButton3.setText("Create Session");
         }
     }//GEN-LAST:event_jButton3ActionPerformed
 
@@ -647,13 +655,13 @@ public class CreateNewSession extends javax.swing.JFrame {
 
         try {
 
-            ResultSet checkMemID = MySQL.executeSearch("SELECT * FROM `member` WHERE `mem_id` = '" + memberID + "' ");
+            ResultSet checkMemID = MySQL.executeSearch("SELECT * FROM `session_schedule` WHERE `session_id` = '" + memberID + "' ");
 
             if (checkMemID.next()) {
                 memberID = generateMemId();
             }
         } catch (Exception e) {
-            SplashScreen.exceptionRecords.log(Level.WARNING, "Unable to create member id", e);
+            SplashScreen.exceptionRecords.log(Level.WARNING, "Unable to create session id", e);
         }
         jTextField2.setText(memberID);
         return memberID;
