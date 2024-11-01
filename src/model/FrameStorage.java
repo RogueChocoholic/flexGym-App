@@ -11,7 +11,6 @@ public class FrameStorage {
     public static JFrame createSessionFrame;
     public static JFrame addTrainers;
     public static JFrame editTrainers;
-    
      public static JFrame addSupplierFrame;
     public static JFrame updateSupplierFrame;
 }

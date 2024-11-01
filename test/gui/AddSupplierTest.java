@@ -44,7 +44,7 @@ public class AddSupplierTest {
         System.out.println("getHome");
         Home home = null;
         AddSupplier instance = new AddSupplier(false);
-        instance.getHome(home);
+       
         // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
     }
