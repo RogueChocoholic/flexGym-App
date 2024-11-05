@@ -4,13 +4,20 @@
  */
 package model;
 
+import gui.AddMember;
+import gui.AddSupplier;
+import gui.AddTrainers;
+import gui.CreateNewSession;
+import gui.StaffRegistration;
 import javax.swing.JFrame;
 
-
 public class FrameStorage {
-    public static JFrame createSessionFrame;
-    public static JFrame addTrainers;
-    public static JFrame editTrainers;
-     public static JFrame addSupplierFrame;
-    public static JFrame updateSupplierFrame;
+
+    public static CreateNewSession createSessionFrame;
+    public static AddTrainers addTrainers;
+    public static AddTrainers editTrainers;
+    public static AddSupplier addSupplierFrame;
+    public static AddSupplier updateSupplierFrame;
+    public static StaffRegistration staffRegistration;
+    public static AddMember addMemberFrame;
 }

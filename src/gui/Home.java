@@ -3409,10 +3409,18 @@ public class Home extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        StaffRegistration staffReg = new StaffRegistration();
-        staffReg.getHome(this);
-        staffReg.setVisible(true);
-        this.setEnabled(false);
+
+        if (FrameStorage.staffRegistration == null) {
+            FrameStorage.staffRegistration = new StaffRegistration();
+            FrameStorage.staffRegistration.getHome(this);
+            FrameStorage.staffRegistration.setVisible(true);
+        } else if (FrameStorage.staffRegistration.isVisible()) {
+            FrameStorage.staffRegistration.toFront();
+
+        } else {
+            FrameStorage.staffRegistration.setVisible(true);
+        }
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -3555,10 +3563,16 @@ public class Home extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton41ActionPerformed
 
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
-        AddMember am = new AddMember();
-        am.getHome(this);
-        am.setVisible(true);
-        this.setEnabled(false);
+        if (FrameStorage.addMemberFrame == null) {
+            FrameStorage.addMemberFrame = new AddMember();
+            FrameStorage.addMemberFrame.getHome(this);
+            FrameStorage.addMemberFrame.setVisible(true);
+        } else if (FrameStorage.addMemberFrame.isVisible()) {
+            FrameStorage.addMemberFrame.toFront();
+
+        } else {
+            FrameStorage.addMemberFrame.setVisible(true);
+        }
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void jTextField1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyReleased
@@ -3642,7 +3656,7 @@ public class Home extends javax.swing.JFrame {
         loadTrainers();
     }//GEN-LAST:event_jCheckBox3ItemStateChanged
 
-  
+
     private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
         if (FrameStorage.editTrainers == null) {
             int row = jTable8.getSelectedRow();
@@ -4421,5 +4435,4 @@ public class Home extends javax.swing.JFrame {
         return dateFormat.format(date);
     }
 
-   
 }
