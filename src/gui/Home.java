@@ -1848,7 +1848,7 @@ public class Home extends javax.swing.JFrame {
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, false, true
+                false, false, false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -2545,7 +2545,7 @@ public class Home extends javax.swing.JFrame {
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                true, false, false, false, false
+                false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -2609,7 +2609,7 @@ public class Home extends javax.swing.JFrame {
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, true, false
+                false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -4060,13 +4060,24 @@ public class Home extends javax.swing.JFrame {
             params.put("Parameter2", today);
             params.put("Parameter3", monthFirst);
 
-            JRTableModelDataSource dataSource = new JRTableModelDataSource(jTable8.getModel());
+            if (jTable8.getRowCount() > 0) {
+                JRTableModelDataSource dataSource = new JRTableModelDataSource(jTable8.getModel());
 
-            JasperPrint report = JasperFillManager.fillReport(mainReport, params, dataSource);
-            JasperPrintManager.printReport(report, false);
-            JasperViewer.viewReport(report, false);
+                JasperPrint report = JasperFillManager.fillReport(mainReport, params, dataSource);
+                JasperPrintManager.printReport(report, false);
+                JasperViewer.viewReport(report, false);
+
+            } else {
+                JREmptyDataSource dataSource = new JREmptyDataSource();
+
+                JasperPrint report = JasperFillManager.fillReport(mainReport, params, dataSource);
+                JasperPrintManager.printReport(report, false);
+                JasperViewer.viewReport(report, false);
+            }
         } catch (Exception e) {
             e.printStackTrace();
+            SplashScreen.exceptionRecords.log(Level.WARNING, "Couldn't print report", e);
+            Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Error printing report");
         }
 
     }//GEN-LAST:event_jButton20ActionPerformed
@@ -4124,8 +4135,49 @@ public class Home extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton23ActionPerformed
 
     private void jButton25ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton25ActionPerformed
-        AddProduct addProductDialog = new AddProduct(this, true);
-        addProductDialog.setVisible(true);
+        String pid = jTextField5.getText();
+        String brandName = String.valueOf(jComboBox7.getSelectedItem());
+        String brandId = brandMAp.get(brandName);
+        String catName = String.valueOf(jComboBox8.getSelectedItem());
+        String catId = categoryMap.get(catName);
+        String productName = jTextField7.getText();
+
+        if (pid.isBlank()) {
+            Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, 4000l, "Please generate a product ID if there is no barcode ID available.");
+        } else if (productName.isBlank()) {
+            Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, 4000l, "Please enter the product name.");
+        } else {
+            try {
+                ResultSet PidResultSet = MySQL.executeSearch("SELECT `pid` FROM `product` WHERE `pid` = '" + pid + "'  ");
+
+                if (PidResultSet.next()) {
+                    Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 4000l, "Product ID already exists. Please use another ID.");
+                } else {
+
+                    ResultSet productResultSet = MySQL.executeSearch("SELECT `pid` FROM `product` INNER JOIN "
+                            + " `brand` ON `brand`.`brand_id` = `product`.`brand_brand_id` INNER JOIN `category` ON"
+                            + " `category`.`cat_id` = `product`.`Category_cat_id`  WHERE `name` = '" + productName + "'"
+                            + " AND  `category`.`cat_name` = '" + catName + "' AND `brand`.`brand_name` = '" + brandName + "' ");
+
+                    if (productResultSet.next()) {
+                        Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 4000l, "Product with the same data already exists.");
+                    } else {
+
+                        AddProduct addProductDialog = new AddProduct(this, true);
+                        addProductDialog.initDialog(brandName, brandId, catName, catId, pid, productName);
+
+                        addProductDialog.setVisible(true);
+                    }
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                SplashScreen.exceptionRecords.log(Level.WARNING, "Couldn't add new product : ", e);
+                Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Error adding new product. Please Check your connection and try again.");
+            }
+
+        }
+
     }//GEN-LAST:event_jButton25ActionPerformed
 
     /**
@@ -4435,4 +4487,15 @@ public class Home extends javax.swing.JFrame {
         return dateFormat.format(date);
     }
 
+    private void loadProductTable() {
+        DefaultTableModel model = (DefaultTableModel) jTable10.getModel();
+        model.setRowCount(0);
+
+        try {
+
+        } catch (Exception e) {
+            SplashScreen.exceptionRecords.log(Level.WARNING, "Unable to Load products", e);
+            
+        }
+    }
 }
