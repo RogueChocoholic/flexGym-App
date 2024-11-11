@@ -100,12 +100,55 @@ public class Home extends javax.swing.JFrame {
         loadCompanies();
         loadSuppliers();
         loadInventoryBrandCategory();
+        loadProducts();
+        
+    }
+
+    private void loadProducts() {
+        String search = " WHERE ";
+        String productName = jTextField7.getText();
+        search += " name LIKE '%" + productName + "%' ";
+        String brandText = String.valueOf(jComboBox7.getSelectedItem());
+
+        if (!brandText.equals("All Brands")) {
+            String brand = brandMAp.get(brandText);
+            search += " AND `brand_brand_id` = '" + brand + "' ";
+        }
+        String categoryText = String.valueOf(jComboBox8.getSelectedItem());
+        if (!categoryText.equals("All Categories")) {
+            String category = categoryMap.get(categoryText);
+            search += " AND `Category_cat_id` = '" + category + "' ";
+        }
+
+        try {
+            ResultSet productSet = MySQL.executeSearch("SELECT * FROM `product` INNER JOIN `category`"
+                    + " ON `category`.`cat_id` = `product`.`Category_cat_id` INNER JOIN `brand` ON "
+                    + " `brand`.`brand_id` = `product`.`brand_brand_id` " + search);
+
+            DefaultTableModel model = (DefaultTableModel) jTable10.getModel();
+            model.setRowCount(0);
+
+            while (productSet.next()) {
+                Vector<String> vector = new Vector<>();
+                vector.add(productSet.getString("pid"));
+                vector.add(productSet.getString("name"));
+                vector.add(productSet.getString("brand_name"));
+                vector.add(productSet.getString("cat_name"));
+
+                model.addRow(vector);
+            }
+            jTable10.setModel(model);
+        } catch (Exception e) {
+            SplashScreen.exceptionRecords.log(Level.WARNING, "Unable to Load products", e);
+            e.printStackTrace();
+        }
     }
 
     private void loadInventoryBrandCategory() {
         try {
             ResultSet brandlRs = MySQL.executeSearch("SELECT * FROM `brand`");
             Vector<String> brandVec = new Vector<>();
+            brandVec.add("All Brands");
             while (brandlRs.next()) {
                 brandVec.add(brandlRs.getString("brand_name"));
                 brandMAp.put(brandlRs.getString("brand_name"), brandlRs.getString("brand_id"));
@@ -115,6 +158,7 @@ public class Home extends javax.swing.JFrame {
 
             ResultSet catlRs = MySQL.executeSearch("SELECT * FROM `category`");
             Vector<String> catVec = new Vector<>();
+            catVec.add("All Categories");
             while (catlRs.next()) {
                 catVec.add(catlRs.getString("cat_name"));
                 categoryMap.put(catlRs.getString("cat_name"), catlRs.getString("cat_id"));
@@ -928,7 +972,6 @@ public class Home extends javax.swing.JFrame {
         jButton29 = new javax.swing.JButton();
         jButton30 = new javax.swing.JButton();
         jButton31 = new javax.swing.JButton();
-        jButton24 = new javax.swing.JButton();
         jButton25 = new javax.swing.JButton();
         jButton19 = new javax.swing.JButton();
         jPanel9 = new javax.swing.JPanel();
@@ -2745,6 +2788,11 @@ public class Home extends javax.swing.JFrame {
         jComboBox7.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         jComboBox7.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
         jComboBox7.setForeground(new java.awt.Color(46, 59, 78));
+        jComboBox7.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jComboBox7ItemStateChanged(evt);
+            }
+        });
 
         jLabel53.setText("Category");
         jLabel53.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
@@ -2753,6 +2801,11 @@ public class Home extends javax.swing.JFrame {
         jComboBox8.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         jComboBox8.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
         jComboBox8.setForeground(new java.awt.Color(46, 59, 78));
+        jComboBox8.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jComboBox8ItemStateChanged(evt);
+            }
+        });
 
         jLabel54.setText("Product Name");
         jLabel54.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
@@ -2760,6 +2813,11 @@ public class Home extends javax.swing.JFrame {
 
         jTextField7.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
         jTextField7.setForeground(new java.awt.Color(46, 59, 78));
+        jTextField7.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jTextField7KeyReleased(evt);
+            }
+        });
 
         jTable10.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -2780,6 +2838,11 @@ public class Home extends javax.swing.JFrame {
         jTable10.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
         jTable10.setForeground(new java.awt.Color(46, 59, 78));
         jTable10.getTableHeader().setReorderingAllowed(false);
+        jTable10.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable10MouseClicked(evt);
+            }
+        });
         jScrollPane10.setViewportView(jTable10);
 
         jPanel17.setBackground(new java.awt.Color(255, 255, 255));
@@ -2947,11 +3010,6 @@ public class Home extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jButton24.setText("Update Proudct");
-        jButton24.setEnabled(false);
-        jButton24.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
-        jButton24.setForeground(new java.awt.Color(46, 59, 78));
-
         jButton25.setText("Add Product");
         jButton25.setBackground(new java.awt.Color(255, 111, 0));
         jButton25.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
@@ -2992,18 +3050,16 @@ public class Home extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(jLabel52)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jComboBox7, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jComboBox7, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
                         .addComponent(jLabel53)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jComboBox8, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jComboBox8, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel54)
                         .addGap(18, 18, 18)
-                        .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton24)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
                         .addComponent(jButton25, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -3022,7 +3078,6 @@ public class Home extends javax.swing.JFrame {
                     .addComponent(jComboBox8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel54)
                     .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton24, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton25, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton19, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -4180,6 +4235,30 @@ public class Home extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jButton25ActionPerformed
 
+    private void jTextField7KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField7KeyReleased
+        loadProducts();
+
+    }//GEN-LAST:event_jTextField7KeyReleased
+
+    private void jComboBox7ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox7ItemStateChanged
+        loadProducts();
+    }//GEN-LAST:event_jComboBox7ItemStateChanged
+
+    private void jComboBox8ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox8ItemStateChanged
+        loadProducts();
+    }//GEN-LAST:event_jComboBox8ItemStateChanged
+
+    private void jTable10MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable10MouseClicked
+        if (evt.getButton() == MouseEvent.BUTTON1) {
+            if (evt.getClickCount() == 1) {
+                if (jTable10.getSelectedRowCount() == 1) {
+                    int row = jTable10.getSelectedRow();
+                   
+                }
+            }
+        }
+    }//GEN-LAST:event_jTable10MouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -4216,7 +4295,6 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JButton jButton21;
     private javax.swing.JButton jButton22;
     private javax.swing.JButton jButton23;
-    private javax.swing.JButton jButton24;
     private javax.swing.JButton jButton25;
     private javax.swing.JButton jButton26;
     private javax.swing.JButton jButton27;
@@ -4440,7 +4518,7 @@ public class Home extends javax.swing.JFrame {
         if (option == JOptionPane.YES_OPTION) {
             Date logouttime = new Date();
             SimpleDateFormat logouttimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-            SplashScreen.loginRecords.severe("Logout :" + SignIn.getEmplyeeID() + " : " + SignIn.getEmployeeName() + " : at " + logouttimeFormat.format(logouttime));
+            SplashScreen.loginRecords.log(Level.SEVERE, "Logout :{0} : {1} : at {2}", new Object[]{SignIn.getEmplyeeID(), SignIn.getEmployeeName(), logouttimeFormat.format(logouttime)});
 
             if (logOrClose.equals("Logout")) {
                 this.dispose();
@@ -4485,17 +4563,5 @@ public class Home extends javax.swing.JFrame {
     private String formatDate(String format, Date date) {
         SimpleDateFormat dateFormat = new SimpleDateFormat(format);
         return dateFormat.format(date);
-    }
-
-    private void loadProductTable() {
-        DefaultTableModel model = (DefaultTableModel) jTable10.getModel();
-        model.setRowCount(0);
-
-        try {
-
-        } catch (Exception e) {
-            SplashScreen.exceptionRecords.log(Level.WARNING, "Unable to Load products", e);
-            
-        }
     }
 }
