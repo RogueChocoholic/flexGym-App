@@ -5,6 +5,7 @@
 package model;
 
 import gui.AddMember;
+import gui.AddNewStock;
 import gui.AddSupplier;
 import gui.AddTrainers;
 import gui.CreateNewSession;
@@ -20,4 +21,5 @@ public class FrameStorage {
     public static AddSupplier updateSupplierFrame;
     public static StaffRegistration staffRegistration;
     public static AddMember addMemberFrame;
+    public static AddNewStock addNewStockFrame;
 }
