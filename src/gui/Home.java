@@ -44,6 +44,7 @@ import java.sql.DriverManager;
 import java.util.Random;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import model.FrameStorage;
 import model.ModifyTables;
 
@@ -777,6 +778,7 @@ public class Home extends javax.swing.JFrame {
 //        if (!SignIn.getemployeeType().equals("Administrator")) {
 //            jButton1.setVisible(false);
 //        }
+        dashButtonChanges(jButton2);
     }
 
     public JTextField getTrainerIDTextField() {
@@ -1158,15 +1160,15 @@ public class Home extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jButton16, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
                     .addComponent(jButton39, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(18, Short.MAX_VALUE))
+                    .addComponent(jButton16, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
+                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(68, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -4284,7 +4286,7 @@ public class Home extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton28ActionPerformed
 
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
-      if (FrameStorage.addNewStockFrame == null) {
+        if (FrameStorage.addNewStockFrame == null) {
             FrameStorage.addNewStockFrame = new AddNewStock();
             FrameStorage.addNewStockFrame.setVisible(true);
 
@@ -4541,11 +4543,56 @@ public class Home extends javax.swing.JFrame {
         button.setBackground(new java.awt.Color(255, 111, 0));
         button.setForeground(new java.awt.Color(255, 255, 255));
 
+        int buttonWidth = button.getWidth();
+        int buttonHeight = button.getHeight();
+
+        Thread t = new Thread(
+                () -> {
+                    for (int i = buttonWidth; i <= 350; i += 1) {
+                        int finall = i;
+                        SwingUtilities.invokeLater(() -> {
+                            button.setSize(finall, buttonHeight);
+                            System.out.println(finall);
+                        });
+
+                        try {
+
+                            Thread.sleep(2);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                }
+        );
+        t.start();
         newButtons.remove(button);
 
         for (JButton unPressed : newButtons) {
             unPressed.setBackground(new java.awt.Color(240, 240, 240));
             unPressed.setForeground(new java.awt.Color(46, 59, 78));
+            int unpressedWidth = unPressed.getWidth();
+            Thread t2 = new Thread(
+                    () -> {
+                        
+                        for (int i = unpressedWidth; i >= 250; i -= 1) {
+                            int finall = i;
+                            SwingUtilities.invokeLater(() -> {
+                                unPressed.setSize(finall, buttonHeight);
+                                System.out.println(finall);
+                            });
+
+                            try {
+
+                                Thread.sleep(2);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                    }
+            );
+            t2.start();
 //            System.out.println(unPressed.getText());
         }
     }
