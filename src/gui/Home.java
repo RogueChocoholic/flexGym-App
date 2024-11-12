@@ -101,7 +101,7 @@ public class Home extends javax.swing.JFrame {
         loadSuppliers();
         loadInventoryBrandCategory();
         loadProducts();
-        
+
     }
 
     private void loadProducts() {
@@ -1540,6 +1540,11 @@ public class Home extends javax.swing.JFrame {
         jButton11.setBackground(new java.awt.Color(255, 111, 0));
         jButton11.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
         jButton11.setForeground(new java.awt.Color(255, 255, 255));
+        jButton11.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton11ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -2920,6 +2925,11 @@ public class Home extends javax.swing.JFrame {
         jButton28.setText("Add Stock");
         jButton28.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
         jButton28.setForeground(new java.awt.Color(46, 59, 78));
+        jButton28.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton28ActionPerformed(evt);
+            }
+        });
 
         jButton29.setText("Edit Stock");
         jButton29.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
@@ -4253,11 +4263,38 @@ public class Home extends javax.swing.JFrame {
             if (evt.getClickCount() == 1) {
                 if (jTable10.getSelectedRowCount() == 1) {
                     int row = jTable10.getSelectedRow();
-                   
+
                 }
             }
         }
     }//GEN-LAST:event_jTable10MouseClicked
+
+    private void jButton28ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton28ActionPerformed
+        if (FrameStorage.addNewStockFrame == null) {
+            FrameStorage.addNewStockFrame = new AddNewStock();
+            FrameStorage.addNewStockFrame.setVisible(true);
+
+        } else if (FrameStorage.addNewStockFrame.isVisible()) {
+            FrameStorage.addNewStockFrame.toFront();
+        } else {
+            FrameStorage.addNewStockFrame.setVisible(true);
+        }
+
+
+    }//GEN-LAST:event_jButton28ActionPerformed
+
+    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
+      if (FrameStorage.addNewStockFrame == null) {
+            FrameStorage.addNewStockFrame = new AddNewStock();
+            FrameStorage.addNewStockFrame.setVisible(true);
+
+        } else if (FrameStorage.addNewStockFrame.isVisible()) {
+            FrameStorage.addNewStockFrame.toFront();
+        } else {
+            FrameStorage.addNewStockFrame.setVisible(true);
+        }
+
+    }//GEN-LAST:event_jButton11ActionPerformed
 
     /**
      * @param args the command line arguments
