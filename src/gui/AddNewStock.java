@@ -13,12 +13,15 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Random;
+import java.util.Vector;
 import java.util.logging.Level;
 import javax.swing.BorderFactory;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JTextField;
 import model.FrameStorage;
 import model.ModifyTables;
 import model.MySQL;
+import raven.toast.Notifications;
 
 /**
  *
@@ -27,9 +30,16 @@ import model.MySQL;
 public class AddNewStock extends javax.swing.JFrame {
 
     HashMap<String, String> supplierMap = new HashMap<>();
+    HashMap<String, String> productMap = new HashMap<>();
+    
+    HashMap<String, String> productTableMap = new HashMap<>();
 
     protected JTextField getSupplierField() {
         return jTextField4;
+    }
+
+    protected JTextField getProductField() {
+        return jTextField1;
     }
 
     public AddNewStock() {
@@ -48,7 +58,65 @@ public class AddNewStock extends javax.swing.JFrame {
 
         ModifyTables modifyTables = new ModifyTables();
         modifyTables.modifyTables(jPanel4, jTable1, jScrollPane2, false);
+        loadSizes();
+    }
 
+    private void addSizes() {
+        String newSize = jTextField5.getText();
+        boolean addStatus = true;
+
+        if (newSize.isBlank()) {
+            Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, 3000l, "Please Include a size before inserting");
+
+        } else if (productMap.get("pid") == null) {
+            Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, 3000l, "Please select a product before inserting");
+
+        } else {
+
+            try {
+                ResultSet sizeSet = MySQL.executeSearch("SELECT * FROM `productsizes` WHERE `product_pid` = '" + productMap.get("pid") + "' ");
+                while (sizeSet.next()) {
+                    if (sizeSet.getString("size").equals(newSize)) {
+                        addStatus = false;
+                        Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, 3000l, "Size Already Exists in the system!");
+                    }
+                }
+
+                if (addStatus) {
+                    MySQL.executeIUD("INSERT INTO `productsizes` (`size`,`product_pid`)"
+                            + " VALUES ('" + newSize + "','" + productMap.get("pid") + "') ");
+                    Notifications.getInstance().show(Notifications.Type.SUCCESS, Notifications.Location.TOP_CENTER, 3000l, "Size included in the system!");
+                    loadSizes();
+                    jTextField5.setText("");
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    void loadSizes() {
+        Vector<String> vector = new Vector<>();
+
+        try {
+            if (productMap.get("pid") == null) {
+                DefaultComboBoxModel model = new DefaultComboBoxModel(vector);
+                jComboBox1.setModel(model);
+                jComboBox1.setEnabled(false);
+            } else {
+                ResultSet sizeSet = MySQL.executeSearch("SELECT * FROM `productsizes` WHERE `product_pid` = '" + productMap.get("pid") + "' ");
+                jComboBox1.setEnabled(true);
+
+                while (sizeSet.next()) {
+                    vector.add(sizeSet.getString("size"));
+                }
+                jComboBox1.setModel(new DefaultComboBoxModel<>(vector));
+
+            }
+        } catch (Exception e) {
+            SplashScreen.exceptionRecords.log(Level.WARNING, "Unable to load sizes", e);
+        }
     }
 
     private void generateBarcode() {
@@ -68,7 +136,7 @@ public class AddNewStock extends javax.swing.JFrame {
                 generateBarcode();
             }
         } catch (Exception e) {
-            SplashScreen.exceptionRecords.log(Level.WARNING, "Unable to create member id", e);
+            SplashScreen.exceptionRecords.log(Level.WARNING, "Unable to create barcode", e);
         }
         jTextField3.setText(barCode);
         jTextField3.setEditable(false);
@@ -202,6 +270,11 @@ public class AddNewStock extends javax.swing.JFrame {
         jButton1.setBackground(new java.awt.Color(255, 160, 64));
         jButton1.setFont(new java.awt.Font("Poppins", 1, 12)); // NOI18N
         jButton1.setForeground(new java.awt.Color(249, 249, 249));
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jLabel3.setText("Details");
         jLabel3.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
@@ -211,7 +284,8 @@ public class AddNewStock extends javax.swing.JFrame {
         jLabel4.setText("Size");
         jLabel4.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "kovi", "kovi21", "hi" }));
+        jComboBox1.setEnabled(false);
         jComboBox1.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
 
         jLabel5.setText("Quantity");
@@ -247,6 +321,11 @@ public class AddNewStock extends javax.swing.JFrame {
         jButton4.setBackground(new java.awt.Color(255, 160, 64));
         jButton4.setFont(new java.awt.Font("Poppins", 1, 12)); // NOI18N
         jButton4.setForeground(new java.awt.Color(249, 249, 249));
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         jLabel6.setText("Buying Price");
         jLabel6.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
@@ -368,7 +447,7 @@ public class AddNewStock extends javax.swing.JFrame {
                             .addComponent(jTextField3)
                             .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 243, Short.MAX_VALUE)
                             .addComponent(jTextField1))
-                        .addGap(0, 2, Short.MAX_VALUE)
+                        .addGap(0, 14, Short.MAX_VALUE)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addGroup(jPanel3Layout.createSequentialGroup()
@@ -397,17 +476,17 @@ public class AddNewStock extends javax.swing.JFrame {
                                 .addComponent(jLabel4)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel6)
                                     .addComponent(jLabel7))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 88, Short.MAX_VALUE)
+                                .addGap(21, 21, 21)
                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(jFormattedTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 246, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jFormattedTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 246, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 88, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel8)
                                     .addComponent(jLabel9))
@@ -640,7 +719,7 @@ public class AddNewStock extends javax.swing.JFrame {
     private void jTextField3KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField3KeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             jTextField3.setEditable(false);
-            System.out.println("works");
+            jTextField2.grabFocus();
         }
     }//GEN-LAST:event_jTextField3KeyReleased
 
@@ -648,6 +727,15 @@ public class AddNewStock extends javax.swing.JFrame {
         SelectSupplier sSupplier = new SelectSupplier(this, true, this);
         sSupplier.setVisible(true);
     }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        SelectProduct sProduct = new SelectProduct(this, true, this);
+        sProduct.setVisible(true);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        addSizes();
+    }//GEN-LAST:event_jButton4ActionPerformed
 
     /**
      * @param args the command line arguments
