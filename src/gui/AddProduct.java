@@ -207,6 +207,7 @@ public class AddProduct extends javax.swing.JDialog {
             } else {
                 MySQL.executeIUD("INSERT INTO `product` VALUES ('" + pid + "','" + pName + "','" + brandId + "','" + catId + "')");
                 Notifications.getInstance().show(Notifications.Type.SUCCESS, Notifications.Location.TOP_CENTER, 4000l, "Product added successfully!");
+                this.dispose();
             }
         } catch (Exception e) {
             e.printStackTrace();

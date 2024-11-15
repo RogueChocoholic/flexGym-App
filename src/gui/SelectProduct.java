@@ -16,32 +16,32 @@ import model.ModifyTables;
 import model.MySQL;
 
 public class SelectProduct extends javax.swing.JDialog {
-
+    
     HashMap<String, String> brandMap = new HashMap<>();
     HashMap<String, String> categoryMap = new HashMap<>();
     AddNewStock addStockFrame;
-
+    
     public SelectProduct(java.awt.Frame parent, boolean modal, AddNewStock addStockFrame) {
         super(parent, modal);
         initComponents();
         this.addStockFrame = addStockFrame;
         init();
     }
-
+    
     private void init() {
         ModifyTables modifyTables = new ModifyTables();
         modifyTables.modifyTables(jPanel2, jTable1, jScrollPane1, false);
-
+        
         loadInventoryBrandCategory();
         loadProducts();
     }
-
+    
     private void loadProducts() {
         String search = " WHERE ";
         String productName = jTextField1.getText();
         search += " name LIKE '%" + productName + "%' ";
         String brandText = String.valueOf(jComboBox2.getSelectedItem());
-
+        
         if (!brandText.equals("All Brands")) {
             String brand = brandMap.get(brandText);
             search += " AND `brand_brand_id` = '" + brand + "' ";
@@ -51,7 +51,7 @@ public class SelectProduct extends javax.swing.JDialog {
             String category = categoryMap.get(categoryText);
             search += " AND `Category_cat_id` = '" + category + "' ";
         }
-
+        
         String orderBy = " ";
         switch (jComboBox3.getSelectedIndex()) {
             case 0:
@@ -74,22 +74,22 @@ public class SelectProduct extends javax.swing.JDialog {
             default:
                 break;
         }
-
+        
         try {
             ResultSet productSet = MySQL.executeSearch("SELECT * FROM `product` INNER JOIN `category`"
                     + " ON `category`.`cat_id` = `product`.`Category_cat_id` INNER JOIN `brand` ON "
                     + " `brand`.`brand_id` = `product`.`brand_brand_id` " + search + " " + "ORDER BY " + orderBy);
-
+            
             DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
             model.setRowCount(0);
-
+            
             while (productSet.next()) {
                 Vector<String> vector = new Vector<>();
                 vector.add(productSet.getString("pid"));
                 vector.add(productSet.getString("name"));
                 vector.add(productSet.getString("brand_name"));
                 vector.add(productSet.getString("cat_name"));
-
+                
                 model.addRow(vector);
             }
             jTable1.setModel(model);
@@ -98,7 +98,7 @@ public class SelectProduct extends javax.swing.JDialog {
             e.printStackTrace();
         }
     }
-
+    
     private void loadInventoryBrandCategory() {
         try {
             ResultSet brandlRs = MySQL.executeSearch("SELECT * FROM `brand`");
@@ -110,7 +110,7 @@ public class SelectProduct extends javax.swing.JDialog {
             }
             DefaultComboBoxModel brandModel = new DefaultComboBoxModel(brandVec);
             jComboBox2.setModel(brandModel);
-
+            
             ResultSet catlRs = MySQL.executeSearch("SELECT * FROM `category`");
             Vector<String> catVec = new Vector<>();
             catVec.add("All Categories");
@@ -125,7 +125,7 @@ public class SelectProduct extends javax.swing.JDialog {
             e.printStackTrace();
         }
     }
-
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -329,10 +329,12 @@ public class SelectProduct extends javax.swing.JDialog {
                     addStockFrame.productMap.put("brand", String.valueOf(jTable1.getValueAt(row, 2)));
                     addStockFrame.loadSizes();
                     addStockFrame.getProductField().setText(String.valueOf(jTable1.getValueAt(row, 1)));
+                    addStockFrame.getBrandLabel().setText(String.valueOf(jTable1.getValueAt(row, 2)));
+                    addStockFrame.getCategoryLabel().setText(String.valueOf(jTable1.getValueAt(row, 3)));
                     this.dispose();
                 }
             }
-
+            
         }
     }//GEN-LAST:event_jTable1MouseClicked
 
