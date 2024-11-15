@@ -103,6 +103,10 @@ public class Home extends javax.swing.JFrame {
         loadInventoryBrandCategory();
         loadProducts();
 
+        jTextField5.setText("");
+        jTextField7.setText("");
+        jComboBox7.setSelectedIndex(0);
+        jComboBox8.setSelectedIndex(0);
     }
 
     private void loadProducts() {
@@ -4204,16 +4208,24 @@ public class Home extends javax.swing.JFrame {
     private void jButton25ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton25ActionPerformed
         String pid = jTextField5.getText();
         String brandName = String.valueOf(jComboBox7.getSelectedItem());
-        String brandId = brandMAp.get(brandName);
+
         String catName = String.valueOf(jComboBox8.getSelectedItem());
-        String catId = categoryMap.get(catName);
         String productName = jTextField7.getText();
 
         if (pid.isBlank()) {
             Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, 4000l, "Please generate a product ID if there is no barcode ID available.");
         } else if (productName.isBlank()) {
             Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, 4000l, "Please enter the product name.");
-        } else {
+        } else if (brandName.equals("All Brands")) {
+            Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, 4000l, "Please select the brand.");
+
+        } else if (catName.equals("All Categories")) {
+            Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, 4000l, "Please select the product Category.");
+            
+        }  else {
+            String brandId = brandMAp.get(brandName);
+            String catId = categoryMap.get(catName);
+
             try {
                 ResultSet PidResultSet = MySQL.executeSearch("SELECT `pid` FROM `product` WHERE `pid` = '" + pid + "'  ");
 
@@ -4574,7 +4586,7 @@ public class Home extends javax.swing.JFrame {
             int unpressedWidth = unPressed.getWidth();
             Thread t2 = new Thread(
                     () -> {
-                        
+
                         for (int i = unpressedWidth; i >= 250; i -= 1) {
                             int finall = i;
                             SwingUtilities.invokeLater(() -> {

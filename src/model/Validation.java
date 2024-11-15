@@ -31,6 +31,12 @@ public enum Validation {
             return "^(?:19|20)?\\d{2}(?:[0-35-8]\\d\\d(?<!(?:000|500|36[7-9]|3[7-9]\\d|86[7-9]|8[7-9]\\d)))\\d{4}(?i:v|x)$";
         }
 
+    }, DATE {
+        @Override
+        public String validation() {
+            return "^[0-9]{4}-[0-9]{2}-[0-9]{2}";
+        }
+
     };
 
     public String validation() {
