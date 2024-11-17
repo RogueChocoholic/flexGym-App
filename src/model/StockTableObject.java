@@ -2,6 +2,20 @@ package model;
 
 public class StockTableObject {
 
+    /**
+     * @return the category
+     */
+    public String getCategory() {
+        return category;
+    }
+
+    /**
+     * @param category the category to set
+     */
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
     private String pid;
     private String name;
     private String stockID;
@@ -14,6 +28,7 @@ public class StockTableObject {
     private String mfd;
     private String exp;
     private String barcode;
+    private String category;
 
     public String getPid() {
         return pid;

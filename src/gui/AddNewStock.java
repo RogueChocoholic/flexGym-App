@@ -214,6 +214,9 @@ public class AddNewStock extends javax.swing.JFrame {
         jButton8 = new javax.swing.JButton();
         jLabel17 = new javax.swing.JLabel();
         jFormattedTextField4 = new javax.swing.JFormattedTextField();
+        jButton12 = new javax.swing.JButton();
+        jLabel18 = new javax.swing.JLabel();
+        jFormattedTextField5 = new javax.swing.JFormattedTextField();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem3 = new javax.swing.JMenuItem();
@@ -222,14 +225,19 @@ public class AddNewStock extends javax.swing.JFrame {
 
         jPopupMenu1.setFont(new java.awt.Font("Poppins", 0, 12)); // NOI18N
 
-        jMenuItem5.setFont(new java.awt.Font("Poppins", 1, 12)); // NOI18N
         jMenuItem5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/icons8-edit-20.png"))); // NOI18N
         jMenuItem5.setText("Edit");
+        jMenuItem5.setFont(new java.awt.Font("Poppins", 0, 12)); // NOI18N
+        jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem5ActionPerformed(evt);
+            }
+        });
         jPopupMenu1.add(jMenuItem5);
 
-        jMenuItem4.setFont(new java.awt.Font("Poppins", 1, 12)); // NOI18N
         jMenuItem4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/icons8-delete-20.png"))); // NOI18N
         jMenuItem4.setText("Delete");
+        jMenuItem4.setFont(new java.awt.Font("Poppins", 0, 12)); // NOI18N
         jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem4ActionPerformed(evt);
@@ -498,11 +506,11 @@ public class AddNewStock extends javax.swing.JFrame {
 
         jLabel14.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
 
+        jButton11.setText("Edit Stock");
         jButton11.setBackground(new java.awt.Color(255, 160, 64));
+        jButton11.setEnabled(false);
         jButton11.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
         jButton11.setForeground(new java.awt.Color(249, 249, 249));
-        jButton11.setText("Edit Stock");
-        jButton11.setEnabled(false);
         jButton11.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton11ActionPerformed(evt);
@@ -652,15 +660,37 @@ public class AddNewStock extends javax.swing.JFrame {
         jButton8.setBackground(new java.awt.Color(255, 111, 0));
         jButton8.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
         jButton8.setForeground(new java.awt.Color(249, 249, 249));
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton8ActionPerformed(evt);
+            }
+        });
 
-        jLabel17.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
         jLabel17.setText("Total : ");
+        jLabel17.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
 
+        jFormattedTextField4.setEditable(false);
         jFormattedTextField4.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
         jFormattedTextField4.setHorizontalAlignment(javax.swing.JTextField.TRAILING);
         jFormattedTextField4.setText("0.00");
-        jFormattedTextField4.setEnabled(false);
         jFormattedTextField4.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
+
+        jButton12.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
+        jButton12.setForeground(new java.awt.Color(255, 111, 0));
+        jButton12.setText("Cancel");
+        jButton12.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton12ActionPerformed(evt);
+            }
+        });
+
+        jLabel18.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
+        jLabel18.setText("Payment");
+
+        jFormattedTextField5.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
+        jFormattedTextField5.setHorizontalAlignment(javax.swing.JTextField.TRAILING);
+        jFormattedTextField5.setText("0.00");
+        jFormattedTextField5.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -677,7 +707,13 @@ public class AddNewStock extends javax.swing.JFrame {
                 .addComponent(jLabel17)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jFormattedTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 228, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(43, 43, 43)
+                .addComponent(jLabel18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jFormattedTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 228, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton12, javax.swing.GroupLayout.PREFERRED_SIZE, 246, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(55, 55, 55))
         );
@@ -689,10 +725,15 @@ public class AddNewStock extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(27, 27, 27)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel17)
-                    .addComponent(jFormattedTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton12, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel17)
+                        .addComponent(jFormattedTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel18)
+                            .addComponent(jFormattedTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(30, 30, 30))
         );
 
@@ -941,44 +982,69 @@ public class AddNewStock extends javax.swing.JFrame {
                 statusCount++;
             }
         }
-        System.out.println(productMap);
         if (statusCount == 7) {
-            try {
-                ResultSet stockRS = MySQL.executeSearch("SELECT * FROM `stock` INNER JOIN `productsizes`"
-                        + " ON `productsizes`.`sizeID` = `stock`.`stock_id` INNER JOIN `product` ON `productsizes`.`product_pid` "
-                        + "= `product`.`pid` WHERE `stock`.`details` = '" + details + "' AND `productsizes`.`sizeID` = '" + sizeMap.get(size) + "' "
-                        + "AND `stock`.`mfd` = '" + String.valueOf(mfd) + "' AND `stock`.`exp` = '" + String.valueOf(exp) + "' "
-                        + " AND `price` = '" + String.valueOf(sellingPrice) + "' ");
-                if (stockRS.next()) {
-
-                    stockID = stockRS.getString("stock_id");
-                } else {
-                    stockID = generateBarcode();
+            boolean duplicate = false;
+            int duplicateRow = 0;
+            for (StockTableObject stockTableObject : productVector) {
+                if (stockTableObject.getPid().equals(productMap.get("pid"))
+                        && stockTableObject.getDetails().equals(details)
+                        && Double.parseDouble(stockTableObject.getBuyingPrice()) == buyingPrice
+                        && Double.parseDouble(stockTableObject.getSellingPrice()) == sellingPrice
+                        && mfd.isEqual(LocalDate.parse(stockTableObject.getMfd()))
+                        && exp.isEqual(LocalDate.parse(stockTableObject.getExp()))
+                        && size.equals(stockTableObject.getSize())) {
+                    duplicate = true;
+                    break;
                 }
+                duplicateRow++;
+            }
 
-                StockTableObject stockElement = new StockTableObject();
-
-                stockElement.setPid(productMap.get("pid"));
-                stockElement.setName(productMap.get("name"));
-                stockElement.setStockID(stockID);
-                stockElement.setBrand(productMap.get("brand"));
-                stockElement.setDetails(details);
-                stockElement.setSize(size);
-                stockElement.setQty(String.valueOf(qty));
-                stockElement.setBuyingPrice(String.valueOf(buyingPrice));
-                stockElement.setSellingPrice(String.valueOf(sellingPrice));
-                stockElement.setMfd(String.valueOf(mfd));
-                stockElement.setExp(String.valueOf(exp));
-                stockElement.setBarcode(barcode);
-
-                productVector.add(stockElement);
+            if (duplicate) {
+                System.out.println(productVector.get(duplicateRow).getName());
+                int newQty = qty + Integer.parseInt(productVector.get(duplicateRow).getQty());
+                productVector.get(duplicateRow).setQty(String.valueOf(newQty));
                 loadTable();
                 refresh();
-            } catch (Exception e) {
-                SplashScreen.exceptionRecords.log(Level.SEVERE, "Couldn't connect to db at add New stock frame. Database error.", e);
-                e.printStackTrace();
-                Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Connection failure. Please check your network connection and try again.");
+            } else {
 
+                try {
+                    ResultSet stockRS = MySQL.executeSearch("SELECT * FROM `stock` INNER JOIN `productsizes`"
+                            + " ON `productsizes`.`sizeID` = `stock`.`stock_id` INNER JOIN `product` ON `productsizes`.`product_pid` "
+                            + "= `product`.`pid` WHERE `stock`.`details` = '" + details + "' AND `productsizes`.`sizeID` = '" + sizeMap.get(size) + "' "
+                            + "AND `stock`.`mfd` = '" + String.valueOf(mfd) + "' AND `stock`.`exp` = '" + String.valueOf(exp) + "' "
+                            + " AND `price` = '" + String.valueOf(sellingPrice) + "' ");
+                    if (stockRS.next()) {
+
+                        stockID = stockRS.getString("stock_id");
+                    } else {
+                        stockID = generateBarcode();
+                    }
+
+                    StockTableObject stockElement = new StockTableObject();
+
+                    stockElement.setPid(productMap.get("pid"));
+                    stockElement.setName(productMap.get("name"));
+                    stockElement.setStockID(stockID);
+                    stockElement.setBrand(productMap.get("brand"));
+                    stockElement.setDetails(details);
+                    stockElement.setSize(size);
+                    stockElement.setQty(String.valueOf(qty));
+                    stockElement.setBuyingPrice(String.valueOf(buyingPrice));
+                    stockElement.setSellingPrice(String.valueOf(sellingPrice));
+                    stockElement.setMfd(String.valueOf(mfd));
+                    stockElement.setExp(String.valueOf(exp));
+                    stockElement.setBarcode(barcode);
+                    stockElement.setCategory(productMap.get("category"));
+
+                    productVector.add(stockElement);
+                    loadTable();
+                    refresh();
+                } catch (Exception e) {
+                    SplashScreen.exceptionRecords.log(Level.SEVERE, "Couldn't connect to db at add New stock frame. Database error.", e);
+                    e.printStackTrace();
+                    Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Connection failure. Please check your network connection and try again.");
+
+                }
             }
         }
 
@@ -1000,8 +1066,253 @@ public class AddNewStock extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
-        // TODO add your handling code here:
+        // updating the rows in the table in frame (NOT THE DATABASE) 
+        if (jTable1.getSelectedRowCount() != 1) {
+            Notifications.getInstance().show(Notifications.Type.INFO, Notifications.Location.TOP_CENTER, 3000l, "Invalid number of rows Selected. Please select one row at a time to edit.");
+        } else {
+            String details = jTextField2.getText();
+            int qty = Integer.parseInt(jFormattedTextField1.getText());
+            String size = String.valueOf(jComboBox1.getSelectedItem());
+            String barcode = jTextField3.getText();
+            double buyingPrice = Double.parseDouble(jFormattedTextField2.getText());
+            double sellingPrice = Double.parseDouble(jFormattedTextField3.getText());
+
+            LocalDate mfd = datePicker1.getDate();
+            LocalDate exp = datePicker2.getDate();
+
+            int row = jTable1.getSelectedRow();
+            StockTableObject stockObject = productVector.get(row);
+
+            String stockID = stockObject.getStockID();
+
+            boolean mfdValidation = validateDate(String.valueOf(mfd));
+            boolean expValidation = validateDate(String.valueOf(exp));
+
+            int statusCount = 0;                // this adds one to every validation and proceeds with the process only if the count == the number equal to all the validations. Just testing if it works as i want. GO BACK TO OLD METHOD IF CONFUSED!!!!
+            if (productMap.isEmpty()) {
+                Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Please select a product.");
+            } else {
+                statusCount++;
+            }
+            if (details.isBlank()) {
+                Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Please enter stock details.");
+            } else {
+                statusCount++;
+            }
+            if (qty == 0) {
+                Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Quantity should be higher to add to stock.");
+            } else {
+                statusCount++;
+            }
+            if (barcode.isBlank()) {
+                Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Please scan or generate a barcode for the product.");
+            } else {
+                statusCount++;
+            }
+            if (size.equals("null")) {
+                Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Please select a size for the product stock.");
+            } else {
+                statusCount++;
+            }
+            if (String.valueOf(mfd).equals("null") || String.valueOf(exp).equals("null")) {
+                Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Date of manufacture and expiry should not be kept empty.");
+            } else if (mfd.isAfter(exp)) {
+                Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Manufactured date should be a date before the date of expiry.");
+            } else {
+                statusCount++;
+            }
+            if (statusCount >= 6) {
+
+                if (buyingPrice == 0.00 && sellingPrice == 0.00) {
+                    int freePriceOption = JOptionPane.showConfirmDialog(this, "Buying and Selling prices are set to 0 making them free items."
+                            + " Continue regardless?", "0 price items detected!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+                    if (freePriceOption == JOptionPane.YES_OPTION) {
+                        statusCount++;
+                    }
+
+                } else if (buyingPrice == 0.00 && sellingPrice != 0.00) {
+                    int charityPriceOption = JOptionPane.showConfirmDialog(this, "Buying price is set to 0."
+                            + " Continue regardless?", "Dontations detected!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+                    if (charityPriceOption == JOptionPane.YES_OPTION) {
+                        statusCount++;
+                    }
+
+                } else if (sellingPrice == 0.00 && buyingPrice != 0.00) {
+                    int charityPriceOption = JOptionPane.showConfirmDialog(this, "Selling price is set to 0."
+                            + " Continue regardless?", "Charity goods detected!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+                    if (charityPriceOption == JOptionPane.YES_OPTION) {
+                        statusCount++;
+                    }
+
+                } else if (buyingPrice >= sellingPrice) {
+                    int buyingPriceOption = JOptionPane.showConfirmDialog(this, "Buying price is set to equal or higher than the selling"
+                            + " price. This would result in a loss of profit. Continue Regardless?", "Buying price is equal or higher than the selling price!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+                    if (buyingPriceOption == JOptionPane.YES_OPTION) {
+                        statusCount++;
+                    }
+                } else {
+                    statusCount++;
+                }
+                // check if nother row has the new details
+                if (statusCount == 7) {
+                    boolean duplicate = false;
+                    int duplicateRow = 0;
+                    for (StockTableObject stockTableObject : productVector) {
+                        if (duplicateRow != row) {
+                            if (stockTableObject.getPid().equals(productMap.get("pid"))
+                                    && stockTableObject.getDetails().equals(details)
+                                    && Double.parseDouble(stockTableObject.getBuyingPrice()) == buyingPrice
+                                    && Double.parseDouble(stockTableObject.getSellingPrice()) == sellingPrice
+                                    && mfd.isEqual(LocalDate.parse(stockTableObject.getMfd()))
+                                    && exp.isEqual(LocalDate.parse(stockTableObject.getExp()))
+                                    && size.equals(stockTableObject.getSize())) {
+                                duplicate = true;
+                                break;
+                            }
+                        }
+                        duplicateRow++;
+
+                    }
+                    if (duplicate) {
+                        JOptionPane.showMessageDialog(this, "A row with these details already exists.", "Duplicating action detected", JOptionPane.INFORMATION_MESSAGE);
+                    } else if (details.equals(String.valueOf(jTable1.getValueAt(row, 4)))
+                            && productMap.get("pid").equals(String.valueOf(jTable1.getValueAt(row, 0)))
+                            && size.equals(String.valueOf(jTable1.getValueAt(row, 5)))
+                            && String.valueOf(qty).equals(String.valueOf(jTable1.getValueAt(row, 6)))
+                            && buyingPrice == Double.parseDouble(String.valueOf(jTable1.getValueAt(row, 7)))
+                            && sellingPrice == Double.parseDouble(String.valueOf(jTable1.getValueAt(row, 8)))
+                            && mfd.isEqual(LocalDate.parse(String.valueOf(jTable1.getValueAt(row, 9))))
+                            && exp.isEqual(LocalDate.parse(String.valueOf(jTable1.getValueAt(row, 10))))
+                            && barcode.equals(String.valueOf(jTable1.getValueAt(row, 11)))) {
+                        int option = JOptionPane.showConfirmDialog(this, "No changes detected. Abort editing?", "No changes detected!", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
+                        if (option == JOptionPane.YES_OPTION) {
+                            refresh();
+
+                        }
+                    } else {
+                        StockTableObject stockElement = productVector.get(row);
+
+                        stockElement.setPid(productMap.get("pid"));
+                        stockElement.setName(productMap.get("name"));
+                        stockElement.setStockID(stockID);
+                        stockElement.setBrand(productMap.get("brand"));
+                        stockElement.setDetails(details);
+                        stockElement.setSize(size);
+                        stockElement.setQty(String.valueOf(qty));
+                        stockElement.setBuyingPrice(String.valueOf(buyingPrice));
+                        stockElement.setSellingPrice(String.valueOf(sellingPrice));
+                        stockElement.setMfd(String.valueOf(mfd));
+                        stockElement.setExp(String.valueOf(exp));
+                        stockElement.setBarcode(barcode);
+                        stockElement.setCategory(productMap.get("category"));
+                        refresh();
+                        loadTable();
+                    }
+
+                    System.out.println(statusCount);
+
+                }
+
+            }
+        }
     }//GEN-LAST:event_jButton11ActionPerformed
+
+    private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
+        jButton7.setEnabled(false);
+        jButton11.setEnabled(true);
+        jTable1.setEnabled(false);
+
+        int row = jTable1.getSelectedRow();
+        StockTableObject stockObject = productVector.get(row);
+
+        jTextField1.setText(stockObject.getName());
+        jTextField2.setText(stockObject.getDetails());
+        jTextField3.setText(stockObject.getBarcode());
+        jTextField5.setText("");
+
+        jLabel14.setText(stockObject.getCategory());
+        jLabel15.setText(stockObject.getBrand());
+
+        productMap.clear();
+        productMap.put("pid", stockObject.getPid());
+        productMap.put("name", stockObject.getName());
+        productMap.put("brand", stockObject.getBrand());
+        productMap.put("category", stockObject.getCategory());
+
+        loadSizes();
+        jFormattedTextField1.setText(stockObject.getQty());
+        jFormattedTextField2.setText(stockObject.getBuyingPrice());
+        jFormattedTextField3.setText(stockObject.getSellingPrice());
+        datePicker1.setDate(LocalDate.parse(stockObject.getMfd()));
+        datePicker2.setDate(LocalDate.parse(stockObject.getExp()));
+
+    }//GEN-LAST:event_jMenuItem5ActionPerformed
+
+    private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_jButton12ActionPerformed
+
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        String employee = SignIn.getEmployeeName();
+        String employeeID = SignIn.getEmplyeeID();
+
+        String supplier = supplierMap.get("name");
+        String supplierID = supplierMap.get("mobile");
+
+        double totalPrice = Double.parseDouble(jFormattedTextField4.getText());
+        double payment = Double.parseDouble(jFormattedTextField5.getText());
+
+        boolean allowUPdate = true;
+
+        if (jTextField4.getText().isBlank()) {
+            Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Please select a supplier first.");
+        } else {
+            int option = JOptionPane.showConfirmDialog(this, "Confirm stock update?", "Update Stock", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+            if (option == JOptionPane.YES_OPTION) {
+// insert to stock table
+                int rowCount = jTable1.getRowCount();
+                for (int i = 0; i < rowCount; i++) {
+                    try {
+                        ResultSet checkStockID = MySQL.executeSearch("SELECT `stock_id` FROM `stock` WHERE `stock_id` = '" + String.valueOf(jTable1.getValueAt(i, 0)) + "' ");
+
+                        if (checkStockID.next()) {
+                            Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Stock ID Already exists in the database. Please redo the update.");
+                            allowUPdate = false;
+                            break;
+                        }
+
+                    } catch (Exception e) {
+                        SplashScreen.exceptionRecords.log(Level.SEVERE, "Database Error.", e);
+                        e.printStackTrace();
+                        Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "There is a problem with the database. Please check you connection and try again.");
+                    }
+
+                }
+
+                if (allowUPdate) {
+                    for (int j = 0; j < rowCount; j++) {
+                        sizeMap.clear();
+                        StockTableObject stockObject = productVector.get(j);
+                        productMap.put("pid", stockObject.getPid());
+                        productMap.put("name", stockObject.getName());
+                        productMap.put("brand", stockObject.getBrand());
+                        productMap.put("category", stockObject.getCategory());
+                        try {
+                            ResultSet sizeSet = MySQL.executeSearch("SELECT * FROM `productsizes` WHERE `product_pid` = '" + String.valueOf(jTable1.getValueAt(j, 0)) + "' ");
+                            while (sizeSet.next()) {
+                                sizeMap.put(sizeSet.getString("size"), sizeSet.getString("sizeID"));
+                            }
+
+                        } catch (Exception e) {
+                            SplashScreen.exceptionRecords.log(Level.SEVERE, "Couldn't load sizes in stock adding process.", e);
+                            e.printStackTrace();
+                            Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "There is a problem with the database. Please check you connection and try again.");
+                        }
+                    }
+                }
+            }
+        }
+    }//GEN-LAST:event_jButton8ActionPerformed
 
     private void refresh() {
         jTextField1.setText("");
@@ -1020,6 +1331,10 @@ public class AddNewStock extends javax.swing.JFrame {
         productMap.clear();
         loadSizes();
 
+        jTable1.setEnabled(true);
+        jButton7.setEnabled(true);
+        jButton11.setEnabled(false);
+        jTable1.clearSelection();
     }
 
     public static void main(String args[]) {
@@ -1040,6 +1355,7 @@ public class AddNewStock extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton11;
+    private javax.swing.JButton jButton12;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
@@ -1053,6 +1369,7 @@ public class AddNewStock extends javax.swing.JFrame {
     private javax.swing.JFormattedTextField jFormattedTextField2;
     private javax.swing.JFormattedTextField jFormattedTextField3;
     private javax.swing.JFormattedTextField jFormattedTextField4;
+    private javax.swing.JFormattedTextField jFormattedTextField5;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -1061,6 +1378,7 @@ public class AddNewStock extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -1096,7 +1414,7 @@ public class AddNewStock extends javax.swing.JFrame {
             System.out.println("blank");
             return false;
         } else if (date.matches(Validation.DATE.validation())) {
-            System.out.println("yes");
+
             return true;
         }
         return false;

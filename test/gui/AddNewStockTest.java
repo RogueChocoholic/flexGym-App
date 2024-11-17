@@ -117,5 +117,19 @@ public class AddNewStockTest {
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
+
+    /**
+     * Test of validateDate method, of class AddNewStock.
+     */
+    @Test
+    public void testValidateDate() {
+        System.out.println("validateDate");
+        String date = "";
+        boolean expResult = false;
+        boolean result = AddNewStock.validateDate(date);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
     
 }
