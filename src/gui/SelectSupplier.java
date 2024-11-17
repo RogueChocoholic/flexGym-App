@@ -5,6 +5,7 @@
 package gui;
 
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.logging.Level;
 import model.ModifyTables;
@@ -14,6 +15,7 @@ import java.util.HashMap;
 import java.util.Vector;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.table.DefaultTableModel;
+import model.FrameStorage;
 import model.MySQL;
 
 public class SelectSupplier extends javax.swing.JDialog {
@@ -34,6 +36,7 @@ public class SelectSupplier extends javax.swing.JDialog {
 
         loadCompanies();
         loadSuppliers();
+        jTextField1.grabFocus();
     }
 
     private void loadSuppliers() {
@@ -129,6 +132,7 @@ public class SelectSupplier extends javax.swing.JDialog {
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Select Supplier");
@@ -144,6 +148,9 @@ public class SelectSupplier extends javax.swing.JDialog {
 
         jTextField1.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
         jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jTextField1KeyPressed(evt);
+            }
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 jTextField1KeyReleased(evt);
             }
@@ -154,6 +161,9 @@ public class SelectSupplier extends javax.swing.JDialog {
 
         jTextField2.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
         jTextField2.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jTextField2KeyPressed(evt);
+            }
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 jTextField2KeyReleased(evt);
             }
@@ -206,6 +216,11 @@ public class SelectSupplier extends javax.swing.JDialog {
                 jTable1MouseClicked(evt);
             }
         });
+        jTable1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jTable1KeyPressed(evt);
+            }
+        });
         jScrollPane1.setViewportView(jTable1);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -224,6 +239,15 @@ public class SelectSupplier extends javax.swing.JDialog {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(18, Short.MAX_VALUE))
         );
+
+        jButton1.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
+        jButton1.setForeground(new java.awt.Color(255, 160, 64));
+        jButton1.setText("Add Supplier");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -248,7 +272,8 @@ public class SelectSupplier extends javax.swing.JDialog {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -264,7 +289,9 @@ public class SelectSupplier extends javax.swing.JDialog {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(28, 28, 28)
-                .addComponent(jLabel1)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1)
+                    .addComponent(jButton1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
@@ -300,17 +327,7 @@ public class SelectSupplier extends javax.swing.JDialog {
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
         if (evt.getButton() == MouseEvent.BUTTON1) {
             if (evt.getClickCount() == 2) {
-                if (jTable1.getSelectedRowCount() == 1) {
-                    int row = jTable1.getSelectedRow();
-                    addStockFrame.supplierMap.put("mobile", String.valueOf(jTable1.getValueAt(row, 0)));
-                    addStockFrame.supplierMap.put("name", String.valueOf(jTable1.getValueAt(row, 1)));
-                    addStockFrame.supplierMap.put("email", String.valueOf(jTable1.getValueAt(row, 2)));
-                    addStockFrame.supplierMap.put("company", String.valueOf(jTable1.getValueAt(row, 3)));
-                    addStockFrame.supplierMap.put("registered_date", String.valueOf(jTable1.getValueAt(row, 4)));
-
-                    addStockFrame.getSupplierField().setText(String.valueOf(jTable1.getValueAt(row, 1)));
-                    this.dispose();
-                }
+                selectSupplier();
             }
 
         }
@@ -332,6 +349,50 @@ public class SelectSupplier extends javax.swing.JDialog {
         loadSuppliers();
     }//GEN-LAST:event_jComboBox2ItemStateChanged
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        this.dispose();
+        FrameStorage.addNewStockFrame.dispose();
+        if (FrameStorage.addSupplierFrame == null) {
+            AddSupplier adsupplier = new AddSupplier(true);
+            adsupplier.setVisible(true);
+            FrameStorage.addSupplierFrame = adsupplier;
+        } else {
+            if (FrameStorage.addSupplierFrame.isVisible()) {
+                FrameStorage.addSupplierFrame.toFront();
+            } else {
+                FrameStorage.addSupplierFrame.setVisible(true);
+            }
+
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jTextField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            jTable1.grabFocus();
+        }
+        if (evt.getKeyCode() == KeyEvent.VK_DOWN) {
+            jTable1.grabFocus();
+        }
+        if (evt.getKeyCode() == KeyEvent.VK_TAB) {
+            jTextField2.grabFocus();
+        }
+    }//GEN-LAST:event_jTextField1KeyPressed
+
+    private void jTextField2KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField2KeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            jTable1.grabFocus();
+        }
+        if (evt.getKeyCode() == KeyEvent.VK_DOWN) {
+            jTable1.grabFocus();
+        }
+    }//GEN-LAST:event_jTextField2KeyPressed
+
+    private void jTable1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTable1KeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            selectSupplier();
+        }
+    }//GEN-LAST:event_jTable1KeyPressed
+
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         FlatMacLightLaf.setup();
@@ -352,6 +413,7 @@ public class SelectSupplier extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JLabel jLabel1;
@@ -366,4 +428,18 @@ public class SelectSupplier extends javax.swing.JDialog {
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     // End of variables declaration//GEN-END:variables
+
+    private void selectSupplier() {
+        if (jTable1.getSelectedRowCount() == 1) {
+            int row = jTable1.getSelectedRow();
+            addStockFrame.supplierMap.put("mobile", String.valueOf(jTable1.getValueAt(row, 0)));
+            addStockFrame.supplierMap.put("name", String.valueOf(jTable1.getValueAt(row, 1)));
+            addStockFrame.supplierMap.put("email", String.valueOf(jTable1.getValueAt(row, 2)));
+            addStockFrame.supplierMap.put("company", String.valueOf(jTable1.getValueAt(row, 3)));
+            addStockFrame.supplierMap.put("registered_date", String.valueOf(jTable1.getValueAt(row, 4)));
+
+            addStockFrame.getSupplierField().setText(String.valueOf(jTable1.getValueAt(row, 1)));
+            this.dispose();
+        }
+    }
 }
