@@ -5,6 +5,7 @@ import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.io.InputStream;
 import java.sql.ResultSet;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Date;
@@ -41,10 +42,7 @@ public class PurchaseMembership extends javax.swing.JDialog {
         init();
         jTextField1.setText(member_id);
         this.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/resources/logo.png")));
-        loadMembers();
-        loadMemberships();
-        loadPayMethod();
-        invoice_id = generateInvoiceID();
+
 //        Notifications.getInstance().setJFrame(this);
     }
     
@@ -54,6 +52,11 @@ public class PurchaseMembership extends javax.swing.JDialog {
         jTable1.setDefaultRenderer(Object.class, renderer);
         jLabel14.setText(SignIn.getEmplyeeID());
         
+        loadMembers();
+        loadMemberships();
+        loadPayMethod();
+        invoice_id = generateInvoiceID();
+        loadPrice();
     }
     
     private String generateInvoiceID() {
@@ -162,6 +165,7 @@ public class PurchaseMembership extends javax.swing.JDialog {
     private String paymentMethod = "Cash";
     
     private void calculate() {
+        
         if (discountField.getText().isEmpty()) {
             
         } else {
@@ -200,8 +204,8 @@ public class PurchaseMembership extends javax.swing.JDialog {
             paymentField.setEditable(false);
             jButton1.setEnabled(true);
         }
-        
-        balanceField.setText(String.valueOf(balance));
+        DecimalFormat decim = new DecimalFormat("0.00");
+        balanceField.setText(String.valueOf(decim.format(balance)));
     }
     
     @SuppressWarnings("unchecked")
@@ -664,6 +668,9 @@ public class PurchaseMembership extends javax.swing.JDialog {
     }//GEN-LAST:event_jTextField1KeyReleased
 
     private void jComboBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox1ItemStateChanged
+        loadPrice();
+    }//GEN-LAST:event_jComboBox1ItemStateChanged
+    private void loadPrice() {
         LocalDate today = LocalDate.now();
         String type = String.valueOf(jComboBox1.getSelectedItem());
         LocalDate exp = today;
@@ -692,11 +699,10 @@ public class PurchaseMembership extends javax.swing.JDialog {
             jList2.setSelectedIndex(index);
             
         }
-        
-        totalField.setText(prices.get(1));
+        DecimalFormat decim = new DecimalFormat("0.00");
+        totalField.setText(String.valueOf(decim.format(Double.parseDouble(prices.get(1)))));
         calculate();
-    }//GEN-LAST:event_jComboBox1ItemStateChanged
-
+    }
     private void discountFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_discountFieldKeyReleased
         calculate();
     }//GEN-LAST:event_discountFieldKeyReleased
@@ -762,18 +768,27 @@ public class PurchaseMembership extends javax.swing.JDialog {
                                 if (expDate.isAfter(today) || expDate.isEqual(today)) {
                                     String changeDate = String.valueOf(jComboBox1.getSelectedItem());
                                     LocalDate oldEndtDate = LocalDate.parse(resultSet3.getString("expire_date"));
-                                    if (changeDate.equals("Day Pass")) {
-                                        oldEndtDate = oldEndtDate.plusDays(1);
-                                    } else if (changeDate.equals("Weekly Pass")) {
-                                        oldEndtDate = oldEndtDate.plusWeeks(1);
-                                    } else if (changeDate.equals("Monthly Pass")) {
-                                        oldEndtDate = oldEndtDate.plusMonths(1);
-                                    } else if (changeDate.equals("Quarterly Pass")) {
-                                        oldEndtDate = oldEndtDate.plusMonths(3);
-                                    } else if (changeDate.equals("Annual Pass")) {
-                                        oldEndtDate = oldEndtDate.plusYears(1);
-                                    } else if (changeDate.equals("Single Session Trial")) {
-                                        oldEndtDate = oldEndtDate.plusDays(1);
+                                    switch (changeDate) {
+                                        case "Day Pass":
+                                            oldEndtDate = oldEndtDate.plusDays(1);
+                                            break;
+                                        case "Weekly Pass":
+                                            oldEndtDate = oldEndtDate.plusWeeks(1);
+                                            break;
+                                        case "Monthly Pass":
+                                            oldEndtDate = oldEndtDate.plusMonths(1);
+                                            break;
+                                        case "Quarterly Pass":
+                                            oldEndtDate = oldEndtDate.plusMonths(3);
+                                            break;
+                                        case "Annual Pass":
+                                            oldEndtDate = oldEndtDate.plusYears(1);
+                                            break;
+                                        case "Single Session Trial":
+                                            oldEndtDate = oldEndtDate.plusDays(1);
+                                            break;
+                                        default:
+                                            break;
                                     }
                                     
                                     end_date = String.valueOf(oldEndtDate);
@@ -943,8 +958,8 @@ public class PurchaseMembership extends javax.swing.JDialog {
         datePicker1.clear();
         datePicker2.clear();
         
-        totalField.setText("");
-        balanceField.setText("");
+//        totalField.setText("");
+//        balanceField.setText("");
         paymentField.setText("");
         discountField.setText("");
         jComboBox2.setSelectedIndex(0);

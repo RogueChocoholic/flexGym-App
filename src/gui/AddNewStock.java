@@ -728,12 +728,12 @@ public class AddNewStock extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButton12, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel18)
+                        .addComponent(jFormattedTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel17)
-                        .addComponent(jFormattedTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel18)
-                            .addComponent(jFormattedTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(jFormattedTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(30, 30, 30))
         );
 
@@ -1298,10 +1298,12 @@ public class AddNewStock extends javax.swing.JFrame {
                         productMap.put("brand", stockObject.getBrand());
                         productMap.put("category", stockObject.getCategory());
                         try {
-                            ResultSet sizeSet = MySQL.executeSearch("SELECT * FROM `productsizes` WHERE `product_pid` = '" + String.valueOf(jTable1.getValueAt(j, 0)) + "' ");
+                            ResultSet sizeSet = MySQL.executeSearch("SELECT * FROM `productsizes` WHERE `product_pid` = '" + productMap.get("pid") + "' ");
                             while (sizeSet.next()) {
                                 sizeMap.put(sizeSet.getString("size"), sizeSet.getString("sizeID"));
                             }
+                            ResultSet inOrUpCheck = MySQL.executeSearch("SELECT * FROM `stock` INNER JOIN `productsizes`  WHERE `product_pid` = '" + productMap.get("pid") + "' ");
+//                            checking if there is an existing entry of the same stock and if so update instead of insert from here on out
 
                         } catch (Exception e) {
                             SplashScreen.exceptionRecords.log(Level.SEVERE, "Couldn't load sizes in stock adding process.", e);

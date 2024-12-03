@@ -86,27 +86,39 @@ public class Home extends javax.swing.JFrame {
 //    }
 
     private void refresh() {
-        loadMemberships();
-        loadStatusMap();
-        loadSpecs();
-        loadSessionSpecs();
-        loadSessionType();
-        membershipsLoadMembers();
-//        clearTables();
-        loadTrainers();
-        loadSessions();
-        loadDashboardSessions();
-        loadDashboardMemberEXP();
-        loadTrainerDashDetails();
-        loadCompanies();
-        loadSuppliers();
-        loadInventoryBrandCategory();
-        loadProducts();
+        var refreshThread = new Thread(() -> {
+            // Perform data loading in the background thread
+            try {
 
-        jTextField5.setText("");
-        jTextField7.setText("");
-        jComboBox7.setSelectedIndex(0);
-        jComboBox8.setSelectedIndex(0);
+                loadMemberships();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            loadStatusMap();
+            loadSpecs();
+            loadSessionSpecs();
+            loadSessionType();
+            membershipsLoadMembers();
+            loadTrainers();
+            loadSessions();
+            loadDashboardSessions();
+            loadDashboardMemberEXP();
+            loadTrainerDashDetails();
+            loadCompanies();
+            loadSuppliers();
+            loadInventoryBrandCategory();
+            loadProducts();
+
+            // After data is loaded, update the UI components on the EDT
+            SwingUtilities.invokeLater(() -> {
+                jTextField5.setText("");
+                jTextField7.setText("");
+                jComboBox7.setSelectedIndex(0);
+                jComboBox8.setSelectedIndex(0);
+            });
+        });
+
+        refreshThread.start();
     }
 
     private void loadProducts() {
@@ -3408,7 +3420,7 @@ public class Home extends javax.swing.JFrame {
                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        jMenuBar1.setBackground(new java.awt.Color(255, 255, 255));
+        jMenuBar1.setBackground(new java.awt.Color(255, 160, 64));
 
         jMenu1.setText("Window");
 
@@ -4221,8 +4233,8 @@ public class Home extends javax.swing.JFrame {
 
         } else if (catName.equals("All Categories")) {
             Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, 4000l, "Please select the product Category.");
-            
-        }  else {
+
+        } else {
             String brandId = brandMAp.get(brandName);
             String catId = categoryMap.get(catName);
 
