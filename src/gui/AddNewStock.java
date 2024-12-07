@@ -156,6 +156,29 @@ public class AddNewStock extends javax.swing.JFrame {
         return barCode;
     }
 
+    private String generateGrnID() {
+        Date date = new Date();
+        Random random = new Random();
+        int random3Digit = 100 + random.nextInt(900);
+
+        String empSuffix = "GRN";
+
+        String grnID = empSuffix + formatDate("yy", date) + formatDate("MM", date) + formatDate("dd", date) + formatDate("mm", date) + formatDate("HH", date) + formatDate("ss", date) + String.valueOf(random3Digit);
+
+        try {
+
+            ResultSet checkMemID = MySQL.executeSearch("SELECT * FROM `stock` WHERE `barcode` = '" + grnID + "' ");
+
+            if (checkMemID.next()) {
+                generateBarcode();
+            }
+        } catch (Exception e) {
+            SplashScreen.exceptionRecords.log(Level.WARNING, "Unable to create GRN ID", e);
+        }
+
+        return grnID;
+    }
+
     private String formatDate(String format, Date date) {
         SimpleDateFormat dateFormat = new SimpleDateFormat(format);
         return dateFormat.format(date);
@@ -905,6 +928,14 @@ public class AddNewStock extends javax.swing.JFrame {
         int qty = Integer.parseInt(jFormattedTextField1.getText());
         String size = String.valueOf(jComboBox1.getSelectedItem());
         String barcode = jTextField3.getText();
+        if (jFormattedTextField2.getText().isBlank()) {
+            jFormattedTextField2.setText("0.00");
+
+        }
+        if (jFormattedTextField3.getText().isBlank()) {
+            jFormattedTextField3.setText("0.00");
+
+        }
         double buyingPrice = Double.parseDouble(jFormattedTextField2.getText());
         double sellingPrice = Double.parseDouble(jFormattedTextField3.getText());
 
@@ -1253,6 +1284,7 @@ public class AddNewStock extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton12ActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        String grnID = generateGrnID();
         String employee = SignIn.getEmployeeName();
         String employeeID = SignIn.getEmplyeeID();
 
@@ -1260,12 +1292,19 @@ public class AddNewStock extends javax.swing.JFrame {
         String supplierID = supplierMap.get("mobile");
 
         double totalPrice = Double.parseDouble(jFormattedTextField4.getText());
-        double payment = Double.parseDouble(jFormattedTextField5.getText());
+        double payment = Math.abs(Double.parseDouble(jFormattedTextField5.getText()));
+
+        jFormattedTextField5.setText(String.valueOf(payment));
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
 
         boolean allowUPdate = true;
 
         if (jTextField4.getText().isBlank()) {
             Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Please select a supplier first.");
+        } else if (jFormattedTextField5.getText().isBlank()) {
+            Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Please enter the payment amount.");
+
         } else {
             int option = JOptionPane.showConfirmDialog(this, "Confirm stock update?", "Update Stock", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
             if (option == JOptionPane.YES_OPTION) {
@@ -1290,26 +1329,41 @@ public class AddNewStock extends javax.swing.JFrame {
                 }
 
                 if (allowUPdate) {
-                    for (int j = 0; j < rowCount; j++) {
-                        sizeMap.clear();
-                        StockTableObject stockObject = productVector.get(j);
-                        productMap.put("pid", stockObject.getPid());
-                        productMap.put("name", stockObject.getName());
-                        productMap.put("brand", stockObject.getBrand());
-                        productMap.put("category", stockObject.getCategory());
-                        try {
+                    try {
+                        MySQL.executeIUD("INSERT INTO `grn` VALUES ('" + grnID + "','" + dateFormat.format(date) + "','" + String.valueOf(payment) + "','" + supplierMap.get("mobile") + "','" + employeeID + "') ");
+
+                        for (int j = 0; j < rowCount; j++) {
+                            sizeMap.clear();
+                            StockTableObject stockObject = productVector.get(j);
+                            productMap.put("pid", stockObject.getPid());
+                            productMap.put("name", stockObject.getName());
+                            productMap.put("brand", stockObject.getBrand());
+                            productMap.put("category", stockObject.getCategory());
+
                             ResultSet sizeSet = MySQL.executeSearch("SELECT * FROM `productsizes` WHERE `product_pid` = '" + productMap.get("pid") + "' ");
+
                             while (sizeSet.next()) {
                                 sizeMap.put(sizeSet.getString("size"), sizeSet.getString("sizeID"));
                             }
-                            ResultSet inOrUpCheck = MySQL.executeSearch("SELECT * FROM `stock` INNER JOIN `productsizes`  WHERE `product_pid` = '" + productMap.get("pid") + "' ");
-//                            checking if there is an existing entry of the same stock and if so update instead of insert from here on out
+                            ResultSet inOrUpCheck = MySQL.executeSearch("SELECT * FROM `stock` INNER JOIN `productsizes`  WHERE `product_pid` = '" + productMap.get("pid") + "' "
+                                    + "AND `price` = '" + stockObject.getSellingPrice() + "' AND `details` = '" + stockObject.getDetails() + "' "
+                                    + "AND `mfd` = '" + stockObject.getMfd() + "' AND `exp` = '" + stockObject.getExp() + "' AND `barcode` = '" + stockObject.getBarcode() + "' ");
 
-                        } catch (Exception e) {
-                            SplashScreen.exceptionRecords.log(Level.SEVERE, "Couldn't load sizes in stock adding process.", e);
-                            e.printStackTrace();
-                            Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "There is a problem with the database. Please check you connection and try again.");
+                            if (inOrUpCheck.next()) {
+
+                                stockObject.setStockID(inOrUpCheck.getString("stock_id"));
+                                loadTable();
+                                MySQL.executeIUD("UPDATE `stock` SET `qty` = qty+'" + stockObject.getQty() + "' WHERE `stock_id` = '" + stockObject.getStockID() + "' ");
+                            } else {
+                                MySQL.executeIUD("INSERT INTO `stock` VALUES ('" + stockObject.getStockID() + "','" + stockObject.getDetails() + "','" + stockObject.getSellingPrice() + "','" + stockObject.getQty() + "', '" + stockObject.getMfd() + "',"
+                                        + "'" + stockObject.getExp() + "','" + stockObject.getBarcode() + "','" + sizeMap.get(stockObject.getSize()) + "') ");
+                            }
+//                            checking if there is an existing entry of the same stock and if so update instead of insert from here on out
                         }
+                    } catch (Exception e) {
+                        SplashScreen.exceptionRecords.log(Level.SEVERE, "Couldn't load sizes in stock adding process.", e);
+                        e.printStackTrace();
+                        Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "There is a problem with the database. Please check you connection and try again.");
                     }
                 }
             }
