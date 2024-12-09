@@ -1821,6 +1821,11 @@ public class Home extends javax.swing.JFrame {
         jButton22.setBackground(new java.awt.Color(255, 111, 0));
         jButton22.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
         jButton22.setForeground(new java.awt.Color(255, 255, 255));
+        jButton22.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton22ActionPerformed(evt);
+            }
+        });
 
         jButton23.setText("Print Selected Invoice");
         jButton23.setBackground(new java.awt.Color(255, 111, 0));
@@ -2971,13 +2976,13 @@ public class Home extends javax.swing.JFrame {
                 .addGroup(jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel17Layout.createSequentialGroup()
                         .addComponent(jScrollPane11)
-                        .addGap(18, 18, 18)
+                        .addGap(26, 26, 26)
                         .addGroup(jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(jButton29, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jButton28, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jButton30, javax.swing.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)
                             .addComponent(jButton31, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(57, 57, 57))
+                        .addGap(26, 26, 26))
                     .addGroup(jPanel17Layout.createSequentialGroup()
                         .addComponent(jLabel55, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
@@ -3578,7 +3583,7 @@ public class Home extends javax.swing.JFrame {
         String date = String.valueOf(today);
         InputStream report = this.getClass().getResourceAsStream("/reports/FlexGymSessionReportBlank_A4.jasper");
         if (jTable6.getSelectedRowCount() == 1) {
-            if (jTable6.getSelectedRow() != -1) {
+            if (jTable7.getRowCount() > 0) {
                 int row = jTable6.getSelectedRow();
                 String session_id = String.valueOf(jTable6.getValueAt(row, 0));
                 String trainer = String.valueOf(jTable6.getValueAt(row, 1));
@@ -4321,6 +4326,10 @@ public class Home extends javax.swing.JFrame {
         }
 
     }//GEN-LAST:event_jButton11ActionPerformed
+
+    private void jButton22ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton22ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton22ActionPerformed
 
     /**
      * @param args the command line arguments
