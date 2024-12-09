@@ -9,7 +9,9 @@ import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.io.InputStream;
 import java.sql.ResultSet;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Date;
@@ -28,6 +30,11 @@ import model.ModifyTables;
 import model.MySQL;
 import model.StockTableObject;
 import model.Validation;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperPrintManager;
+import net.sf.jasperreports.engine.data.JRTableModelDataSource;
+import net.sf.jasperreports.view.JasperViewer;
 import raven.toast.Notifications;
 
 public class AddNewStock extends javax.swing.JFrame {
@@ -698,17 +705,17 @@ public class AddNewStock extends javax.swing.JFrame {
         jFormattedTextField4.setText("0.00");
         jFormattedTextField4.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
 
+        jButton12.setText("Cancel");
         jButton12.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
         jButton12.setForeground(new java.awt.Color(255, 111, 0));
-        jButton12.setText("Cancel");
         jButton12.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton12ActionPerformed(evt);
             }
         });
 
-        jLabel18.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
         jLabel18.setText("Payment");
+        jLabel18.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
 
         jFormattedTextField5.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
         jFormattedTextField5.setHorizontalAlignment(javax.swing.JTextField.TRAILING);
@@ -819,6 +826,9 @@ public class AddNewStock extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jFormattedTextField1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jFormattedTextField1KeyReleased
+        if (jFormattedTextField1.getText().isBlank()) {
+            jFormattedTextField1.setText("0");
+        }
         int quantity = Integer.parseInt(jFormattedTextField1.getText());
         try {
             if (quantity < 0) {
@@ -1292,9 +1302,16 @@ public class AddNewStock extends javax.swing.JFrame {
         String supplierID = supplierMap.get("mobile");
 
         double totalPrice = Double.parseDouble(jFormattedTextField4.getText());
-        double payment = Math.abs(Double.parseDouble(jFormattedTextField5.getText()));
+        double payment = 0.00;
+        if (!jFormattedTextField5.getText().isBlank()) {
+            payment = Math.abs(Double.parseDouble(jFormattedTextField5.getText()));
+        }
 
-        jFormattedTextField5.setText(String.valueOf(payment));
+        DecimalFormat deci = new DecimalFormat("0.00");
+
+        jFormattedTextField5.setText(deci.format(payment));
+        double amountDue = totalPrice - payment;
+
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
 
@@ -1304,6 +1321,9 @@ public class AddNewStock extends javax.swing.JFrame {
             Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Please select a supplier first.");
         } else if (jFormattedTextField5.getText().isBlank()) {
             Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Please enter the payment amount.");
+
+        } else if (productVector.isEmpty()) {
+            Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Please add stock items first.");
 
         } else {
             int option = JOptionPane.showConfirmDialog(this, "Confirm stock update?", "Update Stock", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
@@ -1345,21 +1365,27 @@ public class AddNewStock extends javax.swing.JFrame {
                             while (sizeSet.next()) {
                                 sizeMap.put(sizeSet.getString("size"), sizeSet.getString("sizeID"));
                             }
-                            ResultSet inOrUpCheck = MySQL.executeSearch("SELECT * FROM `stock` INNER JOIN `productsizes`  WHERE `product_pid` = '" + productMap.get("pid") + "' "
+                            ResultSet stockInOrUpCheck = MySQL.executeSearch("SELECT * FROM `stock` INNER JOIN `productsizes`  WHERE `product_pid` = '" + productMap.get("pid") + "' "
                                     + "AND `price` = '" + stockObject.getSellingPrice() + "' AND `details` = '" + stockObject.getDetails() + "' "
                                     + "AND `mfd` = '" + stockObject.getMfd() + "' AND `exp` = '" + stockObject.getExp() + "' AND `barcode` = '" + stockObject.getBarcode() + "' ");
 
-                            if (inOrUpCheck.next()) {
+                            if (stockInOrUpCheck.next()) {
 
-                                stockObject.setStockID(inOrUpCheck.getString("stock_id"));
+                                stockObject.setStockID(stockInOrUpCheck.getString("stock_id"));
                                 loadTable();
                                 MySQL.executeIUD("UPDATE `stock` SET `qty` = qty+'" + stockObject.getQty() + "' WHERE `stock_id` = '" + stockObject.getStockID() + "' ");
                             } else {
                                 MySQL.executeIUD("INSERT INTO `stock` VALUES ('" + stockObject.getStockID() + "','" + stockObject.getDetails() + "','" + stockObject.getSellingPrice() + "','" + stockObject.getQty() + "', '" + stockObject.getMfd() + "',"
                                         + "'" + stockObject.getExp() + "','" + stockObject.getBarcode() + "','" + sizeMap.get(stockObject.getSize()) + "') ");
                             }
-//                            checking if there is an existing entry of the same stock and if so update instead of insert from here on out
+//                            add the items to grn items table.... stock table and grn already done
+                            MySQL.executeIUD("INSERT INTO `grn_items` (`qty`,`price`,`stock_stock_id`,`grn_grn_id`)"
+                                    + " VALUES ('" + stockObject.getQty() + "','" + stockObject.getBuyingPrice() + "','" + stockObject.getStockID() + "','" + grnID + "')");
+
                         }
+                        Notifications.getInstance().show(Notifications.Type.SUCCESS, Notifications.Location.TOP_CENTER, 3000l, "Grn Added Successfully.");
+                        printGRN(grnID, supplier, employee, dateFormat.format(date), deci.format(totalPrice), deci.format(payment), deci.format(amountDue));
+
                     } catch (Exception e) {
                         SplashScreen.exceptionRecords.log(Level.SEVERE, "Couldn't load sizes in stock adding process.", e);
                         e.printStackTrace();
@@ -1369,6 +1395,35 @@ public class AddNewStock extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_jButton8ActionPerformed
+
+    private void printGRN(String grnID, String supplier, String employee, String date, String total, String payment, String amountDue) {
+        InputStream report = this.getClass().getResourceAsStream("/reports/flexGym_grn.jasper");
+
+        HashMap<String, Object> grnParams = new HashMap<>();
+        grnParams.put("Parameter1", grnID);
+        grnParams.put("Parameter2", supplier);
+        grnParams.put("Parameter3", employee);
+        grnParams.put("Parameter4", date);
+        grnParams.put("Parameter5", total);
+        grnParams.put("Parameter6", payment);
+        grnParams.put("Parameter7", amountDue);
+
+        JRTableModelDataSource dataSource = new JRTableModelDataSource(jTable1.getModel());
+
+        try {
+            JasperPrint jasperPrint = JasperFillManager.fillReport(report, grnParams, dataSource);
+            JasperPrintManager.printReport(jasperPrint, false);
+            int option = JOptionPane.showConfirmDialog(this, "View Report?", "Report print queued...", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
+            if (option == JOptionPane.YES_OPTION) {
+                JasperViewer.viewReport(jasperPrint, false);
+
+            }
+        } catch (Exception e) {
+            SplashScreen.exceptionRecords.log(Level.SEVERE, "Couldn't print grn report.", e);
+            e.printStackTrace();
+            Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "There is a problem printing the grn report.");
+        }
+    }
 
     private void refresh() {
         jTextField1.setText("");
