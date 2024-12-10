@@ -439,6 +439,7 @@ public class SelectSupplier extends javax.swing.JDialog {
             addStockFrame.supplierMap.put("registered_date", String.valueOf(jTable1.getValueAt(row, 4)));
 
             addStockFrame.getSupplierField().setText(String.valueOf(jTable1.getValueAt(row, 1)));
+            addStockFrame.loadPaymentsDue();
             this.dispose();
         }
     }
