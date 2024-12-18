@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package gui;
 
 import com.formdev.flatlaf.FlatClientProperties;
@@ -10,7 +6,6 @@ import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.io.InputStream;
-import java.lang.reflect.Method;
 import java.sql.ResultSet;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -45,6 +40,11 @@ public class AddNewStock extends javax.swing.JFrame {
     HashMap<String, String> sizeMap = new HashMap<>();
 
     Vector<StockTableObject> productVector = new Vector<>();
+    private Home home;
+
+    public void getHome(Home home) {
+        this.home = home;
+    }
 
     protected JTextField getSupplierField() {
         return jTextField4;
@@ -774,15 +774,15 @@ public class AddNewStock extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButton12, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel19)
+                        .addComponent(jFormattedTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel18)
+                        .addComponent(jFormattedTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel17)
-                        .addComponent(jFormattedTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel18)
-                            .addComponent(jFormattedTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jLabel19)
-                                .addComponent(jFormattedTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                        .addComponent(jFormattedTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(30, 30, 30))
         );
 
@@ -1330,6 +1330,9 @@ public class AddNewStock extends javax.swing.JFrame {
 
         jFormattedTextField5.setText(deci.format(payment));
         double amountDue = totalPrice - payment;
+        if (this.paymentsDue != 0 || this.paymentsDue != 0.00) {
+            amountDue = amountDue + this.paymentsDue;
+        }
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
@@ -1404,7 +1407,10 @@ public class AddNewStock extends javax.swing.JFrame {
                         }
                         Notifications.getInstance().show(Notifications.Type.SUCCESS, Notifications.Location.TOP_CENTER, 3000l, "Grn Added Successfully.");
                         printGRN(grnID, supplier, employee, dateFormat.format(date), deci.format(totalPrice), deci.format(payment), deci.format(amountDue));
-
+                        refresh();
+                        supplierMap.clear();
+                        home.runLoadStock();
+                        this.dispose();
                     } catch (Exception e) {
                         SplashScreen.exceptionRecords.log(Level.SEVERE, "Couldn't load sizes in stock adding process.", e);
                         e.printStackTrace();
@@ -1459,6 +1465,7 @@ public class AddNewStock extends javax.swing.JFrame {
         datePicker1.clear();
         datePicker2.clear();
         productMap.clear();
+
         loadSizes();
 
         jTable1.setEnabled(true);
@@ -1605,6 +1612,7 @@ public class AddNewStock extends javax.swing.JFrame {
             // setting the payment due to textfield
             paymentDue = cost - paid_amount;
             jFormattedTextField6.setText(deci.format(paymentDue));
+            this.paymentsDue = paymentDue;
 
             System.out.println("final final payment due: " + paymentDue);
         } catch (Exception e) {
@@ -1612,6 +1620,6 @@ public class AddNewStock extends javax.swing.JFrame {
             Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Couldn't load goods received notes. Please check your connection and try again.");
         }
     }
-
+    private double paymentsDue = 0.00;
     private double total = 0.00;
 }
