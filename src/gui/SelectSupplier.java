@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JDialog.java to edit this template
- */
 package gui;
 
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
@@ -351,7 +347,7 @@ public class SelectSupplier extends javax.swing.JDialog {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         this.dispose();
-        FrameStorage.addNewStockFrame.dispose();
+//        FrameStorage.addNewStockFrame.dispose();
         if (FrameStorage.addSupplierFrame == null) {
             AddSupplier adsupplier = new AddSupplier(true);
             adsupplier.setVisible(true);

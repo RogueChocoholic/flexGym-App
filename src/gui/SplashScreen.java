@@ -1,18 +1,12 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package gui;
 
-import com.formdev.flatlaf.extras.FlatSVGIcon;
+
 import java.util.logging.Logger;
 import java.util.logging.FileHandler;
 import java.util.logging.SimpleFormatter;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import java.awt.Color;
-import java.awt.Image;
 import java.awt.Toolkit;
-import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -22,14 +16,11 @@ import java.nio.file.Paths;
 import java.util.Date;
 import java.util.Random;
 import java.util.logging.Level;
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import model.CustomLoginLogFormat;
 import model.FormatDate;
 import model.LogoSettting;
 import model.MySQL;
-import raven.toast.Notifications;
 
 /**
  *
@@ -287,7 +278,7 @@ public class SplashScreen extends javax.swing.JFrame {
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         FlatMacLightLaf.setup();
-
+//FlatArcIJTheme.setup();
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
