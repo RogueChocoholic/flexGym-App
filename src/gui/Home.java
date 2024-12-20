@@ -90,6 +90,7 @@ public class Home extends javax.swing.JFrame {
             try {
 
                 loadMemberships();
+                loadMemberInvoices();
                 loadStatusMap();
                 loadSpecs();
                 loadSessionSpecs();
@@ -875,24 +876,32 @@ public class Home extends javax.swing.JFrame {
 
     private void loadMemberInvoices() {
         int row = jTable5.getSelectedRow();
-        String member = String.valueOf(jTable5.getValueAt(row, 0));
         try {
-            ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `invoice` INNER JOIN `member` ON"
-                    + " `invoice`.`member_mem_id` = `member`.`mem_id` WHERE `mem_id` = '" + member + "' ");
+            ResultSet resultSet = null;
+            if (row == -1) {
+                resultSet = MySQL.executeSearch("SELECT * FROM `invoice` INNER JOIN `member` ON"
+                        + " `invoice`.`member_mem_id` = `member`.`mem_id` ");
+
+            } else {
+        String member = String.valueOf(jTable5.getValueAt(row, 0));
+                resultSet = MySQL.executeSearch("SELECT * FROM `invoice` INNER JOIN `member` ON"
+                        + " `invoice`.`member_mem_id` = `member`.`mem_id` WHERE `mem_id` = '" + member + "' ");
+            }
             DefaultTableModel model = (DefaultTableModel) jTable4.getModel();
             model.setRowCount(0);
+        
 
-            while (resultSet.next()) {
-                Vector<String> vector = new Vector<>();
-                vector.add(resultSet.getString("fname") + " " + resultSet.getString("lname"));
-                vector.add(resultSet.getString("invoice_id"));
-                vector.add(resultSet.getString("date"));
-                vector.add(resultSet.getString("paid_amount"));
-                vector.add(resultSet.getString("staff_staff_id"));
+                while (resultSet.next()) {
+                    Vector<String> vector = new Vector<>();
+                    vector.add(resultSet.getString("fname") + " " + resultSet.getString("lname"));
+                    vector.add(resultSet.getString("invoice_id"));
+                    vector.add(resultSet.getString("date"));
+                    vector.add(resultSet.getString("paid_amount"));
+                    vector.add(resultSet.getString("staff_staff_id"));
 
-                model.addRow(vector);
-            }
-
+                    model.addRow(vector);
+                }
+ 
             jTable4.setModel(model);
 
         } catch (Exception e) {
