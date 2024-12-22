@@ -90,6 +90,7 @@ public class Home extends javax.swing.JFrame {
             try {
 
                 loadMemberships();
+                loadMemberInvoices();
                 loadStatusMap();
                 loadSpecs();
                 loadSessionSpecs();
@@ -875,24 +876,32 @@ public class Home extends javax.swing.JFrame {
 
     private void loadMemberInvoices() {
         int row = jTable5.getSelectedRow();
-        String member = String.valueOf(jTable5.getValueAt(row, 0));
         try {
-            ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `invoice` INNER JOIN `member` ON"
-                    + " `invoice`.`member_mem_id` = `member`.`mem_id` WHERE `mem_id` = '" + member + "' ");
+            ResultSet resultSet = null;
+            if (row == -1) {
+                resultSet = MySQL.executeSearch("SELECT * FROM `invoice` INNER JOIN `member` ON"
+                        + " `invoice`.`member_mem_id` = `member`.`mem_id` ");
+
+            } else {
+        String member = String.valueOf(jTable5.getValueAt(row, 0));
+                resultSet = MySQL.executeSearch("SELECT * FROM `invoice` INNER JOIN `member` ON"
+                        + " `invoice`.`member_mem_id` = `member`.`mem_id` WHERE `mem_id` = '" + member + "' ");
+            }
             DefaultTableModel model = (DefaultTableModel) jTable4.getModel();
             model.setRowCount(0);
+        
 
-            while (resultSet.next()) {
-                Vector<String> vector = new Vector<>();
-                vector.add(resultSet.getString("fname") + " " + resultSet.getString("lname"));
-                vector.add(resultSet.getString("invoice_id"));
-                vector.add(resultSet.getString("date"));
-                vector.add(resultSet.getString("paid_amount"));
-                vector.add(resultSet.getString("staff_staff_id"));
+                while (resultSet.next()) {
+                    Vector<String> vector = new Vector<>();
+                    vector.add(resultSet.getString("fname") + " " + resultSet.getString("lname"));
+                    vector.add(resultSet.getString("invoice_id"));
+                    vector.add(resultSet.getString("date"));
+                    vector.add(resultSet.getString("paid_amount"));
+                    vector.add(resultSet.getString("staff_staff_id"));
 
-                model.addRow(vector);
-            }
-
+                    model.addRow(vector);
+                }
+ 
             jTable4.setModel(model);
 
         } catch (Exception e) {
@@ -1735,6 +1744,11 @@ public class Home extends javax.swing.JFrame {
         jButton10.setBackground(new java.awt.Color(255, 111, 0));
         jButton10.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
         jButton10.setForeground(new java.awt.Color(255, 255, 255));
+        jButton10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton10ActionPerformed(evt);
+            }
+        });
 
         jButton11.setText("New GRN");
         jButton11.setBackground(new java.awt.Color(255, 111, 0));
@@ -1922,7 +1936,7 @@ public class Home extends javax.swing.JFrame {
                         .addComponent(jCheckBox1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jCheckBox2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 329, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 263, Short.MAX_VALUE)
                         .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -2028,7 +2042,7 @@ public class Home extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel11Layout.createSequentialGroup()
-                        .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 841, Short.MAX_VALUE)
+                        .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 775, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jButton12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -2216,7 +2230,7 @@ public class Home extends javax.swing.JFrame {
                         .addContainerGap()
                         .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel12Layout.createSequentialGroup()
-                                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 1176, Short.MAX_VALUE)
+                                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 1110, Short.MAX_VALUE)
                                 .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(jPanel12Layout.createSequentialGroup()
                                         .addGap(20, 20, 20)
@@ -2355,7 +2369,7 @@ public class Home extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(jLabel32, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jComboBox5, 0, 281, Short.MAX_VALUE))))
+                        .addComponent(jComboBox5, 0, 215, Short.MAX_VALUE))))
             .addComponent(jPanel12, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel7Layout.setVerticalGroup(
@@ -2558,7 +2572,7 @@ public class Home extends javax.swing.JFrame {
                         .addComponent(jLabel39)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel38)
-                        .addContainerGap(469, Short.MAX_VALUE))
+                        .addContainerGap(403, Short.MAX_VALUE))
                     .addGroup(jPanel14Layout.createSequentialGroup()
                         .addComponent(jScrollPane8)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -3401,7 +3415,7 @@ public class Home extends javax.swing.JFrame {
             .addGroup(jPanel18Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane12, javax.swing.GroupLayout.DEFAULT_SIZE, 1115, Short.MAX_VALUE)
+                    .addComponent(jScrollPane12, javax.swing.GroupLayout.DEFAULT_SIZE, 1049, Short.MAX_VALUE)
                     .addGroup(jPanel18Layout.createSequentialGroup()
                         .addGroup(jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel61)
@@ -3578,7 +3592,7 @@ public class Home extends javax.swing.JFrame {
                             .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(profileImage, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 568, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 502, Short.MAX_VALUE)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel9)
                             .addComponent(jLabel11))
@@ -4575,6 +4589,19 @@ public class Home extends javax.swing.JFrame {
     private void datePicker5PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_datePicker5PropertyChange
         loadStock();
     }//GEN-LAST:event_datePicker5PropertyChange
+
+    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
+           if (FrameStorage.newInvoiceFrame == null) {
+            FrameStorage.newInvoiceFrame = new NewInvoice();
+//            FrameStorage.newInvoiceFrame.getHome(this);
+            FrameStorage.newInvoiceFrame.setVisible(true);
+
+        } else if (FrameStorage.newInvoiceFrame.isVisible()) {
+            FrameStorage.newInvoiceFrame.toFront();
+        } else {
+            FrameStorage.newInvoiceFrame.setVisible(true);
+        }
+    }//GEN-LAST:event_jButton10ActionPerformed
 
     /**
      * @param args the command line arguments
