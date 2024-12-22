@@ -24,13 +24,11 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import model.CreateTrainingSessionBeen;
 import model.FrameStorage;
+import model.ModifyTables;
 import model.MySQL;
 import raven.toast.Notifications;
 
-/**
- *
- * @author kovid
- */
+
 public class CreateNewSession extends javax.swing.JFrame {
 
     HashMap<Integer, CreateTrainingSessionBeen> sessTableMap = new HashMap<>();
@@ -58,9 +56,10 @@ public class CreateNewSession extends javax.swing.JFrame {
         this.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/resources/logo.png")));
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
 
-        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
-        renderer.setHorizontalAlignment(SwingConstants.CENTER);
-        jTable1.setDefaultRenderer(Object.class, renderer);
+
+ModifyTables modifyTables = new ModifyTables();
+modifyTables.modifyTables(jTable1, jScrollPane1, false);
+modifyTables.modifyTables(jTable2, jScrollPane2, false);
     }
 
     private void loadSessionTable() {
@@ -475,7 +474,7 @@ public class CreateNewSession extends javax.swing.JFrame {
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         this.dispose();
         home.refreshHome();
-         FrameStorage.createSessionFrame = null;
+        FrameStorage.createSessionFrame = null;
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed

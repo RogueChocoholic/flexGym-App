@@ -9,6 +9,7 @@ import gui.AddNewStock;
 import gui.AddSupplier;
 import gui.AddTrainers;
 import gui.CreateNewSession;
+import gui.NewInvoice;
 import gui.StaffRegistration;
 import javax.swing.JFrame;
 
@@ -22,4 +23,5 @@ public class FrameStorage {
     public static StaffRegistration staffRegistration;
     public static AddMember addMemberFrame;
     public static AddNewStock addNewStockFrame;
+    public static NewInvoice newInvoiceFrame;
 }

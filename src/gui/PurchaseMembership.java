@@ -18,6 +18,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import model.ModifyTables;
 import model.MySQL;
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -44,9 +45,9 @@ public class PurchaseMembership extends javax.swing.JDialog {
     }
     
     private void init() {
-        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
-        renderer.setHorizontalAlignment(SwingConstants.CENTER);
-        jTable1.setDefaultRenderer(Object.class, renderer);
+
+        ModifyTables modifyTable = new ModifyTables();
+        modifyTable.modifyTables( jTable1, jScrollPane1, false);
         jLabel14.setText(SignIn.getEmplyeeID());
         
         loadMembers();

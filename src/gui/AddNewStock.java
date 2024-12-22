@@ -281,11 +281,6 @@ public class AddNewStock extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Add New Stock | FlexGym");
         setUndecorated(true);
-        addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowClosed(java.awt.event.WindowEvent evt) {
-                formWindowClosed(evt);
-            }
-        });
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -731,8 +726,8 @@ public class AddNewStock extends javax.swing.JFrame {
         jFormattedTextField6.setText("0.00");
         jFormattedTextField6.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
 
-        jLabel19.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
         jLabel19.setText("Payments Due");
+        jLabel19.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -890,7 +885,7 @@ public class AddNewStock extends javax.swing.JFrame {
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         this.dispose();
-        FrameStorage.addMemberFrame = null;
+        FrameStorage.addNewStockFrame = null;
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
@@ -910,10 +905,6 @@ public class AddNewStock extends javax.swing.JFrame {
 
         }
     }//GEN-LAST:event_jMenuItem2ActionPerformed
-
-    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
-        FrameStorage.addNewStockFrame = null;
-    }//GEN-LAST:event_formWindowClosed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         jTextField3.setText(generateBarcode());
