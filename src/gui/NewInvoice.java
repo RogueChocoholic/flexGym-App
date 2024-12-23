@@ -7,6 +7,8 @@ package gui;
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 import java.util.logging.Level;
 import javax.swing.JFrame;
 import javax.swing.table.DefaultTableModel;
@@ -52,17 +54,62 @@ public class NewInvoice extends javax.swing.JFrame {
         refresh();
     }
 
+    private void loadStock() {
+        int rowCount = jTable3.getSelectedRowCount();
+        String search = "";
+        if (rowCount == 1) {
+            int row = jTable3.getSelectedRow();
+            search += " AND `pid` = '" + String.valueOf(jTable3.getValueAt(row, 0)) + "' ";
+        }
+
+        try {
+            ResultSet stockSet = MySQL.executeSearch("SELECT * FROM `stock` INNER JOIN `productsizes` ON"
+                    + " `productsizes`.`sizeID` = `stock`.`productSizes_sizeID` INNER JOIN `product` ON "
+                    + " `productsizes`.`product_pid` = `product`.`pid` WHERE `qty` > 0 " + search);
+
+            DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
+            model.setRowCount(0);
+
+            while (stockSet.next()) {
+                Vector<String> stockItem = new Vector<>();
+                stockItem.add(stockSet.getString("stock_id"));
+                stockItem.add(stockSet.getString("name"));
+                stockItem.add(stockSet.getString("details"));
+                stockItem.add(stockSet.getString("size"));
+                stockItem.add(stockSet.getString("price"));
+                stockItem.add(stockSet.getString("qty"));
+                stockItem.add(stockSet.getString("exp"));
+                stockItem.add(stockSet.getString("mfd"));
+                model.addRow(stockItem);
+            }
+            jTable2.setModel(model);
+        } catch (Exception e) {
+            e.printStackTrace();
+            SplashScreen.exceptionRecords.log(Level.WARNING, "Unable to create barcode", e);
+            Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Couldn't load products. Please check your internet connection.");
+        }
+
+    }
+
     private void loadProducts() {
         String pid = jTextField1.getText();
-        String category = categoryMap.get(String.valueOf(jComboBox1.getSelectedItem()));
-        String brand = brandMap.get(String.valueOf(jComboBox2.getSelectedItem()));
+        String category = String.valueOf(jComboBox1.getSelectedItem());
+        String brand = String.valueOf(jComboBox2.getSelectedItem());
         try {
             String search = "WHERE";
             search += " (`pid` LIKE '%" + pid + "%' OR `name` LIKE '%" + pid + "%' )";
 
+            if (!category.equals("All Categories")) {
+                search += " AND `Category_cat_id` = '" + categoryMap.get(category) + "' ";
+            }
+
+            if (!brand.equals("All Brands")) {
+                search += " AND `brand_brand_id` = '" + brandMap.get(brand) + "' ";
+            }
+
             ResultSet productSet = MySQL.executeSearch("SELECT * FROM `product` INNER JOIN `brand` ON"
                     + " `brand`.`brand_id` = `product`.`brand_brand_id` INNER JOIN `category` ON "
-                    + " `category`.`cat_id` = `product`.`Category_cat_id` "+ search);
+                    + " `category`.`cat_id` = `product`.`Category_cat_id` " + search);
             DefaultTableModel model = (DefaultTableModel) jTable3.getModel();
             model.setRowCount(0);
 
@@ -192,6 +239,9 @@ public class NewInvoice extends javax.swing.JFrame {
 
         jTextField1.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
         jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jTextField1KeyPressed(evt);
+            }
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 jTextField1KeyReleased(evt);
             }
@@ -199,6 +249,7 @@ public class NewInvoice extends javax.swing.JFrame {
 
         jPanel6.setBackground(new java.awt.Color(255, 255, 255));
 
+        jTable2.setFont(new java.awt.Font("Poppins", 0, 12)); // NOI18N
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -237,6 +288,7 @@ public class NewInvoice extends javax.swing.JFrame {
 
         jPanel7.setBackground(new java.awt.Color(255, 255, 255));
 
+        jTable3.setFont(new java.awt.Font("Poppins", 0, 12)); // NOI18N
         jTable3.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -254,6 +306,16 @@ public class NewInvoice extends javax.swing.JFrame {
             }
         });
         jTable3.getTableHeader().setReorderingAllowed(false);
+        jTable3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable3MouseClicked(evt);
+            }
+        });
+        jTable3.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jTable3KeyPressed(evt);
+            }
+        });
         jScrollPane4.setViewportView(jTable3);
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
@@ -305,6 +367,11 @@ public class NewInvoice extends javax.swing.JFrame {
         jButton1.setFont(new java.awt.Font("Poppins", 1, 12)); // NOI18N
         jButton1.setForeground(new java.awt.Color(252, 252, 252));
         jButton1.setText("Clear Selection");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jLabel27.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
         jLabel27.setText("Barcode");
@@ -356,17 +423,18 @@ public class NewInvoice extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel7)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel27)
+                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel8)
-                        .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel27)
-                            .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel4)
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel7)
+                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
@@ -387,6 +455,7 @@ public class NewInvoice extends javax.swing.JFrame {
 
         jPanel4.setBackground(new java.awt.Color(255, 255, 255));
 
+        jTable1.setFont(new java.awt.Font("Poppins", 0, 12)); // NOI18N
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -786,7 +855,7 @@ public class NewInvoice extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
-
+        refresh();
 
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
@@ -832,6 +901,42 @@ public class NewInvoice extends javax.swing.JFrame {
     private void jTextField3KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField3KeyReleased
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField3KeyReleased
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        reset();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jTable3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable3MouseClicked
+        if (evt.getButton() == MouseEvent.BUTTON1) {
+            System.out.println(jTable3.getSelectedRowCount());
+            if (jTable3.getSelectedRowCount() == 1) {
+                loadStock();
+            }
+        }
+    }//GEN-LAST:event_jTable3MouseClicked
+
+    private void jTextField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            jTable3.grabFocus();
+        }
+    }//GEN-LAST:event_jTextField1KeyPressed
+
+    private void jTable3KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTable3KeyPressed
+        switch (evt.getKeyCode()) {
+            case KeyEvent.VK_ENTER:
+                loadStock();
+                evt.consume();
+                break;
+            case KeyEvent.VK_UP:
+                loadStock();
+                break;
+            case KeyEvent.VK_DOWN:
+                loadStock();
+                break;
+            default:
+                break;
+        }
+    }//GEN-LAST:event_jTable3KeyPressed
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -915,5 +1020,15 @@ public class NewInvoice extends javax.swing.JFrame {
     private void refresh() {
         loadBrandCategory();
         loadProducts();
+        loadStock();
+    }
+
+    private void reset() {
+        jTextField1.setText("");
+        jTextField3.setText("");
+        jComboBox1.setSelectedIndex(0);
+        jComboBox2.setSelectedIndex(0);
+        loadProducts();
+        loadStock();
     }
 }
