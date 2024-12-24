@@ -20,12 +20,9 @@ import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Vector;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JLabel;
 import model.MySQL;
 
-/**
- *
- * @author kovid
- */
 public class NewInvoice extends javax.swing.JFrame {
 
     HashMap<String, String> brandMap = new HashMap<>();
@@ -52,6 +49,9 @@ public class NewInvoice extends javax.swing.JFrame {
         jPanel5.putClientProperty(FlatClientProperties.STYLE, "arc:80");
 
         refresh();
+
+        jLabel20.setText(SignIn.getEmplyeeID());
+        jLabel22.setText(SignIn.getEmployeeName());
     }
 
     private void loadStock() {
@@ -190,8 +190,8 @@ public class NewInvoice extends javax.swing.JFrame {
         jPanel5 = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
-        jLabel11 = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
+        memID = new javax.swing.JLabel();
+        memName = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
@@ -524,13 +524,13 @@ public class NewInvoice extends javax.swing.JFrame {
         jLabel10.setFont(new java.awt.Font("Poppins SemiBold", 0, 14)); // NOI18N
         jLabel10.setText("Member ID");
 
-        jLabel11.setFont(new java.awt.Font("Poppins SemiBold", 0, 14)); // NOI18N
-        jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-        jLabel11.setText("Member ID");
+        memID.setFont(new java.awt.Font("Poppins SemiBold", 0, 14)); // NOI18N
+        memID.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        memID.setText("Member ID");
 
-        jLabel12.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
-        jLabel12.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-        jLabel12.setText("null");
+        memName.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
+        memName.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        memName.setText("null");
 
         jLabel13.setFont(new java.awt.Font("Poppins SemiBold", 0, 14)); // NOI18N
         jLabel13.setText("Name");
@@ -627,6 +627,11 @@ public class NewInvoice extends javax.swing.JFrame {
         jButton6.setFont(new java.awt.Font("Poppins SemiBold", 0, 12)); // NOI18N
         jButton6.setForeground(new java.awt.Color(252, 252, 252));
         jButton6.setText("Select Member");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -657,11 +662,11 @@ public class NewInvoice extends javax.swing.JFrame {
                             .addGroup(jPanel5Layout.createSequentialGroup()
                                 .addComponent(jLabel13)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(memName, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel5Layout.createSequentialGroup()
                                 .addComponent(jLabel10)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(memID, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel5Layout.createSequentialGroup()
                                 .addComponent(jLabel14)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -710,13 +715,13 @@ public class NewInvoice extends javax.swing.JFrame {
                             .addGroup(jPanel5Layout.createSequentialGroup()
                                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(jLabel10)
-                                    .addComponent(jLabel11)
+                                    .addComponent(memID)
                                     .addComponent(jLabel23)
                                     .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(jLabel13)
-                                    .addComponent(jLabel12)
+                                    .addComponent(memName)
                                     .addComponent(jLabel24)
                                     .addComponent(jFormattedTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 71, Short.MAX_VALUE))
@@ -938,6 +943,11 @@ public class NewInvoice extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jTable3KeyPressed
 
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        InvoiceSelectMember selectMember = new InvoiceSelectMember(this, true);
+        selectMember.setVisible(true);
+    }//GEN-LAST:event_jButton6ActionPerformed
+
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         FlatMacLightLaf.setup();
@@ -966,8 +976,6 @@ public class NewInvoice extends javax.swing.JFrame {
     private javax.swing.JFormattedTextField jFormattedTextField3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
@@ -1015,6 +1023,8 @@ public class NewInvoice extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField3;
     private javax.swing.JToggleButton jToggleButton1;
     private javax.swing.JToggleButton jToggleButton2;
+    private javax.swing.JLabel memID;
+    private javax.swing.JLabel memName;
     // End of variables declaration//GEN-END:variables
 
     private void refresh() {
@@ -1030,5 +1040,15 @@ public class NewInvoice extends javax.swing.JFrame {
         jComboBox2.setSelectedIndex(0);
         loadProducts();
         loadStock();
+    }
+
+    public Vector<JLabel> setMemberDetails() {
+        Vector<JLabel> memberFields = new Vector<>();
+        memberFields.add(memID);
+        memberFields.add(memName);
+        memberFields.add(jLabel15);
+        memberFields.add(jLabel17);
+
+        return memberFields;
     }
 }
