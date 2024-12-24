@@ -731,12 +731,12 @@
                                       <Group type="102" attributes="0">
                                           <Component id="jLabel13" min="-2" max="-2" attributes="0"/>
                                           <EmptySpace max="32767" attributes="0"/>
-                                          <Component id="jLabel12" min="-2" pref="213" max="-2" attributes="0"/>
+                                          <Component id="memName" min="-2" pref="213" max="-2" attributes="0"/>
                                       </Group>
                                       <Group type="102" attributes="0">
                                           <Component id="jLabel10" min="-2" max="-2" attributes="0"/>
                                           <EmptySpace max="-2" attributes="0"/>
-                                          <Component id="jLabel11" min="-2" pref="213" max="-2" attributes="0"/>
+                                          <Component id="memID" min="-2" pref="213" max="-2" attributes="0"/>
                                       </Group>
                                       <Group type="102" alignment="0" attributes="0">
                                           <Component id="jLabel14" min="-2" max="-2" attributes="0"/>
@@ -800,14 +800,14 @@
                                       <Group type="102" attributes="0">
                                           <Group type="103" groupAlignment="3" attributes="0">
                                               <Component id="jLabel10" alignment="3" min="-2" max="-2" attributes="0"/>
-                                              <Component id="jLabel11" alignment="3" min="-2" max="-2" attributes="0"/>
+                                              <Component id="memID" alignment="3" min="-2" max="-2" attributes="0"/>
                                               <Component id="jLabel23" alignment="3" min="-2" max="-2" attributes="0"/>
                                               <Component id="jTextField2" alignment="3" min="-2" max="-2" attributes="0"/>
                                           </Group>
                                           <EmptySpace max="-2" attributes="0"/>
                                           <Group type="103" groupAlignment="3" attributes="0">
                                               <Component id="jLabel13" alignment="3" min="-2" max="-2" attributes="0"/>
-                                              <Component id="jLabel12" alignment="3" min="-2" max="-2" attributes="0"/>
+                                              <Component id="memName" alignment="3" min="-2" max="-2" attributes="0"/>
                                               <Component id="jLabel24" alignment="3" min="-2" max="-2" attributes="0"/>
                                               <Component id="jFormattedTextField1" alignment="3" min="-2" max="-2" attributes="0"/>
                                           </Group>
@@ -887,7 +887,7 @@
                     <Property name="text" type="java.lang.String" value="Member ID"/>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JLabel" name="jLabel11">
+                <Component class="javax.swing.JLabel" name="memID">
                   <Properties>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Poppins SemiBold" size="14" style="0"/>
@@ -896,7 +896,7 @@
                     <Property name="text" type="java.lang.String" value="Member ID"/>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JLabel" name="jLabel12">
+                <Component class="javax.swing.JLabel" name="memName">
                   <Properties>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Poppins" size="14" style="0"/>
@@ -1145,6 +1145,9 @@
                     </Property>
                     <Property name="text" type="java.lang.String" value="Select Member"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton6ActionPerformed"/>
+                  </Events>
                 </Component>
               </SubComponents>
             </Container>
