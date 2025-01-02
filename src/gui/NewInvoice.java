@@ -36,7 +36,7 @@ public class NewInvoice extends javax.swing.JFrame {
     private void init() {
         setExtendedState(NewInvoice.MAXIMIZED_BOTH);
         this.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/resources/logo.png"))); // sets the icon
-
+        Notifications.getInstance().setJFrame(this);
         LogoSettting logo = new LogoSettting();
         logo.setLogo(jLabel3);
         ModifyTables modifyTables = new ModifyTables();
@@ -267,6 +267,11 @@ public class NewInvoice extends javax.swing.JFrame {
             }
         });
         jTable2.getTableHeader().setReorderingAllowed(false);
+        jTable2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable2MouseClicked(evt);
+            }
+        });
         jScrollPane3.setViewportView(jTable2);
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
@@ -893,6 +898,7 @@ public class NewInvoice extends javax.swing.JFrame {
 
     private void jTextField1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyReleased
         loadProducts();
+        loadStock();
     }//GEN-LAST:event_jTextField1KeyReleased
 
     private void jComboBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox1ItemStateChanged
@@ -904,7 +910,30 @@ public class NewInvoice extends javax.swing.JFrame {
     }//GEN-LAST:event_jComboBox2ItemStateChanged
 
     private void jTextField3KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField3KeyReleased
-        // TODO add your handling code here:
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            String barcode = jTextField3.getText();
+            try {
+                ResultSet barResult = MySQL.executeSearch("SELECT * FROM `stock` WHERE `barcode` LIKE '%" + barcode + "%' ");
+                int rowCount = 0;
+                if (barResult.last()) {
+                    rowCount = barResult.getRow();
+                    barResult.beforeFirst();
+                }
+
+                if (rowCount == 1) {
+
+                } else if (rowCount > 1) {
+
+                    while (barResult.next()) {
+
+                    }
+                }
+            } catch (Exception e) {
+                SplashScreen.exceptionRecords.log(Level.SEVERE, "Couldn't connect to db at loadSpecs", e);
+                e.printStackTrace();
+                Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Error! Please check your internet connection and try again");
+            }
+        }
     }//GEN-LAST:event_jTextField3KeyReleased
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -947,6 +976,23 @@ public class NewInvoice extends javax.swing.JFrame {
         InvoiceSelectMember selectMember = new InvoiceSelectMember(this, true);
         selectMember.setVisible(true);
     }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void jTable2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable2MouseClicked
+        if (evt.getButton() == MouseEvent.BUTTON1 && evt.getClickCount() == 2) {
+            if (jTable2.getSelectedRowCount() == 1) {
+                int row = jTable2.getSelectedRow();
+                HashMap<String, String> qtyMap = new HashMap<>();
+                qtyMap.put("stockID", String.valueOf(jTable2.getValueAt(row, 0)));
+                qtyMap.put("name", String.valueOf(jTable2.getValueAt(row, 1)));
+                qtyMap.put("price", String.valueOf(jTable2.getValueAt(row, 4)));
+                qtyMap.put("size", String.valueOf(jTable2.getValueAt(row, 3)));
+                qtyMap.put("qty", String.valueOf(jTable2.getValueAt(row, 5)));
+
+                ProductQty selectQty = new ProductQty(this, true, qtyMap);
+                selectQty.setVisible(true);
+            }
+        }
+    }//GEN-LAST:event_jTable2MouseClicked
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -1050,5 +1096,33 @@ public class NewInvoice extends javax.swing.JFrame {
         memberFields.add(jLabel17);
 
         return memberFields;
+    }
+    HashMap<String, String> cartMap = new HashMap<>();
+    Vector<cartObjects> cartVector = new Vector<>();
+
+    public HashMap getCartMap() {
+        return cartMap;
+    }
+
+    public Vector getCartVector() {
+        return cartVector;
+    }
+
+    public void loadItems() {
+        loadCartItem();
+    }
+
+    private void loadCartItem() {
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        model.setRowCount(0);
+        for (cartObjects cartItem : cartVector) {
+            cartObjects cartObject = cartItem;
+            Vector<String> cartRow = new Vector<>();
+            cartRow.add(cartItem.getProductName());
+            cartRow.add(cartItem.getSize());
+            cartRow.add(cartItem.getQty());
+            cartRow.add(cartItem.getPrice());
+            model.addRow(cartRow);
+        }
     }
 }
