@@ -4537,6 +4537,7 @@ public class Home extends javax.swing.JFrame {
         if (FrameStorage.addNewStockFrame == null) {
             FrameStorage.addNewStockFrame = new AddNewStock();
             FrameStorage.addNewStockFrame.setVisible(true);
+            FrameStorage.addNewStockFrame.getHome(this);
 
         } else if (FrameStorage.addNewStockFrame.isVisible()) {
             FrameStorage.addNewStockFrame.toFront();

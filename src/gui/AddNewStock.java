@@ -1301,6 +1301,7 @@ public class AddNewStock extends javax.swing.JFrame {
 
     private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
         this.dispose();
+        FrameStorage.addNewStockFrame = null;
     }//GEN-LAST:event_jButton12ActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
@@ -1389,7 +1390,7 @@ public class AddNewStock extends javax.swing.JFrame {
                                 MySQL.executeIUD("UPDATE `stock` SET `qty` = qty+'" + stockObject.getQty() + "' WHERE `stock_id` = '" + stockObject.getStockID() + "' ");
                             } else {
                                 MySQL.executeIUD("INSERT INTO `stock` VALUES ('" + stockObject.getStockID() + "','" + stockObject.getDetails() + "','" + stockObject.getSellingPrice() + "','" + stockObject.getQty() + "', '" + stockObject.getMfd() + "',"
-                                        + "'" + stockObject.getExp() + "','" + stockObject.getBarcode() + "','" + sizeMap.get(stockObject.getSize()) + "') ");
+                                        + "'" + stockObject.getExp() + "','" + stockObject.getBarcode() + "','" + sizeMap.get(stockObject.getSize()) + "','1') ");
                             }
 //                            add the items to grn items table.... stock table and grn already done
                             MySQL.executeIUD("INSERT INTO `grn_items` (`qty`,`price`,`stock_stock_id`,`grn_grn_id`)"
