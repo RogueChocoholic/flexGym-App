@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.event.KeyEvent;
 import java.util.HashMap;
 import java.util.Vector;
 import raven.toast.Notifications;
@@ -21,7 +22,10 @@ public class ProductQty extends javax.swing.JDialog {
         jTextField1.setText(String.valueOf(productDetails.get("name")));
         jTextField2.setText(String.valueOf(productDetails.get("price")));
         jTextField3.setText(String.valueOf(productDetails.get("size")));
-        jTextField5.setText(String.valueOf(productDetails.get("qty")));
+        int qty = (int) Double.parseDouble(productDetails.get("qty"));
+        jTextField5.setText(String.valueOf(qty));
+
+        jFormattedTextField1.grabFocus();
     }
 
     @SuppressWarnings("unchecked")
@@ -51,6 +55,7 @@ public class ProductQty extends javax.swing.JDialog {
 
         jTextField1.setEditable(false);
         jTextField1.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
+        jTextField1.setFocusable(false);
 
         jLabel1.setFont(new java.awt.Font("Poppins", 1, 24)); // NOI18N
         jLabel1.setText("Select Quantity");
@@ -63,12 +68,14 @@ public class ProductQty extends javax.swing.JDialog {
 
         jTextField2.setEditable(false);
         jTextField2.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
+        jTextField2.setFocusable(false);
 
         jLabel4.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
         jLabel4.setText("Size");
 
         jTextField3.setEditable(false);
         jTextField3.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
+        jTextField3.setFocusable(false);
 
         jLabel5.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
         jLabel5.setText("Quantity");
@@ -94,11 +101,17 @@ public class ProductQty extends javax.swing.JDialog {
 
         jTextField5.setEditable(false);
         jTextField5.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
+        jTextField5.setFocusable(false);
 
         jFormattedTextField1.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
         jFormattedTextField1.setHorizontalAlignment(javax.swing.JTextField.TRAILING);
         jFormattedTextField1.setText("0");
         jFormattedTextField1.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
+        jFormattedTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jFormattedTextField1KeyPressed(evt);
+            }
+        });
 
         jButton3.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
         jButton3.setText("Select Qty");
@@ -191,42 +204,34 @@ public class ProductQty extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        int qty = Integer.parseInt(jFormattedTextField1.getText());
-        qty += 1;
-        jFormattedTextField1.setText(String.valueOf(qty));
+        plusClick();
 
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        int qty = Integer.parseInt(jFormattedTextField1.getText());
-
-        if (qty == 0.00) {
-            jFormattedTextField1.setText("0");
-        } else {
-            qty -= 1;
-            jFormattedTextField1.setText(String.valueOf(qty));
-
-        }
+        minusClick();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        int qty = Integer.parseInt(jFormattedTextField1.getText());
-        if (qty != 0) {
-            cartObjects cartObject = new cartObjects();
-            cartObject.setStockID(productDetails.get("stockID"));
-            cartObject.setProductName(productDetails.get("name"));
-            cartObject.setSize(productDetails.get("size"));
-            cartObject.setQty(jFormattedTextField1.getText());
-            cartObject.setPrice(productDetails.get("price"));
-
-            invoiceFrame.getCartVector().add(cartObject);
-            invoiceFrame.loadItems();
-            this.dispose();
-        } else {
-            Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, 3000l, "Quantity should not be zero");
-        }
+        confirmQty();
     }//GEN-LAST:event_jButton3ActionPerformed
 
+    private void jFormattedTextField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jFormattedTextField1KeyPressed
+        switch (evt.getKeyCode()) {
+            case KeyEvent.VK_RIGHT:
+                plusClick();
+                break;
+            case KeyEvent.VK_LEFT:
+                minusClick();
+                break;
+            case KeyEvent.VK_ENTER:
+                confirmQty();
+                evt.consume();
+                break;
+            default:
+                break;
+        }
+    }//GEN-LAST:event_jFormattedTextField1KeyPressed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -246,4 +251,46 @@ public class ProductQty extends javax.swing.JDialog {
     private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField5;
     // End of variables declaration//GEN-END:variables
+
+    private void plusClick() {
+        int qty = Integer.parseInt(jFormattedTextField1.getText());
+        int maxqty = Integer.parseInt(jTextField5.getText());
+        if (qty >= maxqty) {
+            qty = maxqty;
+        } else {
+            qty += 1;
+        }
+        jFormattedTextField1.setText(String.valueOf(qty));
+    }
+
+    private void minusClick() {
+        int qty = Integer.parseInt(jFormattedTextField1.getText());
+
+        if (qty == 0.00) {
+            jFormattedTextField1.setText("0");
+        } else {
+            qty -= 1;
+            jFormattedTextField1.setText(String.valueOf(qty));
+
+        }
+    }
+
+    private void confirmQty() {
+        int qty = Integer.parseInt(jFormattedTextField1.getText());
+        if (qty != 0) {
+            cartObjects cartObject = new cartObjects();
+            cartObject.setStockID(productDetails.get("stockID"));
+            cartObject.setProductName(productDetails.get("name"));
+            cartObject.setSize(productDetails.get("size"));
+            cartObject.setQty(jFormattedTextField1.getText());
+            cartObject.setPrice(productDetails.get("price"));
+            cartObject.setDetails(productDetails.get("details"));
+
+            invoiceFrame.getCartVector().add(cartObject);
+            invoiceFrame.loadItems();
+            this.dispose();
+        } else {
+            Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, 3000l, "Quantity should not be zero");
+        }
+    }
 }
