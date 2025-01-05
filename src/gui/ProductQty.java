@@ -277,18 +277,50 @@ public class ProductQty extends javax.swing.JDialog {
 
     private void confirmQty() {
         int qty = Integer.parseInt(jFormattedTextField1.getText());
+        int update = 0;
+        int row = 0;
         if (qty != 0) {
-            cartObjects cartObject = new cartObjects();
-            cartObject.setStockID(productDetails.get("stockID"));
-            cartObject.setProductName(productDetails.get("name"));
-            cartObject.setSize(productDetails.get("size"));
-            cartObject.setQty(jFormattedTextField1.getText());
-            cartObject.setPrice(productDetails.get("price"));
-            cartObject.setDetails(productDetails.get("details"));
+            if (!invoiceFrame.cartVector.isEmpty()) {
+                update += 1;
+                int index = -1;
+                for (cartObjects existingObjects : invoiceFrame.cartVector) {
+                    index += 1;
+                    String stockID = existingObjects.getStockID();
+                    String size = existingObjects.getSize();
+                    String price = existingObjects.getPrice();
+                    String details = existingObjects.getDetails();
+                    String name = existingObjects.getProductName();
+                    System.out.println(name);
+                    if (stockID.equals(productDetails.get("stockID"))
+                            && size.equals(productDetails.get("size"))
+                            && price.equals(productDetails.get("price"))
+                            && details.equals(productDetails.get("details"))
+                            && name.equals(productDetails.get("name"))) {
+                        System.out.println(productDetails.get("size"));
+                        update += 1;
+                        row = index;
+                    }
+                }
+            }
+            if (update != 2) {
+                cartObjects cartObject = new cartObjects();
+                cartObject.setStockID(productDetails.get("stockID"));
+                cartObject.setProductName(productDetails.get("name"));
+                cartObject.setSize(productDetails.get("size"));
+                cartObject.setQty(jFormattedTextField1.getText());
+                cartObject.setPrice(productDetails.get("price"));
+                cartObject.setDetails(productDetails.get("details"));
 
-            invoiceFrame.getCartVector().add(cartObject);
+                invoiceFrame.getCartVector().add(cartObject);
+            } else {
+                System.out.println("same same");
+                cartObjects cartObject = invoiceFrame.cartVector.get(row);
+                cartObject.setQty(String.valueOf(qty));
+            }
+            System.out.println(row + " index   " + update + " update");
             invoiceFrame.loadItems();
             this.dispose();
+            System.out.println("doesn't loop");
         } else {
             Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, 3000l, "Quantity should not be zero");
         }
