@@ -580,7 +580,6 @@ public class NewInvoice extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel1)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addGap(18, 18, 18))
@@ -650,6 +649,7 @@ public class NewInvoice extends javax.swing.JFrame {
 
         totalField.setEditable(false);
         totalField.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
+        totalField.setHorizontalAlignment(javax.swing.JTextField.TRAILING);
 
         jLabel24.setFont(new java.awt.Font("Poppins SemiBold", 0, 14)); // NOI18N
         jLabel24.setText("Discount");
@@ -906,8 +906,7 @@ public class NewInvoice extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(30, 30, 30))
+                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -915,8 +914,8 @@ public class NewInvoice extends javax.swing.JFrame {
                                 .addGap(8, 8, 8)
                                 .addComponent(jLabel2)))
                         .addGap(18, 18, 18)
-                        .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(30, 30, 30))))
+                        .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGap(30, 30, 30))
         );
 
         jScrollPane1.setViewportView(jPanel1);
@@ -1030,7 +1029,7 @@ public class NewInvoice extends javax.swing.JFrame {
 
     private void jTable3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable3MouseClicked
         if (evt.getButton() == MouseEvent.BUTTON1) {
-            System.out.println(jTable3.getSelectedRowCount());
+        
             if (jTable3.getSelectedRowCount() == 1) {
                 loadStock();
             }
@@ -1129,7 +1128,10 @@ public class NewInvoice extends javax.swing.JFrame {
     private void jTable1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTable1KeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
 //            jPopupMenu1.show(evt.getComponent(), 0, 0);
-checkout();
+            if (jButton2.isEnabled()) {
+                checkout();
+
+            }
             evt.consume();
         } else if (evt.getKeyCode() == KeyEvent.VK_DELETE) {
             if (jTable1.getSelectedRowCount() == 1) {
@@ -1376,8 +1378,8 @@ checkout();
 // makes the thing easy and could say it's for confirmation
 // win win so we don't really care        
         String invID = generateInvId();
+        String memId = memID.getText();
         String customer = memName.getText();
-        String employee = SignIn.getEmployeeName();
         String date = String.valueOf(LocalDate.now());
 
         String total = totalField.getText();
@@ -1391,7 +1393,19 @@ checkout();
 
         String payment = paymentField.getText();
         String balance = balanceField.getText();
-        System.out.println(invID);
+        HashMap<String, String> invoiceDetails = new HashMap<>();
+        invoiceDetails.put("invoiceID", invID);
+        invoiceDetails.put("memberID", memId);
+        invoiceDetails.put("member", customer);
+        invoiceDetails.put("date", date);
+        invoiceDetails.put("total", total);
+        invoiceDetails.put("discount", discount);
+        invoiceDetails.put("paymethod", payMethod);
+        invoiceDetails.put("payment", payment);
+        invoiceDetails.put("balance", balance);
+
+        CheckoutDialog checkout = new CheckoutDialog(this, true, cartVector, invoiceDetails);
+        checkout.setVisible(true);
 
     }
 }

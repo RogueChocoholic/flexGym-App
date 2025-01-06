@@ -108,6 +108,7 @@ public class Home extends javax.swing.JFrame {
                 loadStock();
                 loadMiniStock();
                 loadSupplierGrn();
+                loadMemInvoceList();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -243,7 +244,7 @@ public class Home extends javax.swing.JFrame {
             ResultSet stockResult = MySQL.executeSearch("SELECT * FROM `stock` INNER JOIN `productsizes` "
                     + "ON `productsizes`.`sizeID` = `stock`.`productSizes_sizeID` INNER JOIN `product` ON "
                     + "`product`.`pid` = `productsizes`.`product_pid` INNER JOIN `brand` ON `brand`.`brand_id` = `product`.`brand_brand_id` "
-                    + search + " ORDER BY " + orderBy + "");
+                    + search + "AND `status_status_id` = '1' ORDER BY " + orderBy + "");
 
             DefaultTableModel model = (DefaultTableModel) jTable11.getModel();
             model.setRowCount(0);
@@ -673,7 +674,7 @@ public class Home extends javax.swing.JFrame {
             search += " AND memebrship_types_type_id = '" + memType + "'";
 
         } else {
-            System.out.println("works");
+
         }
         try {
             ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `member` INNER JOIN `gender` ON `gender`.`gender_id` = `member`.`gender_gender_id` INNER JOIN `membership_records` "
@@ -883,25 +884,24 @@ public class Home extends javax.swing.JFrame {
                         + " `invoice`.`member_mem_id` = `member`.`mem_id` ");
 
             } else {
-        String member = String.valueOf(jTable5.getValueAt(row, 0));
+                String member = String.valueOf(jTable5.getValueAt(row, 0));
                 resultSet = MySQL.executeSearch("SELECT * FROM `invoice` INNER JOIN `member` ON"
                         + " `invoice`.`member_mem_id` = `member`.`mem_id` WHERE `mem_id` = '" + member + "' ");
             }
             DefaultTableModel model = (DefaultTableModel) jTable4.getModel();
             model.setRowCount(0);
-        
 
-                while (resultSet.next()) {
-                    Vector<String> vector = new Vector<>();
-                    vector.add(resultSet.getString("fname") + " " + resultSet.getString("lname"));
-                    vector.add(resultSet.getString("invoice_id"));
-                    vector.add(resultSet.getString("date"));
-                    vector.add(resultSet.getString("paid_amount"));
-                    vector.add(resultSet.getString("staff_staff_id"));
+            while (resultSet.next()) {
+                Vector<String> vector = new Vector<>();
+                vector.add(resultSet.getString("fname") + " " + resultSet.getString("lname"));
+                vector.add(resultSet.getString("invoice_id"));
+                vector.add(resultSet.getString("date"));
+                vector.add(resultSet.getString("paid_amount"));
+                vector.add(resultSet.getString("staff_staff_id"));
 
-                    model.addRow(vector);
-                }
- 
+                model.addRow(vector);
+            }
+
             jTable4.setModel(model);
 
         } catch (Exception e) {
@@ -988,6 +988,7 @@ public class Home extends javax.swing.JFrame {
 //            jButton1.setVisible(false);
 //        }
         dashButtonChanges(jButton2);
+
     }
 
     public JTextField getTrainerIDTextField() {
@@ -3765,7 +3766,7 @@ public class Home extends javax.swing.JFrame {
     }//GEN-LAST:event_jCheckBox1ActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        System.out.println("refreshed");
+
         refresh();
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
@@ -3879,7 +3880,7 @@ public class Home extends javax.swing.JFrame {
 
     private void jTextField1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyReleased
         membershipsLoadMembers();
-        System.out.println("works");
+
     }//GEN-LAST:event_jTextField1KeyReleased
 
     private void jTextField2KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField2KeyReleased
@@ -4025,25 +4026,25 @@ public class Home extends javax.swing.JFrame {
                         statusCancelled.setSelected(false);
                         statusEnded.setSelected(false);
                         statusOngoing.setSelected(false);
-                        System.out.println(status);
+
                     } else if (status.equals("Cancelled")) {
                         statusActive.setSelected(false);
                         statusCancelled.setSelected(true);
                         statusEnded.setSelected(false);
                         statusOngoing.setSelected(false);
-                        System.out.println(status);
+
                     } else if (status.equals("Ongoing")) {
                         statusActive.setSelected(false);
                         statusCancelled.setSelected(false);
                         statusEnded.setSelected(false);
                         statusOngoing.setSelected(true);
-                        System.out.println(status);
+
                     } else if (status.equals("Ended")) {
                         statusActive.setSelected(false);
                         statusCancelled.setSelected(false);
                         statusEnded.setSelected(true);
                         statusOngoing.setSelected(false);
-                        System.out.println(status);
+
                     }
                 }
             }
@@ -4592,7 +4593,7 @@ public class Home extends javax.swing.JFrame {
     }//GEN-LAST:event_datePicker5PropertyChange
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
-           if (FrameStorage.newInvoiceFrame == null) {
+        if (FrameStorage.newInvoiceFrame == null) {
             FrameStorage.newInvoiceFrame = new NewInvoice();
 //            FrameStorage.newInvoiceFrame.getHome(this);
             FrameStorage.newInvoiceFrame.setVisible(true);
@@ -4897,7 +4898,7 @@ public class Home extends javax.swing.JFrame {
                     }
             );
             t2.start();
-//            System.out.println(unPressed.getText());
+
         }
     }
 
@@ -4958,7 +4959,7 @@ public class Home extends javax.swing.JFrame {
             if (jTable14.getSelectedRowCount() == 1) {
                 int row = jTable14.getSelectedRow();
                 String mobile = String.valueOf(jTable14.getValueAt(row, 0));
-                System.out.println(mobile);
+
                 DecimalFormat deci = new DecimalFormat("0.00");
                 double paid_amount = 0.00;
                 double cost = 0.00;
@@ -4992,12 +4993,45 @@ public class Home extends javax.swing.JFrame {
                     paymentDue = cost - paid_amount;
                     jTextField10.setText(deci.format(paymentDue));
                     jTable15.setModel(model);
-                    System.out.println("final final payment due: " + paymentDue);
+
                 } catch (Exception e) {
                     SplashScreen.exceptionRecords.log(Level.WARNING, "Unable to load supplier grn at dashboard", e);
                     Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Couldn't load goods received notes. Please check your connection and try again.");
                 }
             }
+        }
+    }
+
+//    sales/ invoce tab memberships table
+    private void loadMemInvoceList() {
+        try {
+            ResultSet membershipRs = MySQL.executeSearch("SELECT `invoice`.`invoice_id`,`date`,`paid_amount`,`discount`,`method_name`,`member`.`fname`,`member`.`lname`,`staff`.`fname`,`staff`.`lname`   FROM `invoice` INNER JOIN `invoice_item` ON"
+                    + "`invoice`.`invoice_id` = `invoice_item`.`invoice_invoice_id` INNER JOIN `payment_method` ON "
+                    + "`payment_method`.`method_id` = `invoice`.`payment_method_method_id` INNER JOIN `member` ON"
+                    + " `member`.`mem_id` = `invoice`.`member_mem_id` INNER JOIN `staff`"
+                    + " ON `staff`.`staff_id` = `invoice`.`staff_staff_id`  GROUP BY `invoice`.`invoice_id` ");
+            DefaultTableModel model = (DefaultTableModel) jTable12.getModel();
+            model.setRowCount(0);
+            while (membershipRs.next()) {
+                String invID = membershipRs.getString("invoice_id");
+                if (invID.startsWith("IVP")) {
+                    Vector<String> membershipsVector = new Vector<>();
+                    membershipsVector.add(membershipRs.getString("invoice_id"));
+                    membershipsVector.add(membershipRs.getString("date"));
+                    membershipsVector.add(membershipRs.getString("paid_amount"));
+                    membershipsVector.add(membershipRs.getString("discount"));
+                    membershipsVector.add(membershipRs.getString("method_name"));
+                    membershipsVector.add(membershipRs.getString("member.fname") + " " + membershipRs.getString("member.lname"));
+                    membershipsVector.add(membershipRs.getString("staff.fname") + " " + membershipRs.getString("staff.lname"));
+
+                    model.addRow(membershipsVector);
+
+                }
+            }
+        } catch (Exception e) {
+            SplashScreen.exceptionRecords.log(Level.WARNING, "Unable to load supplier grn at dashboard", e);
+            Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Couldn't load goods received notes. Please check your connection and try again.");
+            e.printStackTrace();
         }
     }
 }
