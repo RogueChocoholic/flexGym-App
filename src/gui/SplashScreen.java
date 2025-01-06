@@ -1,6 +1,5 @@
 package gui;
 
-
 import java.util.logging.Logger;
 import java.util.logging.FileHandler;
 import java.util.logging.SimpleFormatter;
@@ -21,25 +20,27 @@ import model.CustomLoginLogFormat;
 import model.FormatDate;
 import model.LogoSettting;
 import model.MySQL;
+import java.sql.ResultSet;
+import java.time.LocalDate;
 
 /**
  *
  * @author kovid
  */
 public class SplashScreen extends javax.swing.JFrame {
-    
+
     private static SplashScreen splash;
-    
+
     private static String loginPath;
     public static Logger exceptionRecords = Logger.getLogger("exceptionRecords.txt");
     public static Logger loginRecords = Logger.getLogger("loginRecords.txt");
-    
+
     public SplashScreen() {
         initComponents();
         init();
         splashProgress();
     }
-    
+
     private void init() {
         setBackground(new Color(0, 0, 0, 0));
         this.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/resources/logo.png")));
@@ -48,18 +49,18 @@ public class SplashScreen extends javax.swing.JFrame {
         splashimage.setOpaque(false);
         LogoSettting logo = new LogoSettting();
         logo.setLogo(jLabel1);
-        
+
         try {
-            
+
             String userHome = System.getProperty("user.home");
             Path logDir = Paths.get(userHome, "FlexGymLogs");
             // Create the directory if it doesn't exist
             if (!Files.exists(logDir)) {
                 Files.createDirectories(logDir);
             }
-            
+
             Path exceptionPath = logDir.resolve("flexGym.log");
-            
+
             FileHandler excepionHandler = new FileHandler(exceptionPath.toString(), true);
             excepionHandler.setFormatter(new SimpleFormatter());
             exceptionRecords.addHandler(excepionHandler);
@@ -70,13 +71,33 @@ public class SplashScreen extends javax.swing.JFrame {
             FileHandler loginHandler = new FileHandler(loginPath, true);
             loginHandler.setFormatter(new CustomLoginLogFormat());
             loginRecords.addHandler(loginHandler);
-            
+
         } catch (IOException e) {
             exceptionRecords.log(Level.SEVERE, "Logger Creation went ");
-            
+
         }
     }
-    
+//    rechecks the databse for expired products and deactivates them in the system
+    boolean filterMethodWorking = false;
+
+    private void filterExpired() {
+        filterMethodWorking = true;
+        String date = String.valueOf(LocalDate.now());
+        try {
+            ResultSet stockSet = MySQL.executeSearch("SELECT * FROM `stock` INNER JOIN `productsizes` ON"
+                    + " `stock`.`productSizes_sizeID` = `productsizes`.`sizeID` INNER JOIN `product` ON  "
+                    + "`productsizes`.`product_pid` = `product`.`pid` INNER JOIN `category` ON `category`.`cat_id` = `product`.`Category_cat_id`"
+                    + "WHERE NOT (`category`.`cat_name` = 'Fitness Equipment' OR category.cat_name = 'Apparel') AND `exp` < '" + date + "' AND `status_status_id` != 7");
+            while (stockSet.next()) {
+                MySQL.executeIUD("UPDATE `stock` SET `status_status_id` = '7' WHERE `stock_id` = '" + stockSet.getString("stock_id") + "' ");
+                System.out.println("don");
+            }
+        } catch (Exception e) {
+            filterMethodWorking = false;
+            exceptionRecords.log(Level.SEVERE, "Failed filtering expired products");
+        }
+    }
+
     public static String readLoginLog(String filePath) {
         String lastLine = null;
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
@@ -89,33 +110,33 @@ public class SplashScreen extends javax.swing.JFrame {
         }
         return lastLine;
     }
-    
+
     private void splashProgress() {
         Thread t = new Thread(new Runnable() {
             boolean openLogin = true;
             boolean logChecks = true;
-            
+
             @Override
             public void run() {
                 Random random = new Random();
                 int progress = 0;
-                
+
                 while (progress < 100) {
                     progress += random.nextInt(5) + 1;
                     if (progress > 100) {
                         progress = 100;
-                        
+
                     }
-                    
+
                     splashProgressBar.setValue(progress);
                     if (progress >= 20 && progress < 40) {
                         progressText.setText("Creating Database Connection...");
                         if (progress > 25) {
                             if (openLogin) {
-                                
+
                                 try {
                                     MySQL.createConnection();
-                                    
+
                                 } catch (Exception e) {
                                     JOptionPane.showMessageDialog(splash, "An error occured when Connecting to the database, Please try again later", "Database Connection Failed.", JOptionPane.ERROR_MESSAGE);
                                     exceptionRecords.log(Level.SEVERE, "Database Connection Failed");
@@ -123,12 +144,15 @@ public class SplashScreen extends javax.swing.JFrame {
                                     break;
                                 }
                             }
-                            
+
                         }
                     } else if (progress >= 40 && progress < 55) {
-                        progressText.setText("Creating Loggers...");
-                    } else if (progress >= 55 && progress < 75) {
                         progressText.setText("Database Connection successful!");
+                    } else if (progress >= 55 && progress < 75) {
+                        progressText.setText("Filtering Expired Products");
+                        if (filterMethodWorking == false) {
+                            filterExpired();
+                        }
                     } else if (progress >= 75 && progress < 95) {
                         progressText.setText("Finalizing Security Checks...");
                         if (logChecks) {
@@ -142,7 +166,7 @@ public class SplashScreen extends javax.swing.JFrame {
                                     try {
                                         Date dateTime = new Date();
                                         String notifyDate = FormatDate.getDate(dateTime, "yyyy-MM-dd HH:mm:ss");
-                                        
+
                                         MySQL.executeIUD("INSERT INTO `error_notifications` (`notification`,`date`) "
                                                 + "VALUES ('Unsafe logout from the system. last recorded log is as follows" + lastLine + "','" + notifyDate + "') ");
                                     } catch (Exception e) {
@@ -174,16 +198,11 @@ public class SplashScreen extends javax.swing.JFrame {
                 }
 
             }
-            
+
         });
         t.start();
     }
 
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -272,9 +291,6 @@ public class SplashScreen extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         FlatMacLightLaf.setup();

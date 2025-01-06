@@ -517,7 +517,7 @@ modifyTables.modifyTables(jTable2, jScrollPane2, false);
             int duration = Integer.parseInt(jFormattedTextField1.getText());
             LocalTime sessionTime = sesTime.plusHours(duration);
             endTime = String.valueOf(sessionTime);
-            System.out.println(endTime);
+         
         }
         String sessType = String.valueOf(jComboBox1.getSelectedItem());
         String spec = String.valueOf(jComboBox2.getSelectedItem());
@@ -575,7 +575,7 @@ modifyTables.modifyTables(jTable2, jScrollPane2, false);
         if (purchase) {
             purchase = false;
             if (sessTableMap.isEmpty()) {
-                System.out.println("emptry bro");
+            
             } else {
                 try {
 
@@ -591,7 +591,6 @@ modifyTables.modifyTables(jTable2, jScrollPane2, false);
                         JOptionPane.showMessageDialog(this, "The Trainer has another session scheduled for this time slot. Please choose another trainer or a time slot", "Trainer cannot be scheduled.", JOptionPane.INFORMATION_MESSAGE);
                     } else {
                         jButton3.setText("Please Wait");
-//                    System.out.println(SignIn.getEmplyeeID());
                         int option = JOptionPane.showConfirmDialog(this, "Confirm creating session?", "Create Session?", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
                         if (option == JOptionPane.YES_OPTION) {
                             MySQL.executeIUD("INSERT INTO `session_schedule` VALUES ('" + session.getSess_id() + "','" + session.getTrainer_id() + "',"
@@ -601,11 +600,11 @@ modifyTables.modifyTables(jTable2, jScrollPane2, false);
                                     + " WHERE `trainers_trainer_id` = '" + session.getTrainer_id() + "' ");
 
                             if (resultSet2.next()) {
-                                System.out.println("there is one");
+                             
                                 MySQL.executeIUD("UPDATE `trainer_performance` SET `scheduled` = `scheduled`+1"
                                         + " WHERE `trainers_trainer_id` = '" + session.getTrainer_id() + "' ");
                             } else {
-                                System.out.println("there is not one");
+                           
                                 MySQL.executeIUD("INSERT INTO `trainer_performance` (`scheduled`,`completed`,`cancelled`,`trainers_trainer_id`)"
                                         + " VALUES ('1','0','0','" + session.getTrainer_id() + "') ");
                             }

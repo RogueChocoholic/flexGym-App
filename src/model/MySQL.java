@@ -12,6 +12,7 @@ public class MySQL {
         if (connection == null) {
             Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/flexgym_db", "root", "KOvi@6112");
+            System.out.println("connection created");
         }
     }
 
