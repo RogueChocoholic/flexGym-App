@@ -673,7 +673,7 @@ public class Home extends javax.swing.JFrame {
             search += " AND memebrship_types_type_id = '" + memType + "'";
 
         } else {
-            System.out.println("works");
+         
         }
         try {
             ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `member` INNER JOIN `gender` ON `gender`.`gender_id` = `member`.`gender_gender_id` INNER JOIN `membership_records` "
@@ -3765,7 +3765,7 @@ public class Home extends javax.swing.JFrame {
     }//GEN-LAST:event_jCheckBox1ActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        System.out.println("refreshed");
+    
         refresh();
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
@@ -3879,7 +3879,7 @@ public class Home extends javax.swing.JFrame {
 
     private void jTextField1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyReleased
         membershipsLoadMembers();
-        System.out.println("works");
+    
     }//GEN-LAST:event_jTextField1KeyReleased
 
     private void jTextField2KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField2KeyReleased
@@ -4025,25 +4025,25 @@ public class Home extends javax.swing.JFrame {
                         statusCancelled.setSelected(false);
                         statusEnded.setSelected(false);
                         statusOngoing.setSelected(false);
-                        System.out.println(status);
+                      
                     } else if (status.equals("Cancelled")) {
                         statusActive.setSelected(false);
                         statusCancelled.setSelected(true);
                         statusEnded.setSelected(false);
                         statusOngoing.setSelected(false);
-                        System.out.println(status);
+                    
                     } else if (status.equals("Ongoing")) {
                         statusActive.setSelected(false);
                         statusCancelled.setSelected(false);
                         statusEnded.setSelected(false);
                         statusOngoing.setSelected(true);
-                        System.out.println(status);
+                        
                     } else if (status.equals("Ended")) {
                         statusActive.setSelected(false);
                         statusCancelled.setSelected(false);
                         statusEnded.setSelected(true);
                         statusOngoing.setSelected(false);
-                        System.out.println(status);
+                      
                     }
                 }
             }
@@ -4897,7 +4897,7 @@ public class Home extends javax.swing.JFrame {
                     }
             );
             t2.start();
-//            System.out.println(unPressed.getText());
+
         }
     }
 
@@ -4958,7 +4958,7 @@ public class Home extends javax.swing.JFrame {
             if (jTable14.getSelectedRowCount() == 1) {
                 int row = jTable14.getSelectedRow();
                 String mobile = String.valueOf(jTable14.getValueAt(row, 0));
-                System.out.println(mobile);
+           
                 DecimalFormat deci = new DecimalFormat("0.00");
                 double paid_amount = 0.00;
                 double cost = 0.00;
@@ -4992,7 +4992,7 @@ public class Home extends javax.swing.JFrame {
                     paymentDue = cost - paid_amount;
                     jTextField10.setText(deci.format(paymentDue));
                     jTable15.setModel(model);
-                    System.out.println("final final payment due: " + paymentDue);
+               
                 } catch (Exception e) {
                     SplashScreen.exceptionRecords.log(Level.WARNING, "Unable to load supplier grn at dashboard", e);
                     Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Couldn't load goods received notes. Please check your connection and try again.");

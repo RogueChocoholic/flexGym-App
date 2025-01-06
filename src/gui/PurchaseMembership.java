@@ -715,7 +715,7 @@ public class PurchaseMembership extends javax.swing.JDialog {
     }//GEN-LAST:event_paymentFieldKeyReleased
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        System.out.println(purchase);
+      
         if (purchase) {
             purchase = false;
             jButton1.setText("Please Wait..");
@@ -883,7 +883,7 @@ public class PurchaseMembership extends javax.swing.JDialog {
         loadMemberships();
         loadPayMethod();
         invoice_id = generateInvoiceID();
-        System.out.println("refreshed");
+     
     }//GEN-LAST:event_jMenuItem1ActionPerformed
     
     public static void main(String args[]) {

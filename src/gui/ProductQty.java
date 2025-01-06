@@ -290,13 +290,13 @@ public class ProductQty extends javax.swing.JDialog {
                     String price = existingObjects.getPrice();
                     String details = existingObjects.getDetails();
                     String name = existingObjects.getProductName();
-                    System.out.println(name);
+            
                     if (stockID.equals(productDetails.get("stockID"))
                             && size.equals(productDetails.get("size"))
                             && price.equals(productDetails.get("price"))
                             && details.equals(productDetails.get("details"))
                             && name.equals(productDetails.get("name"))) {
-                        System.out.println(productDetails.get("size"));
+              
                         update += 1;
                         row = index;
                     }
@@ -313,14 +313,14 @@ public class ProductQty extends javax.swing.JDialog {
 
                 invoiceFrame.getCartVector().add(cartObject);
             } else {
-                System.out.println("same same");
+              
                 cartObjects cartObject = invoiceFrame.cartVector.get(row);
                 cartObject.setQty(String.valueOf(qty));
             }
-            System.out.println(row + " index   " + update + " update");
+           
             invoiceFrame.loadItems();
             this.dispose();
-            System.out.println("doesn't loop");
+        
         } else {
             Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, 3000l, "Quantity should not be zero");
         }
