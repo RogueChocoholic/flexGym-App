@@ -50,7 +50,7 @@ import model.ModifyTables;
 import model.Validation;
 
 public class Home extends javax.swing.JFrame {
-    
+
     HashMap<String, String> membershipTypeMap = new HashMap<>();
     HashMap<String, String> specMap = new HashMap<>();
     HashMap<String, String> statusMap = new HashMap<>();
@@ -63,7 +63,7 @@ public class Home extends javax.swing.JFrame {
     private static final List<JButton> buttons = new ArrayList<>();
     private static final List<JTable> tables = new ArrayList<>();
     HashMap<JTable, JScrollPane> modifyTableMap = new HashMap<>();
-    
+
     public Home(boolean notify) {
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         initComponents();
@@ -72,7 +72,7 @@ public class Home extends javax.swing.JFrame {
         refresh();
         init(notify);
     }
-    
+
     public void refreshHome() {
         refresh();
     }
@@ -90,7 +90,7 @@ public class Home extends javax.swing.JFrame {
         var refreshThread = new Thread(() -> {
             // Perform data loading in the background thread
             try {
-                
+
                 loadMemberships();
                 loadMemberInvoices();
                 loadStatusMap();
@@ -115,7 +115,7 @@ public class Home extends javax.swing.JFrame {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            
+
         });
         // After data is loaded, update the UI components on the EDT
         SwingUtilities.invokeLater(() -> {
@@ -124,28 +124,28 @@ public class Home extends javax.swing.JFrame {
             jComboBox7.setSelectedIndex(0);
             jComboBox8.setSelectedIndex(0);
         });
-        
+
         refreshThread.start();
     }
-    
+
     void runLoadStock() {
         loadStock();
     }
-    
+
     private void loadStock() {
         int sort = jComboBox9.getSelectedIndex();
         double sellingPriceMin = 0;
         double sellingPriceMax = 0;
-        
+
         String search = " WHERE ";
         String productName = jTextField7.getText();
         search += " `name` LIKE '%" + productName + "%' ";
-        
+
         String productID = jTextField5.getText();
         search += " AND `pid` LIKE '%" + productID + "%'";
-        
+
         String brandText = String.valueOf(jComboBox7.getSelectedItem());
-        
+
         if (!brandText.equals("All Brands")) {
             String brand = brandMAp.get(brandText);
             search += " AND `brand_brand_id` = '" + brand + "' ";
@@ -184,18 +184,18 @@ public class Home extends javax.swing.JFrame {
         boolean validExpFrom = validateDate(expFrom);
         String expTo = String.valueOf(datePicker5.getDate());
         boolean validExpTo = validateDate(expTo);
-        
+
         if (validExpFrom && validExpTo) {
             search += " AND `exp` BETWEEN '" + expFrom + "' AND  '" + expTo + "'  ";
         } else if (validExpFrom && !validExpTo) {
             search += " AND `exp` >= '" + expFrom + "' ";
         } else if (validExpTo && !validExpFrom) {
             search += " AND `exp` <= '" + expTo + "' ";
-            
+
         }
-        
+
         String orderBy = "";
-        
+
         switch (sort) {
             case 0:
                 orderBy = "`stock_id` ASC";
@@ -242,16 +242,16 @@ public class Home extends javax.swing.JFrame {
             default:
                 break;
         }
-        
+
         try {
             ResultSet stockResult = MySQL.executeSearch("SELECT * FROM `stock` INNER JOIN `productsizes` "
                     + "ON `productsizes`.`sizeID` = `stock`.`productSizes_sizeID` INNER JOIN `product` ON "
                     + "`product`.`pid` = `productsizes`.`product_pid` INNER JOIN `brand` ON `brand`.`brand_id` = `product`.`brand_brand_id` "
                     + search + "AND `status_status_id` = '1' ORDER BY " + orderBy + "");
-            
+
             DefaultTableModel model = (DefaultTableModel) jTable11.getModel();
             model.setRowCount(0);
-            
+
             while (stockResult.next()) {
                 Vector<String> tableRow = new Vector<>();
                 tableRow.add(stockResult.getString("stock_id"));
@@ -270,7 +270,7 @@ public class Home extends javax.swing.JFrame {
             e.printStackTrace();
         }
     }
-    
+
     private boolean validateDate(String date) {
         if (!date.isBlank()) {
             if (date.matches(Validation.DATE.validation())) {
@@ -279,16 +279,16 @@ public class Home extends javax.swing.JFrame {
         }
         return false;
     }
-    
+
     private void loadMiniStock() {
         try {
             ResultSet stockResult = MySQL.executeSearch("SELECT * FROM `stock` INNER JOIN `productsizes` "
                     + "ON `productsizes`.`sizeID` = `stock`.`productSizes_sizeID` INNER JOIN `product` ON "
-                    + "`product`.`pid` = `productsizes`.`product_pid` ORDER BY `qty` ASC");
-            
+                    + "`product`.`pid` = `productsizes`.`product_pid` WHERE `status_status_id` = '1' ORDER BY `qty` ASC");
+
             DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
             model.setRowCount(0);
-            
+
             while (stockResult.next()) {
                 Vector<String> tableRow = new Vector<>();
                 tableRow.add(stockResult.getString("stock_id"));
@@ -305,17 +305,17 @@ public class Home extends javax.swing.JFrame {
             e.printStackTrace();
         }
     }
-    
+
     private void loadProducts() {
         String search = " WHERE ";
         String productName = jTextField7.getText();
         search += " name LIKE '%" + productName + "%' ";
-        
+
         String productID = jTextField5.getText();
         search += " AND `pid` LIKE '%" + productID + "%'";
-        
+
         String brandText = String.valueOf(jComboBox7.getSelectedItem());
-        
+
         if (!brandText.equals("All Brands")) {
             String brand = brandMAp.get(brandText);
             search += " AND `brand_brand_id` = '" + brand + "' ";
@@ -325,22 +325,22 @@ public class Home extends javax.swing.JFrame {
             String category = categoryMap.get(categoryText);
             search += " AND `Category_cat_id` = '" + category + "' ";
         }
-        
+
         try {
             ResultSet productSet = MySQL.executeSearch("SELECT * FROM `product` INNER JOIN `category`"
                     + " ON `category`.`cat_id` = `product`.`Category_cat_id` INNER JOIN `brand` ON "
                     + " `brand`.`brand_id` = `product`.`brand_brand_id` " + search);
-            
+
             DefaultTableModel model = (DefaultTableModel) jTable10.getModel();
             model.setRowCount(0);
-            
+
             while (productSet.next()) {
                 Vector<String> vector = new Vector<>();
                 vector.add(productSet.getString("pid"));
                 vector.add(productSet.getString("name"));
                 vector.add(productSet.getString("brand_name"));
                 vector.add(productSet.getString("cat_name"));
-                
+
                 model.addRow(vector);
             }
             jTable10.setModel(model);
@@ -349,7 +349,7 @@ public class Home extends javax.swing.JFrame {
             e.printStackTrace();
         }
     }
-    
+
     private void loadInventoryBrandCategory() {
         try {
             ResultSet brandlRs = MySQL.executeSearch("SELECT * FROM `brand`");
@@ -361,7 +361,7 @@ public class Home extends javax.swing.JFrame {
             }
             DefaultComboBoxModel brandModel = new DefaultComboBoxModel(brandVec);
             jComboBox7.setModel(brandModel);
-            
+
             ResultSet catlRs = MySQL.executeSearch("SELECT * FROM `category`");
             Vector<String> catVec = new Vector<>();
             catVec.add("All Categories");
@@ -376,7 +376,7 @@ public class Home extends javax.swing.JFrame {
             e.printStackTrace();
         }
     }
-    
+
     private void loadSpecs() {
         try {
             ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `trainer_specializations`");
@@ -393,7 +393,7 @@ public class Home extends javax.swing.JFrame {
             e.printStackTrace();
         }
     }
-    
+
     private void loadSessionType() {
         try {
             ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `session_types`");
@@ -412,7 +412,7 @@ public class Home extends javax.swing.JFrame {
             e.printStackTrace();
         }
     }
-    
+
     private void loadSessionSpecs() {
         try {
             ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `trainer_specializations`");
@@ -426,11 +426,11 @@ public class Home extends javax.swing.JFrame {
         } catch (Exception e) {
         }
     }
-    
+
     private void loadSessionMembers(int row) {
         try {
             String session = String.valueOf(jTable6.getValueAt(row, 0));
-            
+
             ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `session-members` INNER JOIN `member` "
                     + " ON `member`.`mem_id` = `session-members`.`member_mem_id` WHERE `session_schedule_session_id` = '" + session + "' ");
             DefaultTableModel model = (DefaultTableModel) jTable7.getModel();
@@ -440,7 +440,7 @@ public class Home extends javax.swing.JFrame {
                 vector.add(resultSet.getString("mem_id"));
                 vector.add(resultSet.getString("fname") + " " + resultSet.getString("lname"));
                 vector.add(resultSet.getString("mobile"));
-                
+
                 model.addRow(vector);
             }
         } catch (Exception e) {
@@ -448,7 +448,7 @@ public class Home extends javax.swing.JFrame {
             e.printStackTrace();
         }
     }
-    
+
     private void loadStatusMap() {
         try {
             ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `status`");
@@ -459,45 +459,45 @@ public class Home extends javax.swing.JFrame {
             SplashScreen.exceptionRecords.log(Level.SEVERE, "Couldn't connect to db at loading status MAp", e);
         }
     }
-    
+
     private void loadTrainers() {
-        
+
         DefaultTableModel modelTrainerPerformance = (DefaultTableModel) jTable9.getModel();
         modelTrainerPerformance.setRowCount(0);
         jTable9.setModel(modelTrainerPerformance);
-        
+
         jButton18.setEnabled(false);
-        
+
         String search = "";
         String trainer_id = jTextField4.getText();
         String spec = String.valueOf(jComboBox6.getSelectedItem());
         String feeFrom = jFormattedTextField1.getText();
         String feeTo = jFormattedTextField2.getText();
-        
+
         search += " WHERE `trainer_id` LIKE '%" + trainer_id + "%' ";
-        
+
         if (!spec.equals("All Specializations")) {
             search += " AND `trainer_specializations_spec_id` = '" + specMap.get(spec) + "' ";
         }
-        
+
         if (feeFrom.equals("")) {
             feeFrom = "0";
         }
         if (feeTo.equals("")) {
             feeTo = "0";
         }
-        
+
         if (feeFrom.equals("0") && feeTo.equals("0")) {
-            
+
         } else if (feeFrom.equals("0") && !feeTo.equals("0")) {
             search += " AND (`weekly_payment` < '" + feeTo + "') ";
         } else if (!feeFrom.equals("0") && feeTo.equals("0")) {
             search += " AND (`weekly_payment` > '" + feeFrom + "' ) ";
         } else if (Double.parseDouble(feeFrom) < Double.parseDouble(feeTo)) {
             search += " AND (`weekly_payment` BETWEEN '" + feeFrom + "' AND '" + feeTo + "') ";
-            
+
         }
-        
+
         int checkboxCount = 0;
         if (jCheckBox4.isSelected()) {
             checkboxCount += 1;
@@ -505,7 +505,7 @@ public class Home extends javax.swing.JFrame {
         if (jCheckBox3.isSelected()) {
             checkboxCount += 2;
         }
-        
+
         switch (checkboxCount) {
             case 1:
                 search += " AND `gender_gender_id` = '1'";
@@ -519,14 +519,14 @@ public class Home extends javax.swing.JFrame {
             default:
                 break;
         }
-        
+
         try {
             ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `trainers` INNER JOIN `gender` ON"
                     + " `gender`.`gender_id` = `trainers`.`gender_gender_id` INNER JOIN `trainer_specializations` ON "
                     + "`trainer_specializations`.`spec_id` = `trainers`.`trainer_specializations_spec_id` " + search);
             DefaultTableModel model = (DefaultTableModel) jTable8.getModel();
             model.setRowCount(0);
-            
+
             while (resultSet.next()) {
                 Vector<String> vector = new Vector<>();
                 vector.add(resultSet.getString("trainer_id"));
@@ -538,33 +538,33 @@ public class Home extends javax.swing.JFrame {
                 vector.add(resultSet.getString("weekly_payment"));
                 vector.add(resultSet.getString("gender_name"));
                 vector.add(resultSet.getString("joined_date"));
-                
+
                 model.addRow(vector);
             }
-            
+
             jTable8.setModel(model);
-            
+
         } catch (Exception e) {
             SplashScreen.exceptionRecords.log(Level.SEVERE, "Couldn't connect to db at loadMembers", e);
-            
+
         }
     }
-    
+
     private void loadSuppliers() {
         String search;
         search = " WHERE `mobile` LIKE '%" + jTextField6.getText() + "%' AND `email` LIKE '%" + jTextField8.getText() + "%' ";
         String company = String.valueOf(jComboBox10.getSelectedItem());
         if (!company.equals("All Companies")) {
             search += " AND `companiy_com_id` = '" + companyMap.get(company) + "' ";
-            
+
         }
-        
+
         try {
             ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `supplier` INNER JOIN `company` "
                     + "ON `supplier`.`companiy_com_id` = `company`.`com_id`" + search);
             DefaultTableModel model = (DefaultTableModel) jTable14.getModel();
             model.setRowCount(0);
-            
+
             while (resultSet.next()) {
                 Vector<String> vector = new Vector<>();
                 vector.add(resultSet.getString("mobile"));
@@ -572,17 +572,17 @@ public class Home extends javax.swing.JFrame {
                 vector.add(resultSet.getString("last_name"));
                 vector.add(resultSet.getString("email"));
                 vector.add(resultSet.getString("name"));
-                
+
                 model.addRow(vector);
             }
             jTable14.setModel(model);
-            
+
         } catch (Exception e) {
             SplashScreen.exceptionRecords.log(Level.SEVERE, "Couldn't connect to db at loading suppliers", e);
-            
+
         }
     }
-    
+
     private void loadCompanies() {
         try {
             ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `company`");
@@ -591,7 +591,7 @@ public class Home extends javax.swing.JFrame {
             while (resultSet.next()) {
                 vector.add(resultSet.getString("name"));
                 companyMap.put(resultSet.getString("name"), resultSet.getString("com_id"));
-                
+
             }
             DefaultComboBoxModel model = new DefaultComboBoxModel(vector);
             jComboBox10.setModel(model);
@@ -599,24 +599,24 @@ public class Home extends javax.swing.JFrame {
             SplashScreen.exceptionRecords.log(Level.SEVERE, "Couldn't connect to db at loading comany combobox in dashboard", e);
         }
     }
-    
+
     private void loadTrainerDashDetails() {
         try {
             ResultSet resultSet = MySQL.executeSearch("SELECT COUNT(*) AS `total_rows` , COUNT(CASE "
                     + "WHEN `status_status_id` =  4 then 1 END) AS `count_scheduled`, COUNT(CASE WHEN "
                     + "`status_status_id` IN (1,4) THEN 1 END) AS `count_active` FROM `trainers`");
-            
+
             if (resultSet.next()) {
                 jLabel35.setText(resultSet.getString("total_rows"));
                 jLabel36.setText(resultSet.getString("count_active"));
                 jLabel38.setText(resultSet.getString("count_scheduled"));
-                
+
             }
         } catch (Exception e) {
             SplashScreen.exceptionRecords.log(Level.SEVERE, "Couldn't connect to db at loading trainer dashboard details", e);
         }
     }
-    
+
     private void loadMemberships() {
         try {
             ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `memebrship_types`");
@@ -626,30 +626,30 @@ public class Home extends javax.swing.JFrame {
                 vector.add(resultSet.getString("type_name"));
                 membershipTypeMap.put(resultSet.getString("type_name"), resultSet.getString("type_id"));
             }
-            
+
             DefaultComboBoxModel model = new DefaultComboBoxModel(vector);
             jComboBox1.setModel(model);
-            
+
         } catch (Exception e) {
             e.printStackTrace();
             SplashScreen.exceptionRecords.log(Level.WARNING, "Unable to load cities", e);
-            
+
         }
     }
-    
+
     private void membershipsLoadMembers() {
-        
+
         DefaultTableModel modelMemberInvoices = (DefaultTableModel) jTable4.getModel();
         modelMemberInvoices.setRowCount(0);
         jTable4.setModel(modelMemberInvoices);
-        
+
         jButton23.setEnabled(false);
-        
+
         String search = "";
         String memberID = jTextField1.getText();
         String mobile = jTextField2.getText();
         String memberType = String.valueOf(jComboBox1.getSelectedItem());
-        
+
         search += " WHERE `mem_id` LIKE '%" + memberID + "%' AND `mobile` LIKE '%" + mobile + "%'  ";
         int checkboxCount = 0;
         if (jCheckBox1.isSelected()) {
@@ -658,7 +658,7 @@ public class Home extends javax.swing.JFrame {
         if (jCheckBox2.isSelected()) {
             checkboxCount += 2;
         }
-        
+
         switch (checkboxCount) {
             case 1:
                 search += " AND `gender_gender_id` = '1'";
@@ -675,18 +675,18 @@ public class Home extends javax.swing.JFrame {
         if (!memberType.equals("All Memberships")) {
             String memType = membershipTypeMap.get(memberType);
             search += " AND memebrship_types_type_id = '" + memType + "'";
-            
+
         } else {
-            
+
         }
         try {
             ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `member` INNER JOIN `gender` ON `gender`.`gender_id` = `member`.`gender_gender_id` INNER JOIN `membership_records` "
                     + " ON `membership_records`.`member_mem_id` = `member`.`mem_id` INNER JOIN `memebrship_types` ON `memebrship_types`.`type_id` = `membership_records`.`memebrship_types_type_id` "
                     + " " + search + " ORDER BY `fname` asc");
-            
+
             DefaultTableModel model = (DefaultTableModel) jTable5.getModel();
             model.setRowCount(0);
-            
+
             while (resultSet.next()) {
                 Vector<String> vector = new Vector<>();
                 vector.add(resultSet.getString("mem_id"));
@@ -697,25 +697,25 @@ public class Home extends javax.swing.JFrame {
                 vector.add(resultSet.getString("registered_date"));
                 vector.add(resultSet.getString("type_name"));
                 vector.add(resultSet.getString("expire_date"));
-                
+
                 model.addRow(vector);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
     }
-    
+
     private void loadDashboardMemberEXP() {
-        
+
         try {
             ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `member` INNER JOIN `gender` ON `gender`.`gender_id` = `member`.`gender_gender_id` INNER JOIN `membership_records` "
                     + " ON `membership_records`.`member_mem_id` = `member`.`mem_id` INNER JOIN `memebrship_types` ON `memebrship_types`.`type_id` = `membership_records`.`memebrship_types_type_id` "
                     + "  ORDER BY `expire_date` asc");
-            
+
             DefaultTableModel model = (DefaultTableModel) jTable3.getModel();
             model.setRowCount(0);
-            
+
             while (resultSet.next()) {
                 Vector<String> vector = new Vector<>();
                 vector.add(resultSet.getString("mem_id"));
@@ -726,28 +726,28 @@ public class Home extends javax.swing.JFrame {
 //                vector.add(resultSet.getString("registered_date"));
                 vector.add(resultSet.getString("type_name"));
                 vector.add(resultSet.getString("expire_date"));
-                
+
                 model.addRow(vector);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    
+
     private void loadTrainerPerformance() {
         try {
             int row = jTable8.getSelectedRow();
-            
+
             if (row != -1) {
                 String trainer_id = String.valueOf(jTable8.getValueAt(row, 0));
-                
+
                 ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `trainer_performance` INNER JOIN `trainers` "
                         + " ON `trainers`.`trainer_id` = `trainer_performance`.`trainers_trainer_id` "
                         + "WHERE `trainers_trainer_id` = '" + trainer_id + "' ");
-                
+
                 DefaultTableModel model = (DefaultTableModel) jTable9.getModel();
                 model.setRowCount(0);
-                
+
                 while (resultSet.next()) {
                     Vector<String> vector = new Vector<>();
                     vector.add(resultSet.getString("trainers_trainer_id"));
@@ -755,69 +755,69 @@ public class Home extends javax.swing.JFrame {
                     vector.add(resultSet.getString("scheduled"));
                     vector.add(resultSet.getString("completed"));
                     vector.add(resultSet.getString("cancelled"));
-                    
+
                     model.addRow(vector);
                 }
-                
+
             }
-            
+
         } catch (Exception e) {
             SplashScreen.exceptionRecords.log(Level.WARNING, "Network / Database error! Cannot Load Trainer Performance");
             Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Couldn't update session status");
-            
+
             e.printStackTrace();
         }
     }
-    
+
     private void loadSessions() {
         DefaultTableModel modelSessionMembers = (DefaultTableModel) jTable7.getModel();
         modelSessionMembers.setRowCount(0);
         jTable7.setModel(modelSessionMembers);
-        
+
         jButton21.setEnabled(false);
         jButton15.setEnabled(false);
         String search = "";
 //        
         String sessID = jTextField3.getText();
         String trainerID = jTextField9.getText();
-        
+
         LocalDate sessionDate = datePicker1.getDate();
         String sessionDateStirng = String.valueOf(sessionDate);
-        
+
         String sesType = String.valueOf(jComboBox4.getSelectedItem());
         String sesSpec = String.valueOf(jComboBox5.getSelectedItem());
-        
+
         search += " WHERE `session_id` LIKE '%" + sessID + "%' AND `trainers_trainer_id` LIKE '%" + trainerID + "%' ";
-        
+
         String today = String.valueOf(LocalDate.now());
         if (datePicker1.getDate() != null) {
             search += " AND `date` = '" + sessionDateStirng + "' ";
         } else {
             search += " AND `date` >= '" + today + "' ";
         }
-        
+
         if (!sesType.equals("All types")) {
             Vector<String> vector = sessionTypeMap.get(sesType);
-            
+
             search += " AND `session_types_sess_type_id` = '" + vector.get(0) + "'  ";
-            
+
         }
-        
+
         if (!sesSpec.equals("All Specializations")) {
             search += " AND `spec_id` = '" + specMap.get(sesSpec) + "'  ";
         }
-        
+
         try {
-            
+
             ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `session_schedule` INNER JOIN"
                     + " `trainers` ON `trainers`.`trainer_id` = `session_schedule`.`trainers_trainer_id` INNER JOIN "
                     + "`trainer_specializations` ON `trainer_specializations`.`spec_id` =  `session_schedule`.`trainer_specializations_spec_id` "
                     + "INNER JOIN `session_types` ON `session_types`.`sess_type_id` =  `session_schedule`.`session_types_sess_type_id` "
                     + "INNER JOIN `status` ON `status`.`status_id` =  `session_schedule`.`status_status_id`" + search);
-            
+
             DefaultTableModel model = (DefaultTableModel) jTable6.getModel();
             model.setRowCount(0);
-            
+
             while (resultSet.next()) {
                 Vector<String> vector = new Vector<>();
                 vector.add(resultSet.getString("session_id"));
@@ -830,35 +830,35 @@ public class Home extends javax.swing.JFrame {
                 vector.add(resultSet.getString("price"));
                 vector.add(resultSet.getString("status"));
                 vector.add(resultSet.getString("trainer_id"));
-                
+
                 model.addRow(vector);
             }
             jTable6.setModel(model);
-            
+
         } catch (Exception e) {
             SplashScreen.exceptionRecords.log(Level.SEVERE, "Couldn't connect to db at loadMembers", e);
             JOptionPane.showMessageDialog(this, "Network error! Couldn't load sessions.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+
     private void loadDashboardSessions() {
-        
+
         SimpleDateFormat nowFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date today = new Date();
         String todayDate = nowFormat.format(today);
-        
+
         try {
-            
+
             ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `session_schedule` INNER JOIN"
                     + " `trainers` ON `trainers`.`trainer_id` = `session_schedule`.`trainers_trainer_id` INNER JOIN "
                     + "`trainer_specializations` ON `trainer_specializations`.`spec_id` =  `session_schedule`.`trainer_specializations_spec_id` "
                     + "INNER JOIN `session_types` ON `session_types`.`sess_type_id` =  `session_schedule`.`session_types_sess_type_id` "
                     + "INNER JOIN `status` ON `status`.`status_id` =  `session_schedule`.`status_status_id` "
                     + " WHERE `date` = '" + todayDate + "'  ORDER BY `start_time` ASC");
-            
+
             DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
             model.setRowCount(0);
-            
+
             while (resultSet.next()) {
                 Vector<String> vector = new Vector<>();
                 vector.add(resultSet.getString("fname") + " " + resultSet.getString("lname"));
@@ -867,17 +867,17 @@ public class Home extends javax.swing.JFrame {
                 vector.add(resultSet.getString("spec_name"));
                 vector.add(resultSet.getString("price"));
                 vector.add(resultSet.getString("status"));
-                
+
                 model.addRow(vector);
             }
             jTable2.setModel(model);
-            
+
         } catch (Exception e) {
             SplashScreen.exceptionRecords.log(Level.SEVERE, "Couldn't connect to db at loadMembers", e);
             JOptionPane.showMessageDialog(this, "Network error! Couldn't load sessions.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+
     private void loadMemberInvoices() {
         int row = jTable5.getSelectedRow();
         try {
@@ -885,7 +885,7 @@ public class Home extends javax.swing.JFrame {
             if (row == -1) {
                 resultSet = MySQL.executeSearch("SELECT * FROM `invoice` INNER JOIN `member` ON"
                         + " `invoice`.`member_mem_id` = `member`.`mem_id` ");
-                
+
             } else {
                 String member = String.valueOf(jTable5.getValueAt(row, 0));
                 resultSet = MySQL.executeSearch("SELECT * FROM `invoice` INNER JOIN `member` ON"
@@ -893,7 +893,7 @@ public class Home extends javax.swing.JFrame {
             }
             DefaultTableModel model = (DefaultTableModel) jTable4.getModel();
             model.setRowCount(0);
-            
+
             while (resultSet.next()) {
                 Vector<String> vector = new Vector<>();
                 vector.add(resultSet.getString("fname") + " " + resultSet.getString("lname"));
@@ -901,20 +901,20 @@ public class Home extends javax.swing.JFrame {
                 vector.add(resultSet.getString("date"));
                 vector.add(resultSet.getString("paid_amount"));
                 vector.add(resultSet.getString("staff_staff_id"));
-                
+
                 model.addRow(vector);
             }
-            
+
             jTable4.setModel(model);
-            
+
         } catch (Exception e) {
             SplashScreen.exceptionRecords.log(Level.SEVERE, "Couldn't connect to db at loadMembers", e);
-            
+
         }
     }
-    
+
     private void init(boolean notify) {
-        
+
         LogoSettting logo = new LogoSettting();
         logo.setLogo(jLabel3);
         buttons.add(jButton2);
@@ -924,12 +924,12 @@ public class Home extends javax.swing.JFrame {
         buttons.add(jButton6);
         buttons.add(jButton16);
         buttons.add(jButton39);
-        
+
         jButton7.putClientProperty(FlatClientProperties.STYLE, "arc:999");
         for (JButton button : buttons) {
             button.putClientProperty(FlatClientProperties.STYLE, "arc:500");
         }
-        
+
         tables.add(jTable1);
         tables.add(jTable2);
         tables.add(jTable3);
@@ -946,7 +946,7 @@ public class Home extends javax.swing.JFrame {
         tables.add(jTable13);
         tables.add(jTable14);
         tables.add(jTable15);
-        
+
         modifyTableMap.put(jTable1, jScrollPane1);
         modifyTableMap.put(jTable2, jScrollPane2);
         modifyTableMap.put(jTable3, jScrollPane3);
@@ -962,13 +962,13 @@ public class Home extends javax.swing.JFrame {
         modifyTableMap.put(jTable13, jScrollPane13);
         modifyTableMap.put(jTable14, jScrollPane14);
         modifyTableMap.put(jTable15, jScrollPane15);
-        
+
         jLabel5.setText(SignIn.getEmplyeeID());
         jLabel6.setText(SignIn.getEmployeeName());
         jLabel12.setText(SignIn.getemployeeType());
         jLabel10.setText(SignIn.getloginDate());
         jLabel8.setText(SignIn.getloginTime());
-        
+
         jLabel30.setText("150");
         jLabel43.setText("150");
         jLabel44.setText("150");
@@ -994,17 +994,17 @@ public class Home extends javax.swing.JFrame {
             jLabel62.setVisible(false);
         }
         dashButtonChanges(jButton2);
-        
+
     }
-    
+
     public JTextField getTrainerIDTextField() {
         return jTextField9;
     }
-    
+
     public JButton getEditSessionButton() {
         return jButton15;
     }
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -3486,6 +3486,11 @@ public class Home extends javax.swing.JFrame {
         jButton24.setFont(new java.awt.Font("Poppins SemiBold", 0, 14)); // NOI18N
         jButton24.setForeground(new java.awt.Color(255, 160, 64));
         jButton24.setText("Database Setup");
+        jButton24.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton24ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
@@ -3733,14 +3738,14 @@ public class Home extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        
+
         if (FrameStorage.staffRegistration == null) {
             FrameStorage.staffRegistration = new StaffRegistration();
             FrameStorage.staffRegistration.getHome(this);
             FrameStorage.staffRegistration.setVisible(true);
         } else if (FrameStorage.staffRegistration.isVisible()) {
             FrameStorage.staffRegistration.toFront();
-            
+
         } else {
             FrameStorage.staffRegistration.setVisible(true);
         }
@@ -3783,7 +3788,7 @@ public class Home extends javax.swing.JFrame {
     }//GEN-LAST:event_jCheckBox1ActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        
+
         refresh();
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
@@ -3793,7 +3798,7 @@ public class Home extends javax.swing.JFrame {
             this.dispose();
             this.setUndecorated(false);
             this.setVisible(true);
-            
+
         } else {
             jMenuItem2.setText("Exit Fullscreen");
 //  this.dispose();
@@ -3830,10 +3835,10 @@ public class Home extends javax.swing.JFrame {
                 String sessSpec = String.valueOf(jTable6.getValueAt(row, 6));
                 String fee = String.valueOf(jTable6.getValueAt(row, 7));
                 String status = String.valueOf(jTable6.getValueAt(row, 8));
-                
+
                 int memberCount = jTable7.getRowCount();
                 double profit = Double.parseDouble(fee) * (double) memberCount;
-                
+
                 HashMap<String, Object> params = new HashMap<>();
                 params.put("Parameter1", Employee);
                 params.put("Parameter2", date);
@@ -3851,14 +3856,14 @@ public class Home extends javax.swing.JFrame {
 
 //                JREmptyDataSource dataSource = new JREmptyDataSource();
                 JRTableModelDataSource dataSource = new JRTableModelDataSource(jTable7.getModel());
-                
+
                 try {
                     JasperPrint jasperPrint = JasperFillManager.fillReport(report, params, dataSource);
                     JasperPrintManager.printReport(jasperPrint, false);
                     int option = JOptionPane.showConfirmDialog(this, "View Report?", "Report print queued...", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
                     if (option == JOptionPane.YES_OPTION) {
                         JasperViewer.viewReport(jasperPrint, false);
-                        
+
                     }
                 } catch (JRException e) {
                     e.printStackTrace();
@@ -3889,7 +3894,7 @@ public class Home extends javax.swing.JFrame {
             FrameStorage.addMemberFrame.setVisible(true);
         } else if (FrameStorage.addMemberFrame.isVisible()) {
             FrameStorage.addMemberFrame.toFront();
-            
+
         } else {
             FrameStorage.addMemberFrame.setVisible(true);
         }
@@ -3919,9 +3924,9 @@ public class Home extends javax.swing.JFrame {
     private void jTable5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable5MouseClicked
         if (evt.getButton() == MouseEvent.BUTTON1) {
             jButton23.setEnabled(false);
-            
+
             loadMemberInvoices();
-            
+
         }
 
     }//GEN-LAST:event_jTable5MouseClicked
@@ -3944,7 +3949,7 @@ public class Home extends javax.swing.JFrame {
             } else {
                 FrameStorage.addTrainers.setVisible(true);
             }
-            
+
         }
     }//GEN-LAST:event_jButton17ActionPerformed
 
@@ -3975,7 +3980,7 @@ public class Home extends javax.swing.JFrame {
     private void jCheckBox3ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBox3ItemStateChanged
         loadTrainers();
     }//GEN-LAST:event_jCheckBox3ItemStateChanged
-    
+
 
     private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
         if (FrameStorage.editTrainers == null) {
@@ -3984,10 +3989,10 @@ public class Home extends javax.swing.JFrame {
             if (row != -1) {
                 String trainer_id = String.valueOf(jTable8.getValueAt(row, 0));
                 at = new AddTrainers("Edit", trainer_id);
-                
+
             } else {
                 at = new AddTrainers("Edit", "");
-                
+
             }
             at.getHome(this);
             at.setVisible(true);
@@ -3998,9 +4003,9 @@ public class Home extends javax.swing.JFrame {
             } else {
                 FrameStorage.editTrainers.setVisible(true);
             }
-            
+
         }
-        
+
 
     }//GEN-LAST:event_jButton18ActionPerformed
 
@@ -4016,17 +4021,17 @@ public class Home extends javax.swing.JFrame {
             } else {
                 FrameStorage.createSessionFrame.setVisible(true);
             }
-            
+
         }
 
     }//GEN-LAST:event_jButton13ActionPerformed
 
     private void jTable6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable6MouseClicked
-        
+
         int selectedCount = jTable6.getSelectedRowCount();
         if (selectedCount == 1) {
             int row = jTable6.getSelectedRow();
-            
+
             if (evt.getButton() == MouseEvent.BUTTON1) {
                 if (row != -1) {
                     loadSessionMembers(row);
@@ -4043,25 +4048,25 @@ public class Home extends javax.swing.JFrame {
                         statusCancelled.setSelected(false);
                         statusEnded.setSelected(false);
                         statusOngoing.setSelected(false);
-                        
+
                     } else if (status.equals("Cancelled")) {
                         statusActive.setSelected(false);
                         statusCancelled.setSelected(true);
                         statusEnded.setSelected(false);
                         statusOngoing.setSelected(false);
-                        
+
                     } else if (status.equals("Ongoing")) {
                         statusActive.setSelected(false);
                         statusCancelled.setSelected(false);
                         statusEnded.setSelected(false);
                         statusOngoing.setSelected(true);
-                        
+
                     } else if (status.equals("Ended")) {
                         statusActive.setSelected(false);
                         statusCancelled.setSelected(false);
                         statusEnded.setSelected(true);
                         statusOngoing.setSelected(false);
-                        
+
                     }
                 }
             }
@@ -4072,7 +4077,7 @@ public class Home extends javax.swing.JFrame {
     private void statusActiveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_statusActiveActionPerformed
         int row = jTable6.getSelectedRow();
         String status = String.valueOf(jTable6.getValueAt(row, 8));
-        
+
         if (status.equals("Active")) {
             Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, 3000l, "The session is already active");
         } else if (status.equals("Ended")) {
@@ -4082,23 +4087,23 @@ public class Home extends javax.swing.JFrame {
                             + " WHERE `session_id` = '" + String.valueOf(jTable6.getValueAt(row, 0)) + "' ");
                     MySQL.executeIUD("UPDATE `trainer_performance` SET `completed` = `completed`-1"
                             + " WHERE `trainers_trainer_id` = '" + String.valueOf(jTable6.getValueAt(row, 9)) + "' ");
-                    
+
                     Notifications.getInstance().show(Notifications.Type.SUCCESS, Notifications.Location.TOP_CENTER, 3000l, "Session status updated!");
                     loadSessions();
                 } catch (Exception e) {
                     SplashScreen.exceptionRecords.log(Level.WARNING, "Network / Database error! Cannot change session status");
                     Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Couldn't update session status");
-                    
+
                     e.printStackTrace();
                 }
-                
+
             } else {
                 JOptionPane.showMessageDialog(this, "This session status has been set to ended. You do not have the authority to change an ended session status."
                         + " Please inform an administrator to proceed with the task", "Unorthorized action!", JOptionPane.ERROR_MESSAGE);
             }
         } else {
             try {
-                
+
                 int option = JOptionPane.showConfirmDialog(this, "Change session status to Active?", "Are you Sure", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
                 if (option == JOptionPane.YES_OPTION) {
                     MySQL.executeIUD("UPDATE `session_schedule` SET `status_status_id` = '" + statusMap.get("Active") + "'"
@@ -4107,15 +4112,15 @@ public class Home extends javax.swing.JFrame {
                         MySQL.executeIUD("UPDATE `trainer_performance` SET `cancelled` = `cancelled`-1"
                                 + " WHERE `trainers_trainer_id` = '" + String.valueOf(jTable6.getValueAt(row, 9)) + "' ");
                     }
-                    
+
                     Notifications.getInstance().show(Notifications.Type.SUCCESS, Notifications.Location.TOP_CENTER, 3000l, "Session status updated!");
                     loadSessions();
                 }
-                
+
             } catch (Exception e) {
                 SplashScreen.exceptionRecords.log(Level.WARNING, "Network / Database error! Cannot change session status");
                 Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Couldn't update session status");
-                
+
                 e.printStackTrace();
             }
         }
@@ -4125,7 +4130,7 @@ public class Home extends javax.swing.JFrame {
     private void statusOngoingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_statusOngoingActionPerformed
         int row = jTable6.getSelectedRow();
         String status = String.valueOf(jTable6.getValueAt(row, 8));
-        
+
         if (status.equals("Ongoing")) {
             Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, 3000l, "The session is already active");
         } else if (status.equals("Ended")) {
@@ -4133,7 +4138,7 @@ public class Home extends javax.swing.JFrame {
                 try {
                     MySQL.executeIUD("UPDATE `session_schedule` SET `status_status_id` = '" + statusMap.get("Ongoing") + "'"
                             + " WHERE `session_id` = '" + String.valueOf(jTable6.getValueAt(row, 0)) + "' ");
-                    
+
                     MySQL.executeIUD("UPDATE `trainer_performance` SET `completed` = `completed`-1"
                             + " WHERE `trainers_trainer_id` = '" + String.valueOf(jTable6.getValueAt(row, 9)) + "' ");
                     Notifications.getInstance().show(Notifications.Type.SUCCESS, Notifications.Location.TOP_CENTER, 3000l, "Session status updated!");
@@ -4141,10 +4146,10 @@ public class Home extends javax.swing.JFrame {
                 } catch (Exception e) {
                     SplashScreen.exceptionRecords.log(Level.WARNING, "Network / Database error! Cannot change session status");
                     Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Couldn't update session status");
-                    
+
                     e.printStackTrace();
                 }
-                
+
             } else {
                 JOptionPane.showMessageDialog(this, "This session status has been set to ended. You do not have the authority to change an ended session status."
                         + " Please inform an administrator to proceed with the task", "Unorthorized action!", JOptionPane.ERROR_MESSAGE);
@@ -4155,19 +4160,19 @@ public class Home extends javax.swing.JFrame {
                 if (option == JOptionPane.YES_OPTION) {
                     MySQL.executeIUD("UPDATE `session_schedule` SET `status_status_id` = '" + statusMap.get("Ongoing") + "'"
                             + " WHERE `session_id` = '" + String.valueOf(jTable6.getValueAt(row, 0)) + "' ");
-                    
+
                     if (status.equals("Cancelled")) {
                         MySQL.executeIUD("UPDATE `trainer_performance` SET `cancelled` = `cancelled`-1"
                                 + " WHERE `trainers_trainer_id` = '" + String.valueOf(jTable6.getValueAt(row, 9)) + "' ");
                     }
-                    
+
                     Notifications.getInstance().show(Notifications.Type.SUCCESS, Notifications.Location.TOP_CENTER, 3000l, "Session status updated!");
                     loadSessions();
                 }
             } catch (Exception e) {
                 SplashScreen.exceptionRecords.log(Level.WARNING, "Network / Database error! Cannot change session status");
                 Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Couldn't update session status");
-                
+
                 e.printStackTrace();
             }
         }
@@ -4177,7 +4182,7 @@ public class Home extends javax.swing.JFrame {
     private void statusCancelledActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_statusCancelledActionPerformed
         int row = jTable6.getSelectedRow();
         String status = String.valueOf(jTable6.getValueAt(row, 8));
-        
+
         if (status.equals("Cancelled")) {
             Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, 3000l, "The session is already active");
         } else if (status.equals("Ended")) {
@@ -4185,7 +4190,7 @@ public class Home extends javax.swing.JFrame {
                 try {
                     MySQL.executeIUD("UPDATE `session_schedule` SET `status_status_id` = '" + statusMap.get("Cancelled") + "'"
                             + " WHERE `session_id` = '" + String.valueOf(jTable6.getValueAt(row, 0)) + "' ");
-                    
+
                     MySQL.executeIUD("UPDATE `trainer_performance` SET `completed` = `completed`-1"
                             + " WHERE `trainers_trainer_id` = '" + String.valueOf(jTable6.getValueAt(row, 9)) + "' ");
                     Notifications.getInstance().show(Notifications.Type.SUCCESS, Notifications.Location.TOP_CENTER, 3000l, "Session status updated!");
@@ -4193,10 +4198,10 @@ public class Home extends javax.swing.JFrame {
                 } catch (Exception e) {
                     SplashScreen.exceptionRecords.log(Level.WARNING, "Network / Database error! Cannot change session status");
                     Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Couldn't update session status");
-                    
+
                     e.printStackTrace();
                 }
-                
+
             } else {
                 JOptionPane.showMessageDialog(this, "This session status has been set to ended. You do not have the authority to change an ended session status."
                         + " Please inform an administrator to proceed with the task", "Unorthorized action!", JOptionPane.ERROR_MESSAGE);
@@ -4207,7 +4212,7 @@ public class Home extends javax.swing.JFrame {
                 if (option == JOptionPane.YES_OPTION) {
                     MySQL.executeIUD("UPDATE `session_schedule` SET `status_status_id` = '" + statusMap.get("Cancelled") + "'"
                             + " WHERE `session_id` = '" + String.valueOf(jTable6.getValueAt(row, 0)) + "' ");
-                    
+
                     MySQL.executeIUD("UPDATE `trainer_performance` SET `cancelled` = `cancelled`+1"
                             + " WHERE `trainers_trainer_id` = '" + String.valueOf(jTable6.getValueAt(row, 9)) + "' ");
                     Notifications.getInstance().show(Notifications.Type.SUCCESS, Notifications.Location.TOP_CENTER, 3000l, "Session status updated!");
@@ -4216,7 +4221,7 @@ public class Home extends javax.swing.JFrame {
             } catch (Exception e) {
                 SplashScreen.exceptionRecords.log(Level.WARNING, "Network / Database error! Cannot change session status");
                 Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Couldn't update session status");
-                
+
                 e.printStackTrace();
             }
         }
@@ -4226,7 +4231,7 @@ public class Home extends javax.swing.JFrame {
     private void statusEndedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_statusEndedActionPerformed
         int row = jTable6.getSelectedRow();
         String status = String.valueOf(jTable6.getValueAt(row, 8));
-        
+
         if (status.equals("Ended")) {
             Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, 3000l, "The session is already active");
         } else {
@@ -4235,7 +4240,7 @@ public class Home extends javax.swing.JFrame {
                 if (option == JOptionPane.YES_OPTION) {
                     MySQL.executeIUD("UPDATE `session_schedule` SET `status_status_id` = '" + statusMap.get("Ended") + "'"
                             + " WHERE `session_id` = '" + String.valueOf(jTable6.getValueAt(row, 0)) + "' ");
-                    
+
                     MySQL.executeIUD("UPDATE `trainer_performance` SET `completed` = `completed`+1"
                             + " WHERE `trainers_trainer_id` = '" + String.valueOf(jTable6.getValueAt(row, 9)) + "' ");
                     Notifications.getInstance().show(Notifications.Type.SUCCESS, Notifications.Location.TOP_CENTER, 3000l, "Session status updated!");
@@ -4244,7 +4249,7 @@ public class Home extends javax.swing.JFrame {
             } catch (Exception e) {
                 SplashScreen.exceptionRecords.log(Level.WARNING, "Network / Database error! Cannot change session status");
                 Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Couldn't update session status");
-                
+
                 e.printStackTrace();
             }
         }
@@ -4284,7 +4289,7 @@ public class Home extends javax.swing.JFrame {
     private void datePicker1PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_datePicker1PropertyChange
         LocalDate newDate = datePicker1.getDate();
         if (newDate != null) {
-            
+
             loadSessions();
         }
     }//GEN-LAST:event_datePicker1PropertyChange
@@ -4294,7 +4299,7 @@ public class Home extends javax.swing.JFrame {
             if (jTable8.getSelectedRowCount() == 1) {
                 loadTrainerPerformance();
                 jButton18.setEnabled(true);
-                
+
             }
         }
     }//GEN-LAST:event_jTable8MouseClicked
@@ -4310,13 +4315,13 @@ public class Home extends javax.swing.JFrame {
             addToSessionDetails.add(String.valueOf(jTable6.getValueAt(row, 2)));
             addToSessionDetails.add(String.valueOf(jTable6.getValueAt(row, 3)));
             addToSessionDetails.add(String.valueOf(jTable6.getValueAt(row, 7)));
-            
+
             AddToSession addToSession = new AddToSession(this, false, addToSessionDetails);
             this.setEnabled(false);
             addToSession.getHome(this);
             addToSession.setVisible(true);
         }
-        
+
 
     }//GEN-LAST:event_jButton14ActionPerformed
 
@@ -4328,22 +4333,22 @@ public class Home extends javax.swing.JFrame {
             sessionDetails.add(String.valueOf(jTable6.getValueAt(row, 1)));
             sessionDetails.add(String.valueOf(jTable6.getValueAt(row, 2)));
             sessionDetails.add(String.valueOf(jTable6.getValueAt(row, 3)));
-            
+
             String startDateString = String.valueOf(jTable6.getValueAt(row, 3));
             LocalTime startDate = LocalTime.parse(startDateString);
             String endDateString = String.valueOf(jTable6.getValueAt(row, 4));
             LocalTime endDate = LocalTime.parse(endDateString);
             long hoursBetween = ChronoUnit.HOURS.between(startDate, endDate);
-            
+
             sessionDetails.add(String.valueOf(hoursBetween));
             sessionDetails.add(String.valueOf(jTable6.getValueAt(row, 5)));
             sessionDetails.add(String.valueOf(jTable6.getValueAt(row, 6)));
             sessionDetails.add(String.valueOf(jTable6.getValueAt(row, 9)));
-            
+
             EditSession ES = new EditSession(this, true, sessionDetails);
             ES.getHome(this);
             ES.setVisible(true);
-            
+
         }
 
     }//GEN-LAST:event_jButton15ActionPerformed
@@ -4374,17 +4379,17 @@ public class Home extends javax.swing.JFrame {
             params.put("Parameter1", employee);
             params.put("Parameter2", today);
             params.put("Parameter3", monthFirst);
-            
+
             if (jTable8.getRowCount() > 0) {
                 JRTableModelDataSource dataSource = new JRTableModelDataSource(jTable8.getModel());
-                
+
                 JasperPrint report = JasperFillManager.fillReport(mainReport, params, dataSource);
                 JasperPrintManager.printReport(report, false);
                 JasperViewer.viewReport(report, false);
-                
+
             } else {
                 JREmptyDataSource dataSource = new JREmptyDataSource();
-                
+
                 JasperPrint report = JasperFillManager.fillReport(mainReport, params, dataSource);
                 JasperPrintManager.printReport(report, false);
                 JasperViewer.viewReport(report, false);
@@ -4408,7 +4413,7 @@ public class Home extends javax.swing.JFrame {
             } else {
                 FrameStorage.addSupplierFrame.setVisible(true);
             }
-            
+
         }
     }//GEN-LAST:event_jButton40ActionPerformed
 
@@ -4431,7 +4436,7 @@ public class Home extends javax.swing.JFrame {
             } else {
                 FrameStorage.updateSupplierFrame.setVisible(true);
             }
-            
+
         }
     }//GEN-LAST:event_jButton43ActionPerformed
 
@@ -4458,53 +4463,53 @@ public class Home extends javax.swing.JFrame {
     private void jButton25ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton25ActionPerformed
         String pid = jTextField5.getText();
         String brandName = String.valueOf(jComboBox7.getSelectedItem());
-        
+
         String catName = String.valueOf(jComboBox8.getSelectedItem());
         String productName = jTextField7.getText();
-        
+
         if (pid.isBlank()) {
             Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, 4000l, "Please generate a product ID if there is no barcode ID available.");
         } else if (productName.isBlank()) {
             Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, 4000l, "Please enter the product name.");
         } else if (brandName.equals("All Brands")) {
             Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, 4000l, "Please select the brand.");
-            
+
         } else if (catName.equals("All Categories")) {
             Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, 4000l, "Please select the product Category.");
-            
+
         } else {
             String brandId = brandMAp.get(brandName);
             String catId = categoryMap.get(catName);
-            
+
             try {
                 ResultSet PidResultSet = MySQL.executeSearch("SELECT `pid` FROM `product` WHERE `pid` = '" + pid + "'  ");
-                
+
                 if (PidResultSet.next()) {
                     Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 4000l, "Product ID already exists. Please use another ID.");
                 } else {
-                    
+
                     ResultSet productResultSet = MySQL.executeSearch("SELECT `pid` FROM `product` INNER JOIN "
                             + " `brand` ON `brand`.`brand_id` = `product`.`brand_brand_id` INNER JOIN `category` ON"
                             + " `category`.`cat_id` = `product`.`Category_cat_id`  WHERE `name` = '" + productName + "'"
                             + " AND  `category`.`cat_name` = '" + catName + "' AND `brand`.`brand_name` = '" + brandName + "' ");
-                    
+
                     if (productResultSet.next()) {
                         Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 4000l, "Product with the same data already exists.");
                     } else {
-                        
+
                         AddProduct addProductDialog = new AddProduct(this, true);
                         addProductDialog.initDialog(brandName, brandId, catName, catId, pid, productName);
-                        
+
                         addProductDialog.setVisible(true);
                     }
-                    
+
                 }
             } catch (Exception e) {
                 e.printStackTrace();
                 SplashScreen.exceptionRecords.log(Level.WARNING, "Couldn't add new product : ", e);
                 Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Error adding new product. Please Check your connection and try again.");
             }
-            
+
         }
 
     }//GEN-LAST:event_jButton25ActionPerformed
@@ -4541,13 +4546,13 @@ public class Home extends javax.swing.JFrame {
             FrameStorage.addNewStockFrame = new AddNewStock();
             FrameStorage.addNewStockFrame.getHome(this);
             FrameStorage.addNewStockFrame.setVisible(true);
-            
+
         } else if (FrameStorage.addNewStockFrame.isVisible()) {
             FrameStorage.addNewStockFrame.toFront();
         } else {
             FrameStorage.addNewStockFrame.setVisible(true);
         }
-        
+
 
     }//GEN-LAST:event_jButton28ActionPerformed
 
@@ -4556,7 +4561,7 @@ public class Home extends javax.swing.JFrame {
             FrameStorage.addNewStockFrame = new AddNewStock();
             FrameStorage.addNewStockFrame.setVisible(true);
             FrameStorage.addNewStockFrame.getHome(this);
-            
+
         } else if (FrameStorage.addNewStockFrame.isVisible()) {
             FrameStorage.addNewStockFrame.toFront();
         } else {
@@ -4614,13 +4619,18 @@ public class Home extends javax.swing.JFrame {
             FrameStorage.newInvoiceFrame = new NewInvoice();
 //            FrameStorage.newInvoiceFrame.getHome(this);
             FrameStorage.newInvoiceFrame.setVisible(true);
-            
+
         } else if (FrameStorage.newInvoiceFrame.isVisible()) {
             FrameStorage.newInvoiceFrame.toFront();
         } else {
             FrameStorage.newInvoiceFrame.setVisible(true);
         }
     }//GEN-LAST:event_jButton10ActionPerformed
+
+    private void jButton24ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton24ActionPerformed
+        SetupDatabase setupDatabase = new SetupDatabase(false);
+        setupDatabase.setVisible(true);
+    }//GEN-LAST:event_jButton24ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -4862,71 +4872,71 @@ public class Home extends javax.swing.JFrame {
     private void dashButtonChanges(JButton button) {
         List<JButton> newButtons = new ArrayList<>();
         newButtons.addAll(buttons);
-        
+
         button.setBackground(new java.awt.Color(255, 111, 0));
         button.setForeground(new java.awt.Color(255, 255, 255));
-        
+
         int buttonWidth = button.getWidth();
         int buttonHeight = button.getHeight();
-        
+
         Thread t = new Thread(
                 () -> {
                     for (int i = buttonWidth; i <= 350; i += 1) {
                         int finall = i;
                         SwingUtilities.invokeLater(() -> {
                             button.setSize(finall, buttonHeight);
-                            
+
                         });
-                        
+
                         try {
-                            
+
                             Thread.sleep(2);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
-                    
+
                 }
         );
         t.start();
         newButtons.remove(button);
-        
+
         for (JButton unPressed : newButtons) {
             unPressed.setBackground(new java.awt.Color(240, 240, 240));
             unPressed.setForeground(new java.awt.Color(46, 59, 78));
             int unpressedWidth = unPressed.getWidth();
             Thread t2 = new Thread(
                     () -> {
-                        
+
                         for (int i = unpressedWidth; i >= 250; i -= 1) {
                             int finall = i;
                             SwingUtilities.invokeLater(() -> {
                                 unPressed.setSize(finall, buttonHeight);
-                                
+
                             });
-                            
+
                             try {
-                                
+
                                 Thread.sleep(2);
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         }
-                        
+
                     }
             );
             t2.start();
-            
+
         }
     }
-    
+
     private void logout(String logOrClose) {
         int option = JOptionPane.showConfirmDialog(this, "Are you sure you want to logout from the session?", "Are you sure?", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
         if (option == JOptionPane.YES_OPTION) {
             Date logouttime = new Date();
             SimpleDateFormat logouttimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
             SplashScreen.loginRecords.log(Level.SEVERE, "Logout :{0} : {1} : at {2}", new Object[]{SignIn.getEmplyeeID(), SignIn.getEmployeeName(), logouttimeFormat.format(logouttime)});
-            
+
             if (logOrClose.equals("Logout")) {
                 this.dispose();
                 SignIn login = new SignIn();
@@ -4934,7 +4944,7 @@ public class Home extends javax.swing.JFrame {
             } else {
                 System.exit(0);
             }
-            
+
             SignIn.setEmployeeEmail(null);
             SignIn.setEmployeeName(null);
             SignIn.setEmployeeType(null);
@@ -4943,20 +4953,20 @@ public class Home extends javax.swing.JFrame {
             SignIn.setLoginTime(null);
         }
     }
-    
+
     private String generateProdId() {
         Date date = new Date();
         Random random = new Random();
         int random3Digit = 100 + random.nextInt(900);
-        
+
         String empSuffix = "PRD";
-        
+
         String pid = empSuffix + formatDate("yy", date) + formatDate("MM", date) + formatDate("dd", date) + formatDate("mm", date) + formatDate("HH", date) + formatDate("ss", date) + String.valueOf(random3Digit);
-        
+
         try {
-            
+
             ResultSet checkMemID = MySQL.executeSearch("SELECT * FROM `product` WHERE `pid` = '" + pid + "' ");
-            
+
             if (checkMemID.next()) {
                 pid = generateProdId();
             }
@@ -4966,23 +4976,23 @@ public class Home extends javax.swing.JFrame {
         jTextField5.setText(pid);
         return pid;
     }
-    
+
     private String formatDate(String format, Date date) {
         SimpleDateFormat dateFormat = new SimpleDateFormat(format);
         return dateFormat.format(date);
     }
-    
+
     private void loadSupplierGrn() {
         if (jTable14.getRowCount() != 0) {
             if (jTable14.getSelectedRowCount() == 1) {
                 int row = jTable14.getSelectedRow();
                 String mobile = String.valueOf(jTable14.getValueAt(row, 0));
-                
+
                 DecimalFormat deci = new DecimalFormat("0.00");
                 double paid_amount = 0.00;
                 double cost = 0.00;
                 double paymentDue = 0.00;
-                
+
                 try {
                     ResultSet supplierGRNRs = MySQL.executeSearch("SELECT * FROM `grn` WHERE "
                             + " `supplier_mobile` = '" + mobile + "' ");
@@ -5011,7 +5021,7 @@ public class Home extends javax.swing.JFrame {
                     paymentDue = cost - paid_amount;
                     jTextField10.setText(deci.format(paymentDue));
                     jTable15.setModel(model);
-                    
+
                 } catch (Exception e) {
                     SplashScreen.exceptionRecords.log(Level.WARNING, "Unable to load supplier grn at dashboard", e);
                     Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Couldn't load goods received notes. Please check your connection and try again.");
@@ -5041,9 +5051,9 @@ public class Home extends javax.swing.JFrame {
                     membershipsVector.add(membershipRs.getString("method_name"));
                     membershipsVector.add(membershipRs.getString("member.fname") + " " + membershipRs.getString("member.lname"));
                     membershipsVector.add(membershipRs.getString("staff.fname") + " " + membershipRs.getString("staff.lname"));
-                    
+
                     model.addRow(membershipsVector);
-                    
+
                 }
             }
         } catch (Exception e) {
@@ -5057,13 +5067,13 @@ public class Home extends javax.swing.JFrame {
     private void loadErrorLogins() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-01 00:00:00");
         String thisMonth = sdf.format(new Date());
-        
+
         DefaultTableModel model = (DefaultTableModel) jTable13.getModel();
         model.setRowCount(0);
         try {
             ResultSet notificationSet = MySQL.executeSearch("SELECT * FROM `error_notifications` WHERE `date` > '" + thisMonth + "'");
             while (notificationSet.next()) {
-                
+
                 Vector<String> errorElements = seperateErrorElements(notificationSet.getString("notification"));
                 if (!errorElements.isEmpty()) {
                     Vector<String> row = new Vector<>();
@@ -5074,14 +5084,14 @@ public class Home extends javax.swing.JFrame {
                     model.addRow(row);
                 }
             }
-            
+
         } catch (Exception e) {
             SplashScreen.exceptionRecords.log(Level.WARNING, "Unable to load supplier grn at dashboard", e);
             Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Couldn't load goods received notes. Please check your connection and try again.");
             e.printStackTrace();
         }
     }
-    
+
     private Vector seperateErrorElements(String input) {
         Vector errrorElements = new Vector();
         String regex = "New Login :([A-Za-z0-9]+) : ([A-Za-z ]+) : at ([0-9]{2}:[0-9]{2}) : ([0-9]{4}-[0-9]{2}-[0-9]{2})";
@@ -5093,13 +5103,13 @@ public class Home extends javax.swing.JFrame {
             String name = matcher.group(2);
             String time = matcher.group(3);
             String date = matcher.group(4);
-            
+
             errrorElements.add(id);
             errrorElements.add(name);
             errrorElements.add(time);
             errrorElements.add(date);
         }
-        
+
         return errrorElements;
     }
 }

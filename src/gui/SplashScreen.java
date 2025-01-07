@@ -22,13 +22,12 @@ import model.LogoSettting;
 import model.MySQL;
 import java.sql.ResultSet;
 import java.time.LocalDate;
+import raven.toast.Notifications;
 
-/**
- *
- * @author kovid
- */
 public class SplashScreen extends javax.swing.JFrame {
+// checks this to reopen splashscreen
 
+    boolean dbSetup = false;
     private static SplashScreen splash;
 
     private static String loginPath;
@@ -110,9 +109,10 @@ public class SplashScreen extends javax.swing.JFrame {
         }
         return lastLine;
     }
+    Thread t;
 
     private void splashProgress() {
-        Thread t = new Thread(new Runnable() {
+        t = new Thread(new Runnable() {
             boolean openLogin = true;
             boolean logChecks = true;
 
@@ -120,12 +120,16 @@ public class SplashScreen extends javax.swing.JFrame {
             public void run() {
                 Random random = new Random();
                 int progress = 0;
+                try {
+                    checkDBconfiguration();
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(SplashScreen.class.getName()).log(Level.SEVERE, null, ex);
+                }
 
                 while (progress < 100) {
                     progress += random.nextInt(5) + 1;
                     if (progress > 100) {
                         progress = 100;
-
                     }
 
                     splashProgressBar.setValue(progress);
@@ -316,4 +320,30 @@ public class SplashScreen extends javax.swing.JFrame {
     private javax.swing.JProgressBar splashProgressBar;
     private javax.swing.JLabel splashimage;
     // End of variables declaration//GEN-END:variables
+private void checkDBconfiguration() throws InterruptedException {
+        try {
+            String userHome = System.getProperty("user.home");
+
+            Path dbDir = Paths.get(userHome, "FlexGymDb");
+            System.out.println(dbDir);
+            Path dbInfoFile = dbDir.resolve("dbinfo.ser");
+            // Create the directory if it doesn't exist
+            if (!Files.exists(dbInfoFile)) {
+                System.out.println("No config found");
+
+                Files.createDirectories(dbDir);
+                SetupDatabase setupDatabase = new SetupDatabase(true);
+                setupDatabase.getSplashScreen(this);
+                setupDatabase.setVisible(true);
+                synchronized (t) {
+                    t.wait();
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_LEFT, 5000l, "Couldn't find or create database config files");
+        }
+
+    }
 }
