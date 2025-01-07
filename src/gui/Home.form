@@ -4116,14 +4116,17 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jPanel18" max="32767" attributes="0"/>
                       <EmptySpace min="-2" pref="44" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="jButton32" max="32767" attributes="0"/>
-                          <Component id="jButton33" max="32767" attributes="0"/>
-                          <Component id="jButton34" max="32767" attributes="0"/>
-                          <Component id="jButton35" max="32767" attributes="0"/>
-                          <Component id="jButton36" max="32767" attributes="0"/>
-                          <Component id="jButton37" max="32767" attributes="0"/>
-                          <Component id="jButton38" min="-2" pref="236" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Component id="jButton32" max="32767" attributes="0"/>
+                              <Component id="jButton33" max="32767" attributes="0"/>
+                              <Component id="jButton34" max="32767" attributes="0"/>
+                              <Component id="jButton35" max="32767" attributes="0"/>
+                              <Component id="jButton36" max="32767" attributes="0"/>
+                              <Component id="jButton37" max="32767" attributes="0"/>
+                              <Component id="jButton38" min="-2" pref="236" max="-2" attributes="0"/>
+                          </Group>
+                          <Component id="jButton24" min="-2" pref="165" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="36" max="-2" attributes="0"/>
                   </Group>
@@ -4151,7 +4154,9 @@
                       <Component id="jButton37" min="-2" pref="50" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="jButton38" min="-2" pref="50" max="-2" attributes="0"/>
-                      <EmptySpace pref="221" max="32767" attributes="0"/>
+                      <EmptySpace pref="157" max="32767" attributes="0"/>
+                      <Component id="jButton24" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -4271,6 +4276,9 @@
                             </Column>
                           </TableColumnModel>
                         </Property>
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="Poppins" size="12" style="0"/>
+                        </Property>
                         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                           <Color blue="4e" green="3b" red="2e" type="rgb"/>
                         </Property>
@@ -4291,15 +4299,11 @@
                     <Component class="javax.swing.JTable" name="jTable13">
                       <Properties>
                         <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                          <Table columnCount="8" rowCount="0">
-                            <Column editable="false" title="ID " type="java.lang.Object"/>
-                            <Column editable="false" title="Member" type="java.lang.Object"/>
-                            <Column editable="false" title="Membership Type" type="java.lang.Object"/>
+                          <Table columnCount="4" rowCount="0">
                             <Column editable="false" title="Date" type="java.lang.Object"/>
-                            <Column editable="false" title="EXP" type="java.lang.Object"/>
-                            <Column editable="false" title="Paid Amount" type="java.lang.Object"/>
-                            <Column editable="false" title="Payment Method" type="java.lang.Object"/>
-                            <Column editable="false" title="Discount" type="java.lang.Object"/>
+                            <Column editable="false" title="Time" type="java.lang.Object"/>
+                            <Column editable="false" title="Employee" type="java.lang.Object"/>
+                            <Column editable="false" title="Employee ID" type="java.lang.Object"/>
                           </Table>
                         </Property>
                         <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
@@ -4324,27 +4328,10 @@
                               <Editor/>
                               <Renderer/>
                             </Column>
-                            <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
-                              <Title/>
-                              <Editor/>
-                              <Renderer/>
-                            </Column>
-                            <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
-                              <Title/>
-                              <Editor/>
-                              <Renderer/>
-                            </Column>
-                            <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
-                              <Title/>
-                              <Editor/>
-                              <Renderer/>
-                            </Column>
-                            <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
-                              <Title/>
-                              <Editor/>
-                              <Renderer/>
-                            </Column>
                           </TableColumnModel>
+                        </Property>
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="Poppins" size="14" style="0"/>
                         </Property>
                         <Property name="tableHeader" type="javax.swing.table.JTableHeader" editor="org.netbeans.modules.form.editors2.JTableHeaderEditor">
                           <TableHeader reorderingAllowed="false" resizingAllowed="true"/>
@@ -4355,7 +4342,7 @@
                 </Container>
                 <Component class="javax.swing.JLabel" name="jLabel62">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Memberships"/>
+                    <Property name="text" type="java.lang.String" value="Unsafe Logouts"/>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Poppins" size="14" style="1"/>
                     </Property>
@@ -4462,6 +4449,17 @@
                 <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="f9" green="f9" red="f9" type="rgb"/>
                 </Property>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JButton" name="jButton24">
+              <Properties>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Poppins SemiBold" size="14" style="0"/>
+                </Property>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="40" green="a0" red="ff" type="rgb"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Database Setup"/>
               </Properties>
             </Component>
           </SubComponents>
