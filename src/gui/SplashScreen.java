@@ -123,7 +123,9 @@ public class SplashScreen extends javax.swing.JFrame {
                 try {
                     checkDBconfiguration();
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(SplashScreen.class.getName()).log(Level.SEVERE, null, ex);
+                    Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_LEFT, 3000l, "There Was a problem with database setup.");
+                    exceptionRecords.log(Level.SEVERE, "Problem with database setup");
+                    ex.printStackTrace();
                 }
 
                 while (progress < 100) {
@@ -144,7 +146,18 @@ public class SplashScreen extends javax.swing.JFrame {
                                 } catch (Exception e) {
                                     JOptionPane.showMessageDialog(splash, "An error occured when Connecting to the database, Please try again later", "Database Connection Failed.", JOptionPane.ERROR_MESSAGE);
                                     exceptionRecords.log(Level.SEVERE, "Database Connection Failed");
+                                    int option = JOptionPane.showConfirmDialog(splash, "Change Database Details?", "Change Database Details?", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
+                                    if (option == JOptionPane.YES_OPTION) {
+                                        try {
+                                            openDBconfiguration();
+                                        } catch (InterruptedException ex) {
+                                            Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_LEFT, 3000l, "There Was a problem with database setup.");
+                                            exceptionRecords.log(Level.SEVERE, "Problem with database setup");
+                                            ex.printStackTrace();
+                                        }
+                                    } else  {
                                     openLogin = false;
+                                    }
                                     break;
                                 }
                             }
@@ -338,6 +351,30 @@ private void checkDBconfiguration() throws InterruptedException {
                 synchronized (t) {
                     t.wait();
                 }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_LEFT, 5000l, "Couldn't find or create database config files");
+        }
+
+    }
+
+    private void openDBconfiguration() throws InterruptedException {
+        try {
+            String userHome = System.getProperty("user.home");
+
+            Path dbDir = Paths.get(userHome, "FlexGymDb");
+            System.out.println(dbDir);
+            Path dbInfoFile = dbDir.resolve("dbinfo.ser");
+            // Create the directory if it doesn't exist
+
+            Files.createDirectories(dbDir);
+            SetupDatabase setupDatabase = new SetupDatabase(true);
+            setupDatabase.getSplashScreen(this);
+            setupDatabase.setVisible(true);
+            synchronized (t) {
+                t.wait();
             }
 
         } catch (Exception e) {

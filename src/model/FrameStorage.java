@@ -8,6 +8,7 @@ import gui.AddMember;
 import gui.AddNewStock;
 import gui.AddSupplier;
 import gui.AddTrainers;
+import gui.BackupDatabase;
 import gui.CreateNewSession;
 import gui.NewInvoice;
 import gui.SetupDatabase;
@@ -25,4 +26,5 @@ public class FrameStorage {
     public static AddNewStock addNewStockFrame;
     public static NewInvoice newInvoiceFrame;
     public static SetupDatabase dbSetupFrame; 
+    public static BackupDatabase dbBackupFrame;
 }
