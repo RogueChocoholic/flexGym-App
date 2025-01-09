@@ -4116,17 +4116,16 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jPanel18" max="32767" attributes="0"/>
                       <EmptySpace min="-2" pref="44" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="1" attributes="0">
-                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                              <Component id="jButton32" max="32767" attributes="0"/>
-                              <Component id="jButton33" max="32767" attributes="0"/>
-                              <Component id="jButton34" max="32767" attributes="0"/>
-                              <Component id="jButton35" max="32767" attributes="0"/>
-                              <Component id="jButton36" max="32767" attributes="0"/>
-                              <Component id="jButton37" max="32767" attributes="0"/>
-                              <Component id="jButton38" min="-2" pref="236" max="-2" attributes="0"/>
-                          </Group>
-                          <Component id="jButton24" min="-2" pref="165" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                          <Component id="jButton32" alignment="0" max="32767" attributes="0"/>
+                          <Component id="jButton33" alignment="0" max="32767" attributes="0"/>
+                          <Component id="jButton34" alignment="0" max="32767" attributes="0"/>
+                          <Component id="jButton35" alignment="0" max="32767" attributes="0"/>
+                          <Component id="jButton36" alignment="0" max="32767" attributes="0"/>
+                          <Component id="jButton37" alignment="0" max="32767" attributes="0"/>
+                          <Component id="jButton38" alignment="1" max="32767" attributes="0"/>
+                          <Component id="jButton24" alignment="1" max="32767" attributes="0"/>
+                          <Component id="jButton26" alignment="1" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="36" max="-2" attributes="0"/>
                   </Group>
@@ -4154,7 +4153,9 @@
                       <Component id="jButton37" min="-2" pref="50" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="jButton38" min="-2" pref="50" max="-2" attributes="0"/>
-                      <EmptySpace pref="157" max="32767" attributes="0"/>
+                      <EmptySpace pref="118" max="32767" attributes="0"/>
+                      <Component id="jButton26" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Component id="jButton24" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
                   </Group>
@@ -4453,16 +4454,30 @@
             </Component>
             <Component class="javax.swing.JButton" name="jButton24">
               <Properties>
+                <Property name="text" type="java.lang.String" value="Database Setup"/>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Poppins SemiBold" size="14" style="0"/>
                 </Property>
                 <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="40" green="a0" red="ff" type="rgb"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Database Setup"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton24ActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="jButton26">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Database Backup"/>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Poppins SemiBold" size="14" style="0"/>
+                </Property>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="40" green="a0" red="ff" type="rgb"/>
+                </Property>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton26ActionPerformed"/>
               </Events>
             </Component>
           </SubComponents>

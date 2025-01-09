@@ -16,6 +16,9 @@ public class MySQL implements Serializable{
     public String pw;
     public String un;
     public String dbname;
+    
+    public String dump;
+    public String mysqlExe;
 
     private static Connection connection;
 
