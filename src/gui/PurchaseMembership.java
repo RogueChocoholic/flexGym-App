@@ -25,6 +25,7 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperPrintManager;
 import net.sf.jasperreports.view.JasperViewer;
+import raven.toast.Notifications;
 //import raven.toast.Notifications;
 
 public class PurchaseMembership extends javax.swing.JDialog {
@@ -834,6 +835,7 @@ public class PurchaseMembership extends javax.swing.JDialog {
                 } catch (Exception e) {
                     e.printStackTrace();
                     SplashScreen.exceptionRecords.log(Level.SEVERE, "Invoice didn't work", e);
+                    Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Couldn't process invoice");
                 }
             }
             purchase = true;
