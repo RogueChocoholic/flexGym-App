@@ -4,6 +4,7 @@ import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import java.util.List;
 import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.io.InputStream;
 import java.sql.ResultSet;
@@ -1866,6 +1867,11 @@ public class Home extends javax.swing.JFrame {
                 jTable5MouseClicked(evt);
             }
         });
+        jTable5.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jTable5KeyPressed(evt);
+            }
+        });
         jScrollPane5.setViewportView(jTable5);
 
         jLabel18.setText("Member ID");
@@ -3453,6 +3459,11 @@ public class Home extends javax.swing.JFrame {
         jButton32.setBackground(new java.awt.Color(255, 111, 0));
         jButton32.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
         jButton32.setForeground(new java.awt.Color(249, 249, 249));
+        jButton32.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton32ActionPerformed(evt);
+            }
+        });
 
         jButton33.setText("Member Invoice Report");
         jButton33.setBackground(new java.awt.Color(255, 111, 0));
@@ -4469,7 +4480,20 @@ public class Home extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton19ActionPerformed
 
     private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton23ActionPerformed
-        // TODO add your handling code here:
+        if (jTable4.getSelectedRowCount() == 1) {
+            int row = jTable4.getSelectedRow();
+            if (row != -1) {
+                String invID = String.valueOf(jTable4.getValueAt(row, 1));
+                if (invID.startsWith("IVM")) {
+                    PrintMemberInvoice memberInvoice = new PrintMemberInvoice(this, false, invID);
+                    memberInvoice.setVisible(true);
+
+                } else {
+                    Notifications.getInstance().show(Notifications.Type.INFO, 3000l, "Not a membership invoice");
+                }
+
+            }
+        }
     }//GEN-LAST:event_jButton23ActionPerformed
 
     private void jButton25ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton25ActionPerformed
@@ -4583,7 +4607,7 @@ public class Home extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton11ActionPerformed
 
     private void jButton22ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton22ActionPerformed
-        // TODO add your handling code here:
+        printMemberReport();
     }//GEN-LAST:event_jButton22ActionPerformed
 
     private void jComboBox9ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox9ItemStateChanged
@@ -4651,7 +4675,7 @@ public class Home extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton24ActionPerformed
 
     private void jButton26ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton26ActionPerformed
-      if (FrameStorage.dbBackupFrame == null) {
+        if (FrameStorage.dbBackupFrame == null) {
             BackupDatabase backupDatabase = new BackupDatabase(false);
             backupDatabase.setVisible(true);
         } else if (FrameStorage.dbBackupFrame.isVisible()) {
@@ -4660,6 +4684,20 @@ public class Home extends javax.swing.JFrame {
             FrameStorage.dbBackupFrame.setVisible(true);
         }
     }//GEN-LAST:event_jButton26ActionPerformed
+
+    private void jTable5KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTable5KeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            jButton23.setEnabled(false);
+
+            loadMemberInvoices();
+
+            evt.consume();
+        }
+    }//GEN-LAST:event_jTable5KeyPressed
+
+    private void jButton32ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton32ActionPerformed
+        printMemberReport();
+    }//GEN-LAST:event_jButton32ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -5141,5 +5179,32 @@ public class Home extends javax.swing.JFrame {
         }
 
         return errrorElements;
+    }
+
+    private void printMemberReport() {
+        if (jTable5.getRowCount() != 0) {
+            InputStream memberReport = this.getClass().getResourceAsStream("/reports/flexGym_members_reports.jasper");
+
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("Parameter1", SignIn.getEmployeeName());
+            params.put("Parameter2", String.valueOf(LocalDate.now()));
+            params.put("Parameter3", String.valueOf(jComboBox1.getSelectedItem()));
+
+            JRTableModelDataSource dataSource = new JRTableModelDataSource(jTable5.getModel());
+            try {
+                JasperPrint report = JasperFillManager.fillReport(memberReport, params, dataSource);
+
+                JasperPrintManager.printReport(report, false);
+                int option = JOptionPane.showConfirmDialog(this, "View Members Report?", "View Report?", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
+                if (option == JOptionPane.YES_OPTION) {
+                    JasperViewer.viewReport(report, false);
+
+                }
+            } catch (Exception e) {
+                SplashScreen.exceptionRecords.log(Level.WARNING, "Unable to load supplier grn at dashboard", e);
+                Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Couldn't load goods received notes. Please check your connection and try again.");
+                e.printStackTrace();
+            }
+        }
     }
 }
