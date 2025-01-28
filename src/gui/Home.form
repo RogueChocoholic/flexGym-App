@@ -1318,7 +1318,7 @@
                                   <Component id="jCheckBox1" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                   <Component id="jCheckBox2" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace pref="263" max="32767" attributes="0"/>
+                                  <EmptySpace pref="324" max="32767" attributes="0"/>
                                   <Component id="jLabel20" min="-2" pref="93" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="jComboBox1" min="-2" pref="183" max="-2" attributes="0"/>
@@ -1548,7 +1548,7 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="0" attributes="0">
-                                  <Component id="jScrollPane4" pref="775" max="32767" attributes="0"/>
+                                  <Component id="jScrollPane4" pref="836" max="32767" attributes="0"/>
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                       <Component id="jButton12" max="32767" attributes="0"/>
@@ -1700,7 +1700,8 @@
                 </Component>
                 <Component class="javax.swing.JButton" name="jButton8">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Send Membership Renewal Emails"/>
+                    <Property name="text" type="java.lang.String" value="Send Emails"/>
+                    <Property name="enabled" type="boolean" value="false"/>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Poppins" size="14" style="1"/>
                     </Property>
@@ -1708,6 +1709,9 @@
                       <Color blue="4e" green="3b" red="2e" type="rgb"/>
                     </Property>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton8ActionPerformed"/>
+                  </Events>
                 </Component>
                 <Component class="javax.swing.JButton" name="jButton22">
                   <Properties>
@@ -1823,7 +1827,7 @@
                                   <EmptySpace type="separate" max="-2" attributes="0"/>
                                   <Component id="jLabel32" min="-2" pref="44" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jComboBox5" pref="215" max="32767" attributes="0"/>
+                                  <Component id="jComboBox5" pref="276" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                       </Group>
@@ -1994,7 +1998,7 @@
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" attributes="0">
                                           <Group type="102" alignment="0" attributes="0">
-                                              <Component id="jScrollPane7" pref="1110" max="32767" attributes="0"/>
+                                              <Component id="jScrollPane7" pref="1171" max="32767" attributes="0"/>
                                               <Group type="103" groupAlignment="0" attributes="0">
                                                   <Group type="102" attributes="0">
                                                       <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
@@ -2383,7 +2387,7 @@
                                   <Component id="jLabel39" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="jLabel38" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace pref="403" max="32767" attributes="0"/>
+                                  <EmptySpace pref="464" max="32767" attributes="0"/>
                               </Group>
                               <Group type="102" attributes="0">
                                   <Component id="jScrollPane8" max="32767" attributes="0"/>
@@ -3348,6 +3352,9 @@
                           <TableHeader reorderingAllowed="false" resizingAllowed="true"/>
                         </Property>
                       </Properties>
+                      <Events>
+                        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jTable15MouseClicked"/>
+                      </Events>
                     </Component>
                   </SubComponents>
                 </Container>
@@ -3378,7 +3385,7 @@
                 </Component>
                 <Component class="javax.swing.JButton" name="jButton41">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Print Supplier Report"/>
+                    <Property name="text" type="java.lang.String" value="Print Supplier List"/>
                     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="0" green="6f" red="ff" type="rgb"/>
                     </Property>
@@ -3399,6 +3406,7 @@
                     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="0" green="6f" red="ff" type="rgb"/>
                     </Property>
+                    <Property name="enabled" type="boolean" value="false"/>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Poppins" size="14" style="1"/>
                     </Property>
@@ -3406,6 +3414,9 @@
                       <Color blue="f0" green="f0" red="f0" type="rgb"/>
                     </Property>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton42ActionPerformed"/>
+                  </Events>
                 </Component>
                 <Component class="javax.swing.JButton" name="jButton43">
                   <Properties>
@@ -4177,7 +4188,7 @@
                       <Group type="102" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jScrollPane12" pref="1049" max="32767" attributes="0"/>
+                              <Component id="jScrollPane12" pref="1110" max="32767" attributes="0"/>
                               <Group type="102" attributes="0">
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="jLabel61" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -4288,6 +4299,9 @@
                           <TableHeader reorderingAllowed="false" resizingAllowed="true"/>
                         </Property>
                       </Properties>
+                      <Events>
+                        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jTable12MouseClicked"/>
+                      </Events>
                     </Component>
                   </SubComponents>
                 </Container>
@@ -4530,7 +4544,7 @@
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="profileImage" min="-2" pref="72" max="-2" attributes="0"/>
-                          <EmptySpace pref="502" max="32767" attributes="0"/>
+                          <EmptySpace pref="563" max="32767" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="jLabel9" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="jLabel11" alignment="0" min="-2" max="-2" attributes="0"/>
