@@ -18,13 +18,10 @@ import java.util.HashMap;
 import java.util.Vector;
 import java.util.logging.Level;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import model.LogoSettting;
 import model.MySQL;
@@ -113,6 +110,7 @@ public class Home extends javax.swing.JFrame {
                 loadSupplierGrn();
                 loadMemInvoceList();
                 loadErrorLogins();
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -124,6 +122,8 @@ public class Home extends javax.swing.JFrame {
             jTextField7.setText("");
             jComboBox7.setSelectedIndex(0);
             jComboBox8.setSelectedIndex(0);
+            jButton8.setEnabled(false);
+
         });
 
         refreshThread.start();
@@ -1951,7 +1951,7 @@ public class Home extends javax.swing.JFrame {
                         .addComponent(jCheckBox1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jCheckBox2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 263, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 324, Short.MAX_VALUE)
                         .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -2024,9 +2024,15 @@ public class Home extends javax.swing.JFrame {
             }
         });
 
-        jButton8.setText("Send Membership Renewal Emails");
+        jButton8.setText("Send Emails");
+        jButton8.setEnabled(false);
         jButton8.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
         jButton8.setForeground(new java.awt.Color(46, 59, 78));
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton8ActionPerformed(evt);
+            }
+        });
 
         jButton22.setText("Print Member Report");
         jButton22.setBackground(new java.awt.Color(255, 111, 0));
@@ -2057,7 +2063,7 @@ public class Home extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel11Layout.createSequentialGroup()
-                        .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 775, Short.MAX_VALUE)
+                        .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 836, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jButton12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -2245,7 +2251,7 @@ public class Home extends javax.swing.JFrame {
                         .addContainerGap()
                         .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel12Layout.createSequentialGroup()
-                                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 1110, Short.MAX_VALUE)
+                                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 1171, Short.MAX_VALUE)
                                 .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(jPanel12Layout.createSequentialGroup()
                                         .addGap(20, 20, 20)
@@ -2384,7 +2390,7 @@ public class Home extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(jLabel32, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jComboBox5, 0, 215, Short.MAX_VALUE))))
+                        .addComponent(jComboBox5, 0, 276, Short.MAX_VALUE))))
             .addComponent(jPanel12, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel7Layout.setVerticalGroup(
@@ -2587,7 +2593,7 @@ public class Home extends javax.swing.JFrame {
                         .addComponent(jLabel39)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel38)
-                        .addContainerGap(403, Short.MAX_VALUE))
+                        .addContainerGap(464, Short.MAX_VALUE))
                     .addGroup(jPanel14Layout.createSequentialGroup()
                         .addComponent(jScrollPane8)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -2927,6 +2933,11 @@ public class Home extends javax.swing.JFrame {
         });
         jTable15.setFont(new java.awt.Font("Poppins", 0, 12)); // NOI18N
         jTable15.getTableHeader().setReorderingAllowed(false);
+        jTable15.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable15MouseClicked(evt);
+            }
+        });
         jScrollPane15.setViewportView(jTable15);
 
         jLabel67.setText("GRN");
@@ -2942,7 +2953,7 @@ public class Home extends javax.swing.JFrame {
             }
         });
 
-        jButton41.setText("Print Supplier Report");
+        jButton41.setText("Print Supplier List");
         jButton41.setBackground(new java.awt.Color(255, 111, 0));
         jButton41.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
         jButton41.setForeground(new java.awt.Color(240, 240, 240));
@@ -2954,8 +2965,14 @@ public class Home extends javax.swing.JFrame {
 
         jButton42.setText("Suppler GRNs report");
         jButton42.setBackground(new java.awt.Color(255, 111, 0));
+        jButton42.setEnabled(false);
         jButton42.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
         jButton42.setForeground(new java.awt.Color(240, 240, 240));
+        jButton42.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton42ActionPerformed(evt);
+            }
+        });
 
         jButton43.setText("Edit Supplier");
         jButton43.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
@@ -3399,6 +3416,11 @@ public class Home extends javax.swing.JFrame {
         jTable12.setFont(new java.awt.Font("Poppins", 0, 12)); // NOI18N
         jTable12.setForeground(new java.awt.Color(46, 59, 78));
         jTable12.getTableHeader().setReorderingAllowed(false);
+        jTable12.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable12MouseClicked(evt);
+            }
+        });
         jScrollPane12.setViewportView(jTable12);
 
         jTable13.setModel(new javax.swing.table.DefaultTableModel(
@@ -3432,7 +3454,7 @@ public class Home extends javax.swing.JFrame {
             .addGroup(jPanel18Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane12, javax.swing.GroupLayout.DEFAULT_SIZE, 1049, Short.MAX_VALUE)
+                    .addComponent(jScrollPane12, javax.swing.GroupLayout.DEFAULT_SIZE, 1110, Short.MAX_VALUE)
                     .addGroup(jPanel18Layout.createSequentialGroup()
                         .addGroup(jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel61)
@@ -3638,7 +3660,7 @@ public class Home extends javax.swing.JFrame {
                             .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(profileImage, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 502, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 563, Short.MAX_VALUE)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel9)
                             .addComponent(jLabel11))
@@ -3907,7 +3929,34 @@ public class Home extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton39ActionPerformed
 
     private void jButton41ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton41ActionPerformed
-        // TODO add your handling code here:
+        try {
+            String company = String.valueOf(jComboBox10.getSelectedItem());
+            InputStream report = this.getClass().getResourceAsStream("/reports/flexGymSupplierList.jasper");
+
+            String date = String.valueOf(LocalDate.now());
+            String employee = SignIn.getEmployeeName();
+
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("Parameter1", employee);
+            params.put("Parameter2", date);
+            params.put("Parameter3", company);
+
+            JRTableModelDataSource dataSource = new JRTableModelDataSource(jTable14.getModel());
+
+            JasperPrint jasperReport = JasperFillManager.fillReport(report, params, dataSource);
+
+            JasperPrintManager.printReport(jasperReport, false);
+            int option = JOptionPane.showConfirmDialog(this, "View Report?", "View", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
+            if (option == JOptionPane.YES_OPTION) {
+                JasperViewer.viewReport(jasperReport, false);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            SplashScreen.exceptionRecords.log(Level.FINE, "Failed to print or view suppier list.", e);
+            Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Failed to Print Report");
+
+        }
     }//GEN-LAST:event_jButton41ActionPerformed
 
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
@@ -3947,6 +3996,7 @@ public class Home extends javax.swing.JFrame {
     private void jTable5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable5MouseClicked
         if (evt.getButton() == MouseEvent.BUTTON1) {
             jButton23.setEnabled(false);
+            jButton8.setEnabled(true);
 
             loadMemberInvoices();
 
@@ -4483,11 +4533,17 @@ public class Home extends javax.swing.JFrame {
         if (jTable4.getSelectedRowCount() == 1) {
             int row = jTable4.getSelectedRow();
             if (row != -1) {
+                String date = String.valueOf(LocalDate.now());
+                String employee = SignIn.getEmployeeName();
+
                 String invID = String.valueOf(jTable4.getValueAt(row, 1));
                 if (invID.startsWith("IVM")) {
                     PrintMemberInvoice memberInvoice = new PrintMemberInvoice(this, false, invID);
                     memberInvoice.setVisible(true);
 
+                } else if (invID.startsWith("IVP")) {
+//                    report
+                    printProductInvoceDB(employee, date, invID);
                 } else {
                     Notifications.getInstance().show(Notifications.Type.INFO, 3000l, "Not a membership invoice");
                 }
@@ -4617,6 +4673,7 @@ public class Home extends javax.swing.JFrame {
     private void jTable14MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable14MouseClicked
         if (evt.getButton() == MouseEvent.BUTTON1) {
             loadSupplierGrn();
+
         }
     }//GEN-LAST:event_jTable14MouseClicked
 
@@ -4699,19 +4756,77 @@ public class Home extends javax.swing.JFrame {
         printMemberReport();
     }//GEN-LAST:event_jButton32ActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        FlatMacLightLaf.setup();
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Home(false).setVisible(true);
+    private void jTable15MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable15MouseClicked
+        if (evt.getButton() == MouseEvent.BUTTON1) {
+            if (evt.getClickCount() == 1) {
+                jButton42.setEnabled(true);
+            } else if (evt.getClickCount() == 2) {
+                // open report
+                printSupllierGRN(true);
             }
-        });
+        }
+    }//GEN-LAST:event_jTable15MouseClicked
+
+    private void jButton42ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton42ActionPerformed
+        if (jTable15.getSelectedRow() != -1) {
+            printSupllierGRN(false);
+        }
+    }//GEN-LAST:event_jButton42ActionPerformed
+
+    private void jTable12MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable12MouseClicked
+        if (evt.getButton() == MouseEvent.BUTTON1 && evt.getClickCount() == 2) {
+            if (jTable12.getSelectedRowCount() == 1 && jTable12.getSelectedRow() != -1) {
+                int row = jTable12.getSelectedRow();
+                String invoiceID = String.valueOf(jTable12.getValueAt(row, 0));
+                String date = String.valueOf(LocalDate.now());
+                String employee = SignIn.getEmployeeName();
+                printProductInvoceDB(employee, date, invoiceID);
+            }
+        }
+    }//GEN-LAST:event_jTable12MouseClicked
+
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        if (jTable5.getSelectedRowCount() == 1 && jTable5.getSelectedRow() != -1) {
+            int row = jTable5.getSelectedRow();
+            String memID = String.valueOf(jTable5.getValueAt(row, 0));
+            Emailing emailing = new Emailing(this, true, memID);
+            emailing.setVisible(true);
+        }
+    }//GEN-LAST:event_jButton8ActionPerformed
+
+    private void printSupllierGRN(boolean view) {
+//        String grnID = jTable15.getrow
+        if (jTable15.getSelectedRowCount() == 1 && jTable15.getSelectedRow() != -1) {
+            int row = jTable15.getSelectedRow();
+            String grnID = String.valueOf(jTable15.getValueAt(row, 0));
+            String date = String.valueOf(LocalDate.now());
+            String emp = SignIn.getEmployeeName();
+
+            InputStream report = this.getClass().getResourceAsStream("/reports/FlexGymSupplierGRN.jasper");
+
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("Parameter1", emp);
+            params.put("Parameter2", date);
+            params.put("Parameter3", grnID);
+
+            try {
+                JasperPrint jasperReport = JasperFillManager.fillReport(report, params, MySQL.getConnection());
+                if (view) {
+                    JasperViewer.viewReport(jasperReport, false);
+                } else {
+                    JasperPrintManager.printReport(jasperReport, false);
+
+                    int option = JOptionPane.showConfirmDialog(this, "View Report?", "View", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
+                    if (option == JOptionPane.YES_OPTION) {
+                        JasperViewer.viewReport(jasperReport, false);
+                    }
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Print Cancelled");
+            }
+        }
     }
 
 
@@ -5051,6 +5166,9 @@ public class Home extends javax.swing.JFrame {
     }
 
     private void loadSupplierGrn() {
+        jButton42.setEnabled(false);
+        DefaultTableModel model = (DefaultTableModel) jTable15.getModel();
+        model.setRowCount(0);
         if (jTable14.getRowCount() != 0) {
             if (jTable14.getSelectedRowCount() == 1) {
                 int row = jTable14.getSelectedRow();
@@ -5065,8 +5183,7 @@ public class Home extends javax.swing.JFrame {
                     ResultSet supplierGRNRs = MySQL.executeSearch("SELECT * FROM `grn` WHERE "
                             + " `supplier_mobile` = '" + mobile + "' ");
                     // get the paid amount of the respective grn
-                    DefaultTableModel model = (DefaultTableModel) jTable15.getModel();
-                    model.setRowCount(0);
+
                     while (supplierGRNRs.next()) {
                         paid_amount = paid_amount + Double.parseDouble(supplierGRNRs.getString("paid_amount"));
 
@@ -5205,6 +5322,27 @@ public class Home extends javax.swing.JFrame {
                 Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Couldn't load goods received notes. Please check your connection and try again.");
                 e.printStackTrace();
             }
+        }
+    }
+
+    private void printProductInvoceDB(String employee, String date, String invID) {
+        InputStream report = this.getClass().getResourceAsStream("/reports/productInvoiceDB.jasper");
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("Parameter1", employee);
+        params.put("Parameter2", date);
+        params.put("Parameter3", invID);
+
+        try {
+            JasperPrint jasperReport = JasperFillManager.fillReport(report, params, MySQL.getConnection());
+            String[] options = new String[]{"Print", "View"};
+            int option = JOptionPane.showOptionDialog(this, "View or Print Invoice", "Choose option", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+            if (option == 0) {
+                JasperPrintManager.printReport(jasperReport, false);
+            } else {
+                JasperViewer.viewReport(jasperReport, false);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
