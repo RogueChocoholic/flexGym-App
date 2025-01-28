@@ -36,6 +36,7 @@ import raven.toast.Notifications;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.text.DecimalFormat;
+import java.time.temporal.TemporalAdjusters;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -46,6 +47,8 @@ import model.CheckNumerical;
 import model.FrameStorage;
 import model.ModifyTables;
 import model.Validation;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.util.JRLoader;
 
 public class Home extends javax.swing.JFrame {
 
@@ -3496,11 +3499,21 @@ public class Home extends javax.swing.JFrame {
         jButton34.setBackground(new java.awt.Color(255, 111, 0));
         jButton34.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
         jButton34.setForeground(new java.awt.Color(249, 249, 249));
+        jButton34.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton34ActionPerformed(evt);
+            }
+        });
 
         jButton35.setText("Trainer Report");
         jButton35.setBackground(new java.awt.Color(255, 111, 0));
         jButton35.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
         jButton35.setForeground(new java.awt.Color(249, 249, 249));
+        jButton35.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton35ActionPerformed(evt);
+            }
+        });
 
         jButton36.setText("Trainer Performance Report");
         jButton36.setBackground(new java.awt.Color(255, 111, 0));
@@ -4427,51 +4440,11 @@ public class Home extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton15ActionPerformed
 
     private void jButton45ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton45ActionPerformed
-        // TODO add your handling code here:
+        printMonthSessionsReport();
     }//GEN-LAST:event_jButton45ActionPerformed
 
     private void jButton20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton20ActionPerformed
-        try {
-            InputStream mainReport = this.getClass().getResourceAsStream("/reports/FlexGymTrainerPerformance.jasper");
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/flexgym_db", "root", "KOvi@6112");
-            InputStream subReport = this.getClass().getResourceAsStream("/reports/FlexGymTrainerPerformanceSubReport.jasper");
-            if (subReport == null) {
-                System.out.println("Subreport file not found!");
-            } else {
-                System.out.println("Subreport file loaded successfully!");
-            }
-            String employee = SignIn.getEmployeeName();
-            SimpleDateFormat todayFormat = new SimpleDateFormat("yyyy-MM-dd");
-            SimpleDateFormat monthBegin = new SimpleDateFormat("yyyy-MM-01");
-            Date date = new Date();
-            String today = todayFormat.format(date);
-            String monthFirst = monthBegin.format(date);
-            HashMap<String, Object> params = new HashMap<>();
-            params.put("SUBREPORT_CONNECTION", connection);
-            params.put("SUBREPORT_LOCATION", subReport);
-            params.put("Parameter1", employee);
-            params.put("Parameter2", today);
-            params.put("Parameter3", monthFirst);
-
-            if (jTable8.getRowCount() > 0) {
-                JRTableModelDataSource dataSource = new JRTableModelDataSource(jTable8.getModel());
-
-                JasperPrint report = JasperFillManager.fillReport(mainReport, params, dataSource);
-                JasperPrintManager.printReport(report, false);
-                JasperViewer.viewReport(report, false);
-
-            } else {
-                JREmptyDataSource dataSource = new JREmptyDataSource();
-
-                JasperPrint report = JasperFillManager.fillReport(mainReport, params, dataSource);
-                JasperPrintManager.printReport(report, false);
-                JasperViewer.viewReport(report, false);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            SplashScreen.exceptionRecords.log(Level.WARNING, "Couldn't print report", e);
-            Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Error printing report");
-        }
+        printTrainerReport();
 
     }//GEN-LAST:event_jButton20ActionPerformed
 
@@ -4793,6 +4766,14 @@ public class Home extends javax.swing.JFrame {
             emailing.setVisible(true);
         }
     }//GEN-LAST:event_jButton8ActionPerformed
+
+    private void jButton34ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton34ActionPerformed
+        printMonthSessionsReport();
+    }//GEN-LAST:event_jButton34ActionPerformed
+
+    private void jButton35ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton35ActionPerformed
+        printTrainerReport();
+    }//GEN-LAST:event_jButton35ActionPerformed
 
     private void printSupllierGRN(boolean view) {
 //        String grnID = jTable15.getrow
@@ -5310,13 +5291,20 @@ public class Home extends javax.swing.JFrame {
             JRTableModelDataSource dataSource = new JRTableModelDataSource(jTable5.getModel());
             try {
                 JasperPrint report = JasperFillManager.fillReport(memberReport, params, dataSource);
-
-                JasperPrintManager.printReport(report, false);
-                int option = JOptionPane.showConfirmDialog(this, "View Members Report?", "View Report?", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
-                if (option == JOptionPane.YES_OPTION) {
+                
+                String[] options = new String[]{"Print", "View"};
+                int option = JOptionPane.showOptionDialog(this, "View or Print Invoice", "Choose option", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+                if (option == 0) {
+                    JasperPrintManager.printReport(report, false);
+                } else {
                     JasperViewer.viewReport(report, false);
-
                 }
+//                JasperPrintManager.printReport(report, false);
+//                int option = JOptionPane.showConfirmDialog(this, "View Members Report?", "View Report?", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
+//                if (option == JOptionPane.YES_OPTION) {
+//                    JasperViewer.viewReport(report, false);
+//
+//                }
             } catch (Exception e) {
                 SplashScreen.exceptionRecords.log(Level.WARNING, "Unable to load supplier grn at dashboard", e);
                 Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Couldn't load goods received notes. Please check your connection and try again.");
@@ -5343,6 +5331,95 @@ public class Home extends javax.swing.JFrame {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private void printMonthSessionsReport() {
+        String employee = SignIn.getEmployeeName();
+        LocalDate currentDate = LocalDate.now();
+        String date = String.valueOf(currentDate);
+        String firstDate = String.valueOf(currentDate.withDayOfMonth(1));
+        String lastDate = String.valueOf(currentDate.with(TemporalAdjusters.lastDayOfMonth()));
+        System.out.println(firstDate);
+        System.out.println(lastDate);
+
+        try {
+            InputStream report = this.getClass().getResourceAsStream("/reports/monthSessionReport.jasper");
+            InputStream subReport = this.getClass().getResourceAsStream("/reports/sessionReportSubreport.jasper");
+            JasperReport subreport2 = (JasperReport) JRLoader.loadObject(subReport);
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("Parameter1", employee);
+            params.put("Parameter2", date);
+            params.put("Parameter3", firstDate);
+            params.put("Parameter4", lastDate);
+            params.put("Parameter5", subreport2);
+
+            JasperPrint jasperReport = JasperFillManager.fillReport(report, params, MySQL.getConnection());
+            String[] options = new String[]{"Print", "View"};
+            int option = JOptionPane.showOptionDialog(this, "View or Print Invoice", "Choose option", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+            if (option == 0) {
+                JasperPrintManager.printReport(jasperReport, false);
+            } else {
+                JasperViewer.viewReport(jasperReport, false);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            SplashScreen.exceptionRecords.log(Level.WARNING, "Unable to load session report", e);
+            Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Unable to load session report");
+        }
+    }
+
+    private void printTrainerReport() {
+        try {
+            InputStream mainReport = this.getClass().getResourceAsStream("/reports/FlexGymTrainerPerformance.jasper");
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/flexgym_db", "root", "KOvi@6112");
+            InputStream subReport = this.getClass().getResourceAsStream("/reports/FlexGymTrainerPerformanceSubReport.jasper");
+            if (subReport == null) {
+                System.out.println("Subreport file not found!");
+            } else {
+                System.out.println("Subreport file loaded successfully!");
+            }
+            String employee = SignIn.getEmployeeName();
+            SimpleDateFormat todayFormat = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat monthBegin = new SimpleDateFormat("yyyy-MM-01");
+            Date date = new Date();
+            String today = todayFormat.format(date);
+            String monthFirst = monthBegin.format(date);
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("SUBREPORT_CONNECTION", connection);
+            params.put("SUBREPORT_LOCATION", subReport);
+            params.put("Parameter1", employee);
+            params.put("Parameter2", today);
+            params.put("Parameter3", monthFirst);
+
+            if (jTable8.getRowCount() > 0) {
+                JRTableModelDataSource dataSource = new JRTableModelDataSource(jTable8.getModel());
+
+                JasperPrint report = JasperFillManager.fillReport(mainReport, params, dataSource);
+                String[] options = new String[]{"Print", "View"};
+                int option = JOptionPane.showOptionDialog(this, "View or Print Invoice", "Choose option", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+                if (option == 0) {
+                    JasperPrintManager.printReport(report, false);
+                } else {
+                    JasperViewer.viewReport(report, false);
+                }
+
+            } else {
+                JREmptyDataSource dataSource = new JREmptyDataSource();
+
+                JasperPrint report = JasperFillManager.fillReport(mainReport, params, dataSource);
+                String[] options = new String[]{"Print", "View"};
+                int option = JOptionPane.showOptionDialog(this, "View or Print Invoice", "Choose option", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+                if (option == 0) {
+                    JasperPrintManager.printReport(report, false);
+                } else {
+                    JasperViewer.viewReport(report, false);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            SplashScreen.exceptionRecords.log(Level.WARNING, "Couldn't print report", e);
+            Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Error printing report");
         }
     }
 }
