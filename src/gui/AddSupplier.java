@@ -1,13 +1,8 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package gui;
 
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import java.awt.Toolkit;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.logging.Level;
 import javax.swing.JFrame;
@@ -100,7 +95,6 @@ public class AddSupplier extends javax.swing.JFrame {
             while (resultSet.next()) {
                 companyMap.put(resultSet.getString("name"), resultSet.getString("com_id"));
             }
-            System.out.println("company map loaded");
         } catch (Exception e) {
             e.printStackTrace();
             SplashScreen.loginRecords.log(Level.SEVERE, "Couldn't load companymap on add supplier gui");
@@ -602,7 +596,6 @@ public class AddSupplier extends javax.swing.JFrame {
                                 && resultSet2.getString("email").equals(email)
                                 && resultSet2.getString("companiy_com_id").equals(companyMap.get(comany))) {
                             Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, 3000l, "Change at least one detail to update.");
-                            System.out.println("works");
                         } else {
                             int option = JOptionPane.showConfirmDialog(this, "Add new Supplier?", "Confirm?", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
                             if (option == JOptionPane.YES_OPTION) {
@@ -647,17 +640,6 @@ public class AddSupplier extends javax.swing.JFrame {
         return false;
     }
 
-    public static void main(String args[]) {
-
-        FlatMacLightLaf.setup();
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new AddSupplier(true).setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;

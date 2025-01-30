@@ -408,10 +408,7 @@ public class EditSession extends javax.swing.JDialog {
                 try {
                     ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `session_schedule` WHERE"
                             + " `session_id` = '" + session + "' ");
-                    System.out.println(newDurationField);
                     if (resultSet.next()) {
-                        System.out.println(resultSet.getString("trainers_trainer_id") + resultSet.getString("date") + resultSet.getString("start_time") + resultSet.getString("end_time") + resultSet.getString("session_types_sess_type_id") + resultSet.getString("trainer_specializations_spec_id"));
-                        System.out.println(trainer + newDate + newTime + endTime + typeId + specType);
                         if (trainer.equals(resultSet.getString("trainers_trainer_id"))
                                 && newDate.equals(resultSet.getString("date")) && newTime.equals(resultSet.getString("start_time"))
                                 && endTime.equals(resultSet.getString("end_time"))
@@ -434,11 +431,9 @@ public class EditSession extends javax.swing.JDialog {
 
                             if (!trainer.equals(resultSet.getString("trainers_trainer_id"))) {
                                 if (resultSet2.next()) {
-                                    System.out.println("there is one");
                                     MySQL.executeIUD("UPDATE `trainer_performance` SET `scheduled` = `scheduled`+1"
                                             + " WHERE `trainers_trainer_id` = '" + trainer + "' ");
                                 } else {
-                                    System.out.println("there is not one");
                                     MySQL.executeIUD("INSERT INTO `trainer_performance` (`scheduled`,`completed`,`cancelled`,`trainers_trainer_id`)"
                                             + " VALUES ('1','0','0','" + trainer + "') ");
                                 }
@@ -477,44 +472,6 @@ public class EditSession extends javax.swing.JDialog {
         reset();
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(EditSession.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(EditSession.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(EditSession.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(EditSession.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                EditSession dialog = new EditSession(new javax.swing.JFrame(), true, new Vector<>());
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.github.lgooddatepicker.components.DatePicker datePicker1;

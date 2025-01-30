@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package gui;
 
 import com.formdev.flatlaf.FlatClientProperties;
@@ -96,7 +92,6 @@ public class StaffRegistration extends javax.swing.JFrame {
             if (!idSearch.equals("")) {
                 searchIterate += " WHERE `staff_id` LIKE '%" + idSearch + "%' ";
                 if (!roleType.equals("Show All")) {
-                    System.out.println("what");
                     searchIterate += " AND `employee_type_type_id` = '" + staffTypeMap.get(roleType) + "' ";
                 }
             } else {
@@ -857,21 +852,6 @@ public class StaffRegistration extends javax.swing.JFrame {
     private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jToggleButton1ActionPerformed
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        FlatMacLightLaf.setup();
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new StaffRegistration().setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;

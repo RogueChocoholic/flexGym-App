@@ -41,8 +41,7 @@ public class SelectSupplier extends javax.swing.JDialog {
         String company = String.valueOf(jComboBox1.getSelectedItem());
         if (!company.equals("All Companies")) {
             search += " AND `companiy_com_id` = '" + companyMap.get(company) + "' ";
-            System.out.println(company);
-            System.out.println(companyMap.get(company));
+    
         }
 
         String orderBy = " ";
@@ -389,24 +388,7 @@ public class SelectSupplier extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_jTable1KeyPressed
 
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        FlatMacLightLaf.setup();
 
-        /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                SelectSupplier dialog = new SelectSupplier(new javax.swing.JFrame(), true, new AddNewStock());
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;

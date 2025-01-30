@@ -722,7 +722,6 @@ public class AddMember extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 //        LocalDate date = datePicker1.getDate();
-//        System.out.println(String.valueOf(date));
 
         String fname = jTextField2.getText();
         String lname = jTextField3.getText();
@@ -1003,19 +1002,7 @@ public class AddMember extends javax.swing.JFrame {
         FrameStorage.addMemberFrame = null;
     }//GEN-LAST:event_formWindowClosing
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        FlatMacLightLaf.setup();
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new AddMember().setVisible(true);
-            }
-        });
-    }
+  
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
