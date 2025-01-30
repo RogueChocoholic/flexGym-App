@@ -9,6 +9,8 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.Random;
 import java.util.logging.Level;
 import model.MySQL;
@@ -36,6 +38,10 @@ import raven.toast.Notifications;
 
 public class Charts extends javax.swing.JDialog {
 
+    private String monthStart;
+    private String employee = SignIn.getEmployeeName();
+    private String today = String.valueOf(LocalDate.now());
+
     public Charts(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
@@ -48,15 +54,20 @@ public class Charts extends javax.swing.JDialog {
         jPanel11.putClientProperty(FlatClientProperties.STYLE, "arc:90");
         jPanel8.putClientProperty(FlatClientProperties.STYLE, "arc:90");
         jPanel14.putClientProperty(FlatClientProperties.STYLE, "arc:90");
+        
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-01");
+        monthStart = sdf.format(new Date());
 
         loadSessionChart();
         loadSessionCountChart();
         loadMemberRegChart();
         loadInvoiceCountChart();
         loadSalesChart();
+        
     }
 
     private void loadSessionChart() {
+
         try {
 
             JFreeChart pieChart;
@@ -70,19 +81,19 @@ public class Charts extends javax.swing.JDialog {
                     + "    'Ongoing' AS status_status_id,\n"
                     + "    COUNT(*) AS count\n"
                     + "FROM session_schedule\n"
-                    + "WHERE status_status_id = 5 AND session_schedule.date > '2025-01-01'\n"
+                    + "WHERE status_status_id = 5 AND session_schedule.date > '" + monthStart + "'\n"
                     + "UNION ALL\n"
                     + "SELECT \n"
                     + "    'Ended' AS status_status_id,\n"
                     + "    COUNT(*) AS count\n"
                     + "FROM session_schedule\n"
-                    + "WHERE status_status_id = 6 AND session_schedule.date > '2025-01-01'\n"
+                    + "WHERE status_status_id = 6 AND session_schedule.date > '" + monthStart + "'\n"
                     + "UNION ALL\n"
                     + "SELECT \n"
                     + "    'Cancelled' AS status_status_id,\n"
                     + "    COUNT(*) AS count\n"
                     + "FROM session_schedule\n"
-                    + "WHERE status_status_id = 3 AND session_schedule.date > '2025-01-01' ");
+                    + "WHERE status_status_id = 3 AND session_schedule.date > '" + monthStart + "'");
 
             DefaultPieDataset dataSet = new DefaultKeyedValuesDataset();
 
@@ -385,7 +396,7 @@ public class Charts extends javax.swing.JDialog {
 //        renderer.setSeriesPaint(0, Color.BLUE);
             Random rand = new Random();
             for (int i = 0; i < dataset.getColumnCount(); i++) {
-                System.out.println(dataset.getColumnCount());
+                
                 renderer.setSeriesPaint(i, new Color(rand.nextInt(256), rand.nextInt(256), rand.nextInt(256)));
             }
 
@@ -484,7 +495,7 @@ public class Charts extends javax.swing.JDialog {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(38, 38, 38)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(38, 38, 38))
+                .addGap(62, 62, 62))
         );
 
         jTabbedPane1.addTab("Sessions", jPanel1);

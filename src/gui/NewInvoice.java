@@ -24,15 +24,15 @@ import javax.swing.JLabel;
 import model.MySQL;
 
 public class NewInvoice extends javax.swing.JFrame {
-
+    
     HashMap<String, String> brandMap = new HashMap<>();
     HashMap<String, String> categoryMap = new HashMap<>();
-
+    
     public NewInvoice() {
         initComponents();
         init();
     }
-
+    
     private void init() {
         setExtendedState(NewInvoice.MAXIMIZED_BOTH);
         this.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/resources/logo.png"))); // sets the icon
@@ -43,18 +43,18 @@ public class NewInvoice extends javax.swing.JFrame {
         modifyTables.modifyTables(jPanel4, jTable1, jScrollPane2, false);
         modifyTables.modifyTables(jPanel6, jTable2, jScrollPane3, false);
         modifyTables.modifyTables(jPanel7, jTable3, jScrollPane4, false);
-
+        
         jPanel2.putClientProperty(FlatClientProperties.STYLE, "arc:80");
         jPanel3.putClientProperty(FlatClientProperties.STYLE, "arc:80");
         jPanel5.putClientProperty(FlatClientProperties.STYLE, "arc:80");
-
+        
         refresh();
-
+        
         jLabel20.setText(SignIn.getEmplyeeID());
         jLabel22.setText(SignIn.getEmployeeName());
         jTextField3.grabFocus();
     }
-
+    
     private void loadStock() {
         int rowCount = jTable3.getSelectedRowCount();
         String search = "";
@@ -62,15 +62,15 @@ public class NewInvoice extends javax.swing.JFrame {
             int row = jTable3.getSelectedRow();
             search += " AND `pid` = '" + String.valueOf(jTable3.getValueAt(row, 0)) + "' ";
         }
-
+        
         try {
             ResultSet stockSet = MySQL.executeSearch("SELECT * FROM `stock` INNER JOIN `productsizes` ON"
                     + " `productsizes`.`sizeID` = `stock`.`productSizes_sizeID` INNER JOIN `product` ON "
                     + " `productsizes`.`product_pid` = `product`.`pid` WHERE `qty` > 0 AND `status_status_id` = '1' " + search);
-
+            
             DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
             model.setRowCount(0);
-
+            
             while (stockSet.next()) {
                 Vector<String> stockItem = new Vector<>();
                 stockItem.add(stockSet.getString("stock_id"));
@@ -89,9 +89,9 @@ public class NewInvoice extends javax.swing.JFrame {
             SplashScreen.exceptionRecords.log(Level.WARNING, "Unable to create barcode", e);
             Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Couldn't load products. Please check your internet connection.");
         }
-
+        
     }
-
+    
     private void barcodeLoadStock() {
         String barcode = jTextField3.getText();
         String search = "";
@@ -99,10 +99,10 @@ public class NewInvoice extends javax.swing.JFrame {
             int row = jTable3.getSelectedRow();
             search += " AND `barcode` = '" + barcode + "' ";
         }
-
+        
         try {
             ResultSet stockSet = MySQL.executeSearch("SELECT `stock_id` FROM `stock` WHERE `qty` > 0 " + search);
-
+            
             if (stockSet.next()) {
                 DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
                 model.setRowCount(0);
@@ -132,9 +132,9 @@ public class NewInvoice extends javax.swing.JFrame {
             SplashScreen.exceptionRecords.log(Level.WARNING, "Unable to create barcode", e);
             Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Couldn't load products. Please check your internet connection.");
         }
-
+        
     }
-
+    
     private void loadProducts() {
         String pid = jTextField1.getText();
         String category = String.valueOf(jComboBox1.getSelectedItem());
@@ -142,38 +142,38 @@ public class NewInvoice extends javax.swing.JFrame {
         try {
             String search = "WHERE";
             search += " (`pid` LIKE '%" + pid + "%' OR `name` LIKE '%" + pid + "%' )";
-
+            
             if (!category.equals("All Categories")) {
                 search += " AND `Category_cat_id` = '" + categoryMap.get(category) + "' ";
             }
-
+            
             if (!brand.equals("All Brands")) {
                 search += " AND `brand_brand_id` = '" + brandMap.get(brand) + "' ";
             }
-
+            
             ResultSet productSet = MySQL.executeSearch("SELECT * FROM `product` INNER JOIN `brand` ON"
                     + " `brand`.`brand_id` = `product`.`brand_brand_id` INNER JOIN `category` ON "
                     + " `category`.`cat_id` = `product`.`Category_cat_id` " + search);
             DefaultTableModel model = (DefaultTableModel) jTable3.getModel();
             model.setRowCount(0);
-
+            
             while (productSet.next()) {
                 Vector<String> productVector = new Vector<>();
                 productVector.add(productSet.getString("pid"));
                 productVector.add(productSet.getString("name"));
                 productVector.add(productSet.getString("brand_name"));
                 productVector.add(productSet.getString("cat_name"));
-
+                
                 model.addRow(productVector);
             }
         } catch (Exception e) {
             e.printStackTrace();
             SplashScreen.exceptionRecords.log(Level.WARNING, "Unable to create barcode", e);
             Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Couldn't load products. Please check your internet connection.");
-
+            
         }
     }
-
+    
     private void loadBrandCategory() {
         try {
             ResultSet brandlRs = MySQL.executeSearch("SELECT * FROM `brand`");
@@ -185,7 +185,7 @@ public class NewInvoice extends javax.swing.JFrame {
             }
             DefaultComboBoxModel brandModel = new DefaultComboBoxModel(brandVec);
             jComboBox2.setModel(brandModel);
-
+            
             ResultSet catlRs = MySQL.executeSearch("SELECT * FROM `category`");
             Vector<String> catVec = new Vector<>();
             catVec.add("All Categories");
@@ -200,7 +200,7 @@ public class NewInvoice extends javax.swing.JFrame {
             e.printStackTrace();
         }
     }
-
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -987,7 +987,7 @@ public class NewInvoice extends javax.swing.JFrame {
             this.dispose();
             this.setUndecorated(false);
             this.setVisible(true);
-
+            
         } else {
             jMenuItem2.setText("Exit Fullscreen");
             //  this.dispose();
@@ -995,13 +995,9 @@ public class NewInvoice extends javax.swing.JFrame {
             this.setUndecorated(true);
             this.setVisible(true);
             setExtendedState(JFrame.MAXIMIZED_BOTH);
-
+            
         }
     }//GEN-LAST:event_jMenuItem2ActionPerformed
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jTextField1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyReleased
         loadProducts();
@@ -1019,7 +1015,7 @@ public class NewInvoice extends javax.swing.JFrame {
     private void jTextField3KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField3KeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             barcodeLoadStock();
-
+            
         }
     }//GEN-LAST:event_jTextField3KeyReleased
 
@@ -1029,7 +1025,7 @@ public class NewInvoice extends javax.swing.JFrame {
 
     private void jTable3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable3MouseClicked
         if (evt.getButton() == MouseEvent.BUTTON1) {
-        
+            
             if (jTable3.getSelectedRowCount() == 1) {
                 loadStock();
             }
@@ -1130,7 +1126,7 @@ public class NewInvoice extends javax.swing.JFrame {
 //            jPopupMenu1.show(evt.getComponent(), 0, 0);
             if (jButton2.isEnabled()) {
                 checkout();
-
+                
             }
             evt.consume();
         } else if (evt.getKeyCode() == KeyEvent.VK_DELETE) {
@@ -1142,6 +1138,14 @@ public class NewInvoice extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jTable1KeyPressed
 
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        String member_id = memID.getText();
+        if (!member_id.equals("Member ID")) {
+            PurchaseMembership purchasemem = new PurchaseMembership(this, true, member_id);
+            purchasemem.setVisible(true);
+        }
+    }//GEN-LAST:event_jButton3ActionPerformed
+    
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         FlatMacLightLaf.setup();
@@ -1228,7 +1232,7 @@ public class NewInvoice extends javax.swing.JFrame {
         loadProducts();
         loadStock();
     }
-
+    
     private void reset() {
         jTextField1.setText("");
         jTextField3.setText("");
@@ -1237,29 +1241,29 @@ public class NewInvoice extends javax.swing.JFrame {
         loadProducts();
         loadStock();
     }
-
+    
     public Vector<JLabel> setMemberDetails() {
         Vector<JLabel> memberFields = new Vector<>();
         memberFields.add(memID);
         memberFields.add(memName);
         memberFields.add(jLabel15);
         memberFields.add(jLabel17);
-
+        
         return memberFields;
     }
-
+    
     public HashMap getCartMap() {
         return cartMap;
     }
-
+    
     public Vector getCartVector() {
         return cartVector;
     }
-
+    
     public void loadItems() {
         loadCartItem();
     }
-
+    
     private void loadCartItem() {
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         model.setRowCount(0);
@@ -1275,7 +1279,7 @@ public class NewInvoice extends javax.swing.JFrame {
         }
         calculate();
     }
-
+    
     private void calculate() {
         double totalPrice = 0;
         if (discountField.getText().equals("")) {
@@ -1285,17 +1289,17 @@ public class NewInvoice extends javax.swing.JFrame {
         String payMethod = "";
         if (paymentField.getText().equals("")) {
             paymentField.setText("0");
-
+            
         }
         double payment = Double.parseDouble(paymentField.getText());
         double balance = 0;
-
+        
         if (jToggleButton1.isSelected()) {
             payMethod = "Cash";
         } else if (jToggleButton2.isSelected()) {
             payMethod = "Card";
         }
-
+        
         for (cartObjects cartItem : cartVector) {
             cartObjects cartObject = cartItem;
             double price = Double.parseDouble(cartItem.getPrice());
@@ -1305,7 +1309,7 @@ public class NewInvoice extends javax.swing.JFrame {
         }
         totalField.setText(String.valueOf(total));
         total -= discount;
-
+        
         if (payMethod.equals("Card")) {
             balance = 0;
             payment = total;
@@ -1316,18 +1320,18 @@ public class NewInvoice extends javax.swing.JFrame {
             balance = payment - total;
         }
         balanceField.setText(String.valueOf(balance));
-
+        
         if (balance < 0) {
             jButton2.setEnabled(false);
         } else {
             jButton2.setEnabled(true);
-
+            
         }
     }
     HashMap<String, String> cartMap = new HashMap<>();
     Vector<cartObjects> cartVector = new Vector<>();
     double total = 0;
-
+    
     private void openQuantityDialog() {
         if (jTable2.getSelectedRowCount() == 1) {
             int row = jTable2.getSelectedRow();
@@ -1338,40 +1342,40 @@ public class NewInvoice extends javax.swing.JFrame {
             qtyMap.put("size", String.valueOf(jTable2.getValueAt(row, 3)));
             qtyMap.put("price", String.valueOf(jTable2.getValueAt(row, 4)));
             qtyMap.put("qty", String.valueOf(jTable2.getValueAt(row, 5)));
-
+            
             ProductQty selectQty = new ProductQty(this, true, qtyMap);
             selectQty.setVisible(true);
         }
     }
-
+    
     private String generateInvId() {
         Date date = new Date();
         Random random = new Random();
         int random3Digit = 100 + random.nextInt(900);
-
+        
         String empSuffix = "IVP";
-
+        
         String invoiceID = empSuffix + formatDate("yy", date) + formatDate("MM", date) + formatDate("dd", date) + formatDate("mm", date) + formatDate("HH", date) + formatDate("ss", date) + String.valueOf(random3Digit);
-
+        
         try {
-
+            
             ResultSet checkInvID = MySQL.executeSearch("SELECT * FROM `invoice` WHERE `invoice_id` = '" + invoiceID + "' ");
-
+            
             if (checkInvID.next()) {
                 invoiceID = generateInvId();
             }
         } catch (Exception e) {
             SplashScreen.exceptionRecords.log(Level.WARNING, "Unable to create invoice id", e);
         }
-
+        
         return invoiceID;
     }
-
+    
     private String formatDate(String format, Date date) {
         SimpleDateFormat dateFormat = new SimpleDateFormat(format);
         return dateFormat.format(date);
     }
-
+    
     private void checkout() {
         //      tried something and that doesn't work.
 // make a seperate dialog with a table to get as the tablemodel datasource and put a confirm button on the dialog
@@ -1381,7 +1385,7 @@ public class NewInvoice extends javax.swing.JFrame {
         String memId = memID.getText();
         String customer = memName.getText();
         String date = String.valueOf(LocalDate.now());
-
+        
         String total = totalField.getText();
         String discount = discountField.getText();
         String payMethod = "";
@@ -1390,7 +1394,7 @@ public class NewInvoice extends javax.swing.JFrame {
         } else if (jToggleButton2.isSelected()) {
             payMethod = "Card";
         }
-
+        
         String payment = paymentField.getText();
         String balance = balanceField.getText();
         HashMap<String, String> invoiceDetails = new HashMap<>();
@@ -1403,9 +1407,9 @@ public class NewInvoice extends javax.swing.JFrame {
         invoiceDetails.put("paymethod", payMethod);
         invoiceDetails.put("payment", payment);
         invoiceDetails.put("balance", balance);
-
+        
         CheckoutDialog checkout = new CheckoutDialog(this, true, cartVector, invoiceDetails);
         checkout.setVisible(true);
-
+        
     }
 }
