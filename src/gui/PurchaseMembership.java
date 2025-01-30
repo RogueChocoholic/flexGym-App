@@ -816,7 +816,10 @@ public class PurchaseMembership extends javax.swing.JDialog {
                             params.put("Parameter11", start_date);
                             params.put("Parameter12", end_date);
                             params.put("Parameter13", String.valueOf(total));
-
+                            System.out.println(total);
+                            System.out.println(start_date);
+                            System.out.println(end_date);
+                            System.out.println(String.valueOf(jComboBox1.getSelectedItem()));
 //                    JRTableModelDataSource dataSource = new JRTableModelDataSource(jTable1.getModel());
                             JREmptyDataSource dataSource = new JREmptyDataSource();
                             
@@ -828,6 +831,7 @@ public class PurchaseMembership extends javax.swing.JDialog {
                             JasperPrintManager.printReport(japerPrint, false);
                             reset();
                             loadMembers();
+                    Notifications.getInstance().show(Notifications.Type.SUCCESS, Notifications.Location.TOP_CENTER, 3000l, "Membership purchased");
                             
                         }
                         

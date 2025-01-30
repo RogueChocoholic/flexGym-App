@@ -106,6 +106,8 @@ public class CheckoutDialog extends javax.swing.JDialog {
                     String qty = cartObject.getQty();
                     MySQL.executeIUD("INSERT INTO `invoice_item` (`invoice_invoice_id`,`stock_stock_id`,`qty`) "
                             + "VALUES ('" + invID + "','" + stock_id + "','" + qty + "')");
+
+                    MySQL.executeIUD("UPDATE `stock` SET `qty` = `qty`-'" + cartObject.getQty() + "' WHERE `stock_id` = '" + cartObject.getStockID() + "' ");
                 }
                 Notifications.getInstance().show(Notifications.Type.SUCCESS, Notifications.Location.TOP_CENTER, 3000l, "Invoice Added Successfully!");
 
