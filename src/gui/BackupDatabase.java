@@ -231,12 +231,10 @@ public class BackupDatabase extends javax.swing.JFrame {
 
             int waitFor = p1.waitFor();
             if (waitFor == 0) {
-                System.out.println("Backup Success");
                 Notifications.getInstance().show(Notifications.Type.SUCCESS, Notifications.Location.TOP_CENTER, 3000l, "Backup Successful");
                 this.dispose();
                 FrameStorage.dbBackupFrame = null;
             } else {
-                System.out.println("Backup Unsuccess");
                 Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Backup Unuccessful");
             }
 
@@ -270,20 +268,15 @@ public class BackupDatabase extends javax.swing.JFrame {
 
             BufferedReader errorReader = new BufferedReader(new InputStreamReader(p1.getErrorStream()));
             String line;
-            System.out.println("Errors from mysqlrestore");
             while ((line = errorReader.readLine()) != null) {
-                System.out.println(line);
             }
 
             int waitFor = p1.waitFor();
-            System.out.println("Proess exit code: " + waitFor);
             if (waitFor == 0) {
-                System.out.println("Restore Success");
                 Notifications.getInstance().show(Notifications.Type.SUCCESS, Notifications.Location.TOP_CENTER, 3000l, "Restore Successful");
                 this.dispose();
                 FrameStorage.dbBackupFrame = null;
             } else {
-                System.out.println("Restore Unsuccessful");
                 Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Restore Unsuccessful");
             }
 
@@ -311,16 +304,13 @@ public class BackupDatabase extends javax.swing.JFrame {
 
 //            File newFile = new File(path);
 //            if (newFile.createNewFile()) {
-////                System.out.println("New File created");
 //                Notifications.getInstance().show(Notifications.Type.INFO, Notifications.Location.TOP_CENTER, 3000l, "File Doesn't Exist yet");
 //            } else {
-//                System.out.println("File already exists");
 //                Notifications.getInstance().show(Notifications.Type.INFO, Notifications.Location.TOP_CENTER, 3000l, "File Exists at the Directory");
 //            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println(fileChooser.getCurrentDirectory());
 
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -342,32 +332,17 @@ public class BackupDatabase extends javax.swing.JFrame {
 
             // Check if the file has the .sql extension (since users can manually type in the file name)
             if (selectedFile.getName().endsWith(".sql")) {
-                System.out.println("You chose to open this file: " + selectedFile.getName());
                 String filePath = selectedFile.getAbsolutePath();
                 jTextField1.setText(filePath);
 
                 // Proceed with the file path for database restoration
             } else {
-                System.out.println("Please select a valid SQL file.");
                 Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Please choose a valid sql file.");
 
             }
         }
 
     }//GEN-LAST:event_jButton4ActionPerformed
-
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        FlatMacLightLaf.setup();
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new BackupDatabase(false).setVisible(true);
-            }
-        });
-    }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;

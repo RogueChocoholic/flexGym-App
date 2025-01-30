@@ -5,7 +5,6 @@ import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import java.awt.Toolkit;
 import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Random;
@@ -14,8 +13,6 @@ import java.util.logging.Level;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.SwingConstants;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import model.FrameStorage;
 import model.ModifyTables;
@@ -52,10 +49,8 @@ public class AddTrainers extends javax.swing.JFrame {
             jLabel1.setText("Edit Trainers");
 
             int rows = jTable1.getRowCount();
-            System.out.println(rows);
             for (int i = 0; i < rows; i++) {
                 if (trainer.equals(String.valueOf(jTable1.getValueAt(i, 0)))) {
-                    System.out.println("found it");
                     jTable1.setRowSelectionInterval(i, i);
                     selectRow();
                 }
@@ -670,7 +665,6 @@ public class AddTrainers extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         //        LocalDate date = datePicker1.getDate();
-        //        System.out.println(String.valueOf(date));
 
         String fname = jTextField2.getText();
         String lname = jTextField3.getText();
@@ -759,27 +753,11 @@ public class AddTrainers extends javax.swing.JFrame {
         loadMembers();
         loadGenderMap();
         reset();
-        System.out.println("refreshed");
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         home.setEnabled(true);
     }//GEN-LAST:event_formWindowClosing
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        FlatMacLightLaf.setup();
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new AddTrainers("", "").setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;

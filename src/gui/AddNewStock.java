@@ -1051,7 +1051,6 @@ public class AddNewStock extends javax.swing.JFrame {
             }
 
             if (duplicate) {
-                System.out.println(productVector.get(duplicateRow).getName());
                 int newQty = qty + Integer.parseInt(productVector.get(duplicateRow).getQty());
                 productVector.get(duplicateRow).setQty(String.valueOf(newQty));
                 loadTable();
@@ -1099,7 +1098,6 @@ public class AddNewStock extends javax.swing.JFrame {
             }
         }
 
-        System.out.println(statusCount);
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
@@ -1260,7 +1258,6 @@ public class AddNewStock extends javax.swing.JFrame {
                         loadTable();
                     }
 
-                    System.out.println(statusCount);
 
                 }
 
@@ -1466,17 +1463,7 @@ public class AddNewStock extends javax.swing.JFrame {
         jTable1.clearSelection();
     }
 
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        FlatMacLightLaf.setup();
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new AddNewStock().setVisible(true);
-            }
-        });
-    }
+ 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.github.lgooddatepicker.components.DatePicker datePicker1;
@@ -1542,7 +1529,6 @@ public class AddNewStock extends javax.swing.JFrame {
 
     public static boolean validateDate(String date) {
         if (date.isBlank()) {
-            System.out.println("blank");
             return false;
         } else if (date.matches(Validation.DATE.validation())) {
 
@@ -1606,7 +1592,6 @@ public class AddNewStock extends javax.swing.JFrame {
             jFormattedTextField6.setText(deci.format(paymentDue));
             this.paymentsDue = paymentDue;
 
-            System.out.println("final final payment due: " + paymentDue);
         } catch (Exception e) {
             SplashScreen.exceptionRecords.log(Level.WARNING, "Unable to load supplier grn at dashboard", e);
             Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, 3000l, "Couldn't load goods received notes. Please check your connection and try again.");

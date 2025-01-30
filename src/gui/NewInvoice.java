@@ -1119,18 +1119,7 @@ public class NewInvoice extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jTable1KeyPressed
     
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        FlatMacLightLaf.setup();
 
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new NewInvoice().setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JFormattedTextField balanceField;

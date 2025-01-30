@@ -7,7 +7,6 @@ import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import javax.swing.BorderFactory;
 import javax.swing.JFileChooser;
 import model.FrameStorage;
 import model.LogoSettting;
@@ -353,18 +352,6 @@ public class SetupDatabase extends javax.swing.JFrame {
         }
 
     }//GEN-LAST:event_jButton3ActionPerformed
-
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        FlatMacLightLaf.setup();
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new SetupDatabase(false).setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;

@@ -983,7 +983,6 @@ public class Home extends javax.swing.JFrame {
         for (JTable table : tables) {
             modifyTables.modifyTables(table, modifyTableMap.get(table), true);
         }
-        System.out.println(SignIn.getemployeeType());
         if (!SignIn.getemployeeType().equals("Administrator")) {
             jButton1.setVisible(false);
             jScrollPane13.setVisible(false);
@@ -5231,7 +5230,6 @@ public class Home extends javax.swing.JFrame {
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(input);
         if (matcher.find()) {
-            System.out.println("came here");
             String id = matcher.group(1);
             String name = matcher.group(2);
             String time = matcher.group(3);
@@ -5307,8 +5305,6 @@ public class Home extends javax.swing.JFrame {
         String date = String.valueOf(currentDate);
         String firstDate = String.valueOf(currentDate.withDayOfMonth(1));
         String lastDate = String.valueOf(currentDate.with(TemporalAdjusters.lastDayOfMonth()));
-        System.out.println(firstDate);
-        System.out.println(lastDate);
 
         try {
             InputStream report = this.getClass().getResourceAsStream("/reports/monthSessionReport.jasper");

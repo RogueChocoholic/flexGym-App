@@ -2,7 +2,6 @@ package gui;
 
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import java.awt.Toolkit;
-import java.awt.event.KeyEvent;
 import java.io.InputStream;
 import java.sql.ResultSet;
 import java.text.DecimalFormat;
@@ -15,8 +14,6 @@ import java.util.Vector;
 import java.util.logging.Level;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
-import javax.swing.SwingConstants;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import model.ModifyTables;
 import model.MySQL;
@@ -816,10 +813,7 @@ public class PurchaseMembership extends javax.swing.JDialog {
                             params.put("Parameter11", start_date);
                             params.put("Parameter12", end_date);
                             params.put("Parameter13", String.valueOf(total));
-                            System.out.println(total);
-                            System.out.println(start_date);
-                            System.out.println(end_date);
-                            System.out.println(String.valueOf(jComboBox1.getSelectedItem()));
+                         
 //                    JRTableModelDataSource dataSource = new JRTableModelDataSource(jTable1.getModel());
                             JREmptyDataSource dataSource = new JREmptyDataSource();
                             
@@ -891,25 +885,7 @@ public class PurchaseMembership extends javax.swing.JDialog {
         invoice_id = generateInvoiceID();
      
     }//GEN-LAST:event_jMenuItem1ActionPerformed
-    
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        FlatMacLightLaf.setup();
 
-        /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                PurchaseMembership dialog = new PurchaseMembership(new javax.swing.JFrame(), true, "");
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JFormattedTextField balanceField;
