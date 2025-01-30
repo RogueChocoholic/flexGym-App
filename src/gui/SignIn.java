@@ -141,7 +141,6 @@ public class SignIn extends javax.swing.JFrame {
 
         jTextField1.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
         jTextField1.setForeground(new java.awt.Color(46, 59, 78));
-        jTextField1.setText("kovidhasubasinghe@gmail.com");
         jTextField1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField1ActionPerformed(evt);
@@ -150,7 +149,6 @@ public class SignIn extends javax.swing.JFrame {
 
         jPasswordField1.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
         jPasswordField1.setForeground(new java.awt.Color(46, 59, 78));
-        jPasswordField1.setText("KOvi@1234");
         jPasswordField1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jPasswordField1ActionPerformed(evt);
