@@ -5065,7 +5065,7 @@ public class Home extends javax.swing.JFrame {
         if (option == JOptionPane.YES_OPTION) {
             Date logouttime = new Date();
             SimpleDateFormat logouttimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-            SplashScreen.loginRecords.log(Level.SEVERE, "Logout :{0} : {1} : at {2}", new Object[]{SignIn.getEmplyeeID(), SignIn.getEmployeeName(), logouttimeFormat.format(logouttime)});
+            SplashScreen.loginRecords.log(Level.SEVERE, "Logout : " + SignIn.getEmplyeeID() + " : "+SignIn.getEmployeeName()+" : at "+logouttimeFormat.format(logouttime)+"");
 
             if (logOrClose.equals("Logout")) {
                 this.dispose();
